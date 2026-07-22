@@ -4,6 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VoitureController;
+use App\Http\Controllers\MissionController;
+use App\Http\Controllers\AffectationController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\RecommandationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -16,3 +20,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('voitures', VoitureController::class);
 
 });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('voitures', VoitureController::class);
+    Route::apiResource('employees', employeeController::class);
+});
+
+route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('voitures', VoitureController::class);
+    Route::apiResource('missions', MissionController::class);
+    Route::apiResource('employees', EmployeeController::class);
+
+    Route::apiResource('affectations', AffectationController::class)->only(['index', 'show', 'store']);
+    Route::patch('/affectations/{affectation}/liberer', [AffectationController::class, 'liberer']);
+});
+
+Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
+    Route::get('/missions/{mission}/recommandation', [RecommandationController::class, 'recommander']);
+});
+
+
+Route::get('/ping', function () {
+    return response()->json(['message' => 'pong', 'heure' => now()]);
+});
+
+
