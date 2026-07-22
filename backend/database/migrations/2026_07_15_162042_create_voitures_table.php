@@ -12,15 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('voitures', function (Blueprint $table) {
-            $table->id();
-            $table->string('immatriculation');
+            $table->id(); // Clé primaire : id
+
+            $table->string('immatriculation')->unique();
             $table->string('marque');
             $table->string('modele');
-            $table->integer('killometrage');
-            $table->enum('status', ['disponible', 'en_mission', 'en_maintenance','hors_service'])->default('disponible');
+            $table->integer('kilometrage');
+            $table->enum('statut', [
+                'disponible',
+                'en_mission',
+                'en_maintenance',
+                'hors_service'
+            ])->default('disponible');
+
             $table->integer('capacite')->nullable();
             $table->string('type_carburant')->nullable();
             $table->string('categorie')->nullable();
+
             $table->timestamps();
         });
     }

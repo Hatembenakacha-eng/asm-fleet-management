@@ -26,7 +26,7 @@ class AuthController extends Controller
         ]);
 
         // Return a response
-        return response()->json(['message' => 'Compte créé avec succès', 'user' => $user], 201);
+        return response()->json(['message' => 'Compte cree avec succès', 'user' => $user], 201);
     }
 
     public function Se_connecter(Request $request)
@@ -37,7 +37,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where( 'email' , $validatedData['email'] )->first();
+        $user = User::query()->where('email', $validatedData['email'])->first();
 
         // Attempt to authenticate the user
         if (!$user || !Hash::check($validatedData['password'], $user->password)) {
@@ -53,9 +53,11 @@ class AuthController extends Controller
     public function Se_deconnecter(Request $request)
     {
         // Revoke the token that was used to authenticate the current request
-        $request->user()->currentAccessToken()->delete();
+        if ($request->user()) {
+            $request->user()->tokens()->delete();
+        }
 
-        return response()->json(['message' => 'Déconnecté avec succès']);
+        return response()->json(['message' => 'Deconnecte avec succès']);
     }
 
 

@@ -97,7 +97,7 @@ class EmployeeController extends Controller
     {
         $employee->delete();
 
-        return response()->json(['message' => 'Employee supprimé avec succès']);
+        return response()->json(['message' => 'Employee supprime avec succès']);
     }
 
 }

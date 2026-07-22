@@ -13,15 +13,36 @@ return new class extends Migration
     {
         Schema::create('affectations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('voiture_id')->constrained();
-            $table->foreignId('mission_id')->constrained();
-            $table->foreignId('employée_id')->nullable()->constrained();
-            $table->foreignId('cree_par')->constrained('users');
+
+            $table->foreignId('voiture_id')
+                  ->constrained('voitures')
+                  ->cascadeOnDelete();
+
+            $table->foreignId('mission_id')
+                  ->constrained('missions')
+                  ->cascadeOnDelete();
+
+            $table->foreignId('employee_id')
+                  ->nullable()
+                  ->constrained('employees')
+                  ->nullOnDelete();
+
+            $table->foreignId('cree_par')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
+
             $table->date('date_debut');
-            $table->date('date_fin');
+            $table->date('date_fin')->nullable();
+
             $table->integer('kilometrage_debut')->nullable();
             $table->integer('kilometrage_fin')->nullable();
-            $table->enum('statut', ['active', 'terminee' , 'annulee'])->default('active');
+
+            $table->enum('statut', [
+                'active',
+                'terminee',
+                'annulee'
+            ])->default('active');
+
             $table->timestamps();
         });
     }

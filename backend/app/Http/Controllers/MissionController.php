@@ -14,13 +14,13 @@ class MissionController extends Controller
     {
         $query = Mission::query();
 
-        if ($request->has('statut')) {
-            $query->where('statut', $request->query('statut'));
+        if ($request->filled('statut')) {
+            $query->where('statut', '=', $request->query('statut'));
         }
 
-        $missions = $query->get();
+        $missions = $query->get(['*']);
 
-        return  MissionResource::collection($query->get());
+        return MissionResource::collection($missions);
     }
 
     /**
@@ -98,9 +98,9 @@ class MissionController extends Controller
      */
     public function destroy(Mission $mission)
     {
-        $mission->delete();
+        $mission->forceDelete();
 
-        return response()->json(['message' => 'Mission supprimée avec succès']);
+        return response()->json(['message' => 'Mission supprimee avec succès']);
     }
-    
+
 }

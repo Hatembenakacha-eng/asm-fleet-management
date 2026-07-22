@@ -106,8 +106,8 @@ class VoitureController extends Controller
     public function destroy(Voiture $voiture)
     {
 
-        $voiture->delete() ;
+        $voiture->forceDelete();
 
-        return response()->json(['message' => 'Voiture supprimée avec succès']);
+        return response()->json(['message' => 'Voiture supprimee avec succès']);
     }
 }

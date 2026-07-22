@@ -9,7 +9,7 @@ class Affectation extends Model
     protected $fillable = [
         'voiture_id',
         'mission_id',
-        'employée_id',
+        'employee_id',
         'cree_par',
         'date_debut',
         'date_fin',
@@ -20,7 +20,7 @@ class Affectation extends Model
 
     public function voiture()
     {
-        return $this->belongsTo(Voiture::class);
+        return $this->belongsTo(Voiture::class, 'voiture_id', 'id_voiture');
     }
 
     public function mission()
@@ -28,9 +28,9 @@ class Affectation extends Model
         return $this->belongsTo(Mission::class);
     }
 
-    public function employée()
+    public function employee()
     {
-        return $this->belongsTo(Employée::class);
+        return $this->belongsTo(Employee::class);
     }
 
     public function user()

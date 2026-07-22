@@ -7,6 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AffectationResource extends JsonResource
 {
+    public function __construct($resource)
+    {
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -17,7 +22,7 @@ class AffectationResource extends JsonResource
         return [
             'id' => $this->id,
             'voiture' => new VoitureResource($this->whenLoaded('voiture')),
-            'employe' => new employeeResource($this->whenLoaded('employe')),
+            'employe' => new EmployeeResource($this->whenLoaded('employe')),
             'mission' => new MissionResource($this->whenLoaded('mission')),
             'date_debut' => $this->date_debut,
             'date_fin' => $this->date_fin,

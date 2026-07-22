@@ -6,17 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Voiture extends Model
 {
+    protected $primaryKey = 'id_voiture';
+
     protected $fillable = [
         'immatriculation',
         'marque',
         'modele',
-        'killometrage',
-        'status',
-        'capacite'
+        'kilometrage',
+        'statut',
+        'capacite',
+        'categorie'
     ];
 
     public function affectations()
     {
-        return $this->hasMany(Affectation::class);
+        return $this->hasMany(Affectation::class, 'voiture_id', 'id_voiture');
     }
 }

@@ -22,7 +22,7 @@ class RecommandationService
         if ($candidats->isEmpty()) {
             return [
                 'succes' => false,
-                'message' => 'Aucun véhicule disponible ne correspond aux critères de cette mission.',
+                'message' => 'Aucun vehicule disponible ne correspond aux critères de cette mission.',
             ];
         }
 
@@ -51,7 +51,7 @@ class RecommandationService
             );
 
             if (!$response->successful()) {
-                Log::error('Appel IA échoué', ['status' => $response->status()]);
+                Log::error('Appel IA echoue', ['status' => $response->status()]);
                 return null;
             }
 
@@ -59,14 +59,14 @@ class RecommandationService
             $donnees = json_decode($texteBrut, true);
 
             if (!$donnees || !isset($donnees['vehicule_id'])) {
-                Log::error('Réponse IA mal formée', ['reponse' => $texteBrut]);
+                Log::error('Reponse IA mal formee', ['reponse' => $texteBrut]);
                 return null;
             }
 
             $vehiculeValide = $candidats->firstWhere('id', $donnees['vehicule_id']);
 
             if (!$vehiculeValide) {
-                Log::error('IA a recommandé un véhicule hors liste', ['id' => $donnees['vehicule_id']]);
+                Log::error('IA a recommande un vehicule hors liste', ['id' => $donnees['vehicule_id']]);
                 return null;
             }
 
@@ -88,14 +88,14 @@ class RecommandationService
         $vehiculesJson = json_encode($vehicules);
 
         return <<<PROMPT
-Tu choisis le véhicule le plus adapté pour une mission de transport.
+Tu choisis le vehicule le plus adapte pour une mission de transport.
 
-Mission : destination {$mission->destination}, capacité minimale requise {$mission->capacite_minimale}, type requis {$mission->type_vehicule_requis}.
+Mission : destination {$mission->destination}, capacite minimale requise {$mission->capacite_minimale}, type requis {$mission->type_vehicule_requis}.
 
-Véhicules disponibles (choisis UNIQUEMENT parmi ceux-ci) :
+Vehicules disponibles (choisis UNIQUEMENT parmi ceux-ci) :
 {$vehiculesJson}
 
-Réponds UNIQUEMENT avec ce JSON, sans aucun texte autour :
+Reponds UNIQUEMENT avec ce JSON, sans aucun texte autour :
 {"vehicule_id": <id>, "justification": "<une phrase>", "alternatives": [<autres id>]}
 PROMPT;
     }
@@ -108,7 +108,7 @@ PROMPT;
             'succes' => true,
             'source' => 'secours',
             'vehicule_recommande' => $premier,
-            'justification' => 'Service IA indisponible — premier véhicule disponible correspondant aux critères proposé automatiquement.',
+            'justification' => 'Service IA indisponible — premier vehicule disponible correspondant aux critères propose automatiquement.',
             'alternatives' => $candidats->slice(1, 2)->values(),
         ];
     }
