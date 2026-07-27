@@ -26,7 +26,6 @@
 
   <div class="stat-grid">
     <div class="card stat-card a"><div class="stat-label">Véhicules disponibles</div><div class="stat-value">{{ dispo }} <small>/ {{ voitures.length }}</small></div></div>
-    <div class="card stat-card c"><div class="stat-label">Affectations actives</div><div class="stat-value">{{ actives }}</div></div>
     <div class="card stat-card d"><div class="stat-label">Taux de disponibilité</div><div class="stat-value">{{ tauxDispo }}<small>%</small></div></div>
   </div>
 
@@ -57,11 +56,7 @@
       <div class="card-body table-wrap">
         <table>
           <thead><tr><th>Véhicule</th><th>Statut</th></tr></thead>
-          <tbody>
-            @for (a of affectations.slice(0, 4); track a.id) {
-              <tr><td class="mono">{{ a.voiture?.immatriculation || '—' }}</td><td><span class="badge" [class.badge-mission]="a.statut === 'active'" [class.badge-dispo]="a.statut === 'terminee'" [class.badge-maint]="a.statut === 'annulee'">{{ a.statut }}</span></td></tr>
-            }
-          </tbody>
+
         </table>
       </div>
     </div>

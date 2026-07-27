@@ -12,15 +12,12 @@ class Affectation extends Model
         'employee_id',
         'cree_par',
         'date_debut',
-        'date_fin',
-        'kilometrage_debut',
-        'kilometrage_fin',
-        'statut'
+        'date_fin'
     ];
 
     public function voiture()
     {
-        return $this->belongsTo(Voiture::class, 'voiture_id', 'id_voiture');
+        return $this->belongsTo(Voiture::class, 'voiture_id', 'id');
     }
 
     public function mission()

@@ -39,8 +39,26 @@ export const routes: Routes = [
       { path: 'missions/nouveau', component: MissionForm, canActivate: [adminGuard] },
       { path: 'missions/:id/modifier', component: MissionForm, canActivate: [adminGuard] },
       { path: 'missions/:id/recommandation', component: Recommandation, canActivate: [adminGuard] },
-      { path: 'affectations', component: AffectationListe, canActivate: [adminGuard] },
-      { path: 'affectations/nouveau', component: AffectationForm, canActivate: [adminGuard] },
+     
+      // ================= AFFECTATIONS =================
+
+{
+  path: 'affectations',
+  component: AffectationListe,
+  canActivate: [adminGuard]
+},
+
+{
+  path: 'affectations/nouveau',
+  component: AffectationForm,
+  canActivate: [adminGuard]
+},
+
+{
+  path: 'affectations/:id/modifier',
+  component: AffectationForm,
+  canActivate: [adminGuard]
+},
     ]
   },
   { path: '**', redirectTo: 'login' }

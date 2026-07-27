@@ -24,8 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('missions', MissionController::class);
     Route::apiResource('employees', EmployeeController::class);
 
-    Route::apiResource('affectations', AffectationController::class)->only(['index', 'show', 'store']);
-    Route::patch('/affectations/{affectation}/liberer', [AffectationController::class, 'liberer']);
+    Route::apiResource('affectations', AffectationController::class);
 });
 
 Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {

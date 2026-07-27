@@ -22,7 +22,7 @@ export class Dashboard implements OnInit {
   }
 
   get dispo() { return this.voitures.filter(v => v.statut === 'disponible').length; }
-  get actives() { return this.affectations.filter(a => a.statut === 'active').length; }
+  //get actives() { return this.affectations.filter(a => a.statut === 'active').length; }
   get tauxDispo() { return this.voitures.length ? Math.round((this.dispo / this.voitures.length) * 100) : 0; }
 
   dotClasse(statut: string): string {

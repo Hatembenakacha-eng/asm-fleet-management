@@ -14,7 +14,7 @@ export class Accueil implements OnInit {
   ngOnInit() {
     if (this.user?.role !== 'admin') {
       this.affectationService.getAll().subscribe(res => {
-        this.missionEnCours = res.data.find(a => a.statut === 'active') || null;
+        //this.missionEnCours = res.data.find(a => a.statut === 'active') || null;
       });
     }
   }

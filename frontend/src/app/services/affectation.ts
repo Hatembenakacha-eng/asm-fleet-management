@@ -4,32 +4,32 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Affectation } from '../models/affectation';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AffectationService {
+
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/affectations`;
 
-  getAll(): Observable<{ data: Affectation[] }> {
-    return this.http.get<{ data: Affectation[] }>(this.apiUrl);
+  getAll(): Observable<{data:Affectation[]}>{
+    return this.http.get<{data:Affectation[]}>(this.apiUrl);
   }
 
-  getOne(id: number): Observable<{ data: Affectation }> {
-    return this.http.get<{ data: Affectation }>(`${this.apiUrl}/${id}`);
+  getOne(id:number):Observable<{data:Affectation}>{
+    return this.http.get<{data:Affectation}>(`${this.apiUrl}/${id}`);
   }
 
-  create(affectation: {
-    voiture_id: number;
-    mission_id: number;
-    technicien_id?: number;
-    date_debut: string;
-    date_fin: string;
-  }): Observable<Affectation> {
-    return this.http.post<Affectation>(this.apiUrl, affectation);
+  create(data:any):Observable<{data:Affectation}>{
+    return this.http.post<{data:Affectation}>(this.apiUrl,data);
   }
 
-  liberer(id: number, kilometrageRetour?: number): Observable<{ message: string }> {
-    return this.http.patch<{ message: string }>(`${this.apiUrl}/${id}/liberer`, {
-      kilometrage_retour: kilometrageRetour
-    });
+  update(id:number,data:any):Observable<{data:Affectation}>{
+    return this.http.put<{data:Affectation}>(`${this.apiUrl}/${id}`,data);
   }
+
+  delete(id:number){
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
 }
