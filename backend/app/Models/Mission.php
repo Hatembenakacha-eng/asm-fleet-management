@@ -14,8 +14,7 @@ class Mission extends Model
         'date_fin',
         'capacite_minimale',
         'type_vehicule',
-        'destination',
-        'statut'
+        'destination'
     ];
 
     public function affectations()

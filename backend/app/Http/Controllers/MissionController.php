@@ -11,17 +11,11 @@ class MissionController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $query = Mission::query();
+{
+    $missions = Mission::all();
 
-        if ($request->filled('statut')) {
-            $query->where('statut', '=', $request->query('statut'));
-        }
-
-        $missions = $query->get(['*']);
-
-        return MissionResource::collection($missions);
-    }
+    return MissionResource::collection($missions);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -86,7 +80,6 @@ class MissionController extends Controller
             'capacite_minimale' => 'sometimes|required|integer',
             'type_vehicule' => 'sometimes|required|string',
             'destination' => 'sometimes|required|string',
-            'statut' => 'sometimes|required|in:en_attente,en_cours,terminee,annulee',
         ]);
 
         $validatedData = $this->normalizeValidated($validatedData, ['description', 'type_vehicule', 'destination']);

@@ -1,20 +1,163 @@
 <div class="page">
-  <div class="page-head"><div><h1>{{ id ? 'Modifier' : 'Ajouter' }} une mission</h1></div></div>
-  <div class="card form-page" style="padding:22px;">
-    <form (ngSubmit)="onSubmit()">
-      <label>Destination</label><input [(ngModel)]="destination" name="destination" required>
-      <label>Description</label><input [(ngModel)]="description" name="description">
-      <label>Date début</label><input type="date" [(ngModel)]="date_debut" name="date_debut" required>
-      <label>Date fin</label><input type="date" [(ngModel)]="date_fin" name="date_fin" required>
-      <label>Type de véhicule requis</label><input [(ngModel)]="type_vehicule" name="type_vehicule">
-      <label>Capacité minimale</label><input type="number" [(ngModel)]="capacite_minimale" name="capacite_minimale">
-      <div style="display:flex; gap:10px; margin-top:20px;">
-        <div *ngIf="erreurs.length > 0" class="erreurs">
-          <p *ngFor="let e of erreurs">{{ e }}</p>
-        </div>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a routerLink="/missions" class="btn btn-outline">Annuler</a>
-      </div>
-    </form>
+
+  <div class="page-head">
+    <div>
+      <h1>
+        @if (id) {
+          Modifier une mission
+        } @else {
+          Ajouter une mission
+        }
+      </h1>
+    </div>
   </div>
+
+  <div class="card form-page" style="padding:22px;">
+ 
+    @if (!id) {
+
+      <!-- ================= AJOUT ================= -->
+
+      <form (ngSubmit)="onSubmit()">
+
+        <label for="destination">Destination</label>
+        <input
+          id="destination"
+          type="text"
+          [(ngModel)]="destination"
+          name="destination"
+          required>
+
+        <label for="description">Description</label>
+        <input
+          id="description"
+          type="text"
+          [(ngModel)]="description"
+          name="description">
+
+        <label for="date_debut">Date début</label>
+        <input
+          id="date_debut"
+          type="date"
+          [(ngModel)]="date_debut"
+          name="date_debut"
+          required>
+
+        <label for="date_fin">Date fin</label>
+        <input
+          id="date_fin"
+          type="date"
+          [(ngModel)]="date_fin"
+          name="date_fin"
+          required>
+
+        <label for="type_vehicule">Type de véhicule</label>
+        <input
+          id="type_vehicule"
+          type="text"
+          [(ngModel)]="type_vehicule"
+          name="type_vehicule">
+
+        <label for="capacite_minimale">Capacité minimale</label>
+        <input
+          id="capacite_minimale"
+          type="number"
+          [(ngModel)]="capacite_minimale"
+          name="capacite_minimale">
+
+        @if (erreurs.length > 0) {
+          <div class="erreurs">
+            @for (e of erreurs; track e) {
+              <p>{{ e }}</p>
+            }
+          </div>
+        }
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">
+            Ajouter
+          </button>
+
+          <button type="button" class="btn btn-outline" (click)="annuler()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+
+    } @else {
+
+      <!-- ================= MODIFICATION ================= -->
+
+      <form (ngSubmit)="onSubmit()">
+
+        <label for="destination">Destination</label>
+        <input
+          id="destination"
+          type="text"
+          [(ngModel)]="destination"
+          name="destination"
+          required>
+
+        <label for="description">Description</label>
+        <input
+          id="description"
+          type="text"
+          [(ngModel)]="description"
+          name="description">
+
+        <label for="date_debut">Date début</label>
+        <input
+          id="date_debut"
+          type="date"
+          [(ngModel)]="date_debut"
+          name="date_debut"
+          required>
+
+        <label for="date_fin">Date fin</label>
+        <input
+          id="date_fin"
+          type="date"
+          [(ngModel)]="date_fin"
+          name="date_fin"
+          required>
+
+        <label for="type_vehicule">Type de véhicule</label>
+        <input
+          id="type_vehicule"
+          type="text"
+          [(ngModel)]="type_vehicule"
+          name="type_vehicule">
+
+        <label for="capacite_minimale">Capacité minimale</label>
+        <input
+          id="capacite_minimale"
+          type="number"
+          [(ngModel)]="capacite_minimale"
+          name="capacite_minimale">
+
+        @if (erreurs.length > 0) {
+          <div class="erreurs">
+            @for (e of erreurs; track e) {
+              <p>{{ e }}</p>
+            }
+          </div>
+        }
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">
+            Modifier
+          </button>
+
+          <button type="button" class="btn btn-outline" (click)="annuler()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+
+    }
+
+  </div>
+
 </div>

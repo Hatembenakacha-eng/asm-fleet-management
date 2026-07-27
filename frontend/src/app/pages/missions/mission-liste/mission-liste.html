@@ -17,10 +17,10 @@
           <div class="body">
             <div><div class="dest">{{ m.destination }}</div><div class="veh">{{ m.type_vehicule || 'Tout type' }} — min. {{ m.capacite_minimale || 0 }}</div></div>
             <div style="display:flex; align-items:center; gap:14px;">
-              <span class="badge" [class.badge-mission]="m.statut === 'en_cours'" [class.badge-dispo]="m.statut === 'terminee'" [class.badge-attente]="m.statut === 'planifiee'">{{ m.statut }}</span>
               <a [routerLink]="['/missions', m.id, 'modifier']" class="link">Modifier</a>
               <button class="btn-danger-txt" (click)="supprimer(m.id)">Supprimer</button>
             </div>
+                
           </div>
         </div>
       }

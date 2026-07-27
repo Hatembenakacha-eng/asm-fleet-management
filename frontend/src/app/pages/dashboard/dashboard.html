@@ -26,23 +26,32 @@
 
   <div class="stat-grid">
     <div class="card stat-card a"><div class="stat-label">Véhicules disponibles</div><div class="stat-value">{{ dispo }} <small>/ {{ voitures.length }}</small></div></div>
-    <div class="card stat-card b"><div class="stat-label">Missions en cours</div><div class="stat-value">{{ enCours }}</div></div>
     <div class="card stat-card c"><div class="stat-label">Affectations actives</div><div class="stat-value">{{ actives }}</div></div>
     <div class="card stat-card d"><div class="stat-label">Taux de disponibilité</div><div class="stat-value">{{ tauxDispo }}<small>%</small></div></div>
   </div>
 
   <div class="grid-2">
-    <div class="card">
-      <div class="card-head"><h3>Missions</h3><a routerLink="/missions" class="link">Voir tout</a></div>
-      <div class="card-body">
-        @for (m of missions.slice(0, 4); track m.id) {
-          <div class="ticket">
-            <div class="stub"><span class="ref mono">M-{{ m.id }}</span><span class="date mono">{{ m.date_debut }}</span></div>
-            <div class="body"><div class="dest">{{ m.destination }}</div><span class="badge" [class.badge-mission]="m.statut === 'en_cours'" [class.badge-dispo]="m.statut === 'terminee'" [class.badge-attente]="m.statut === 'planifiee'">{{ m.statut }}</span></div>
-          </div>
-        }
+<div class="card">
+  <div class="card-head">
+    <h3>Missions</h3>
+    <a routerLink="/missions" class="link">Voir tout</a>
+  </div>
+
+  <div class="card-body">
+    @for (m of missions.slice(0, 4); track m.id) {
+      <div class="ticket">
+        <div class="stub">
+          <span class="ref mono">M-{{ m.id }}</span>
+          <span class="date mono">{{ m.date_debut }}</span>
+        </div>
+
+        <div class="body">
+          <div class="dest">{{ m.destination }}</div>
+        </div>
       </div>
-    </div>
+    }
+  </div>
+</div>
     <div class="card">
       <div class="card-head"><h3>Dernières affectations</h3><a routerLink="/affectations" class="link">Voir tout</a></div>
       <div class="card-body table-wrap">

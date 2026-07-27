@@ -27,7 +27,6 @@ class MissionResource extends JsonResource
             'capacite_minimale' => $this->capacite_minimale,
             'type_vehicule' => $this->type_vehicule,
             'destination' => $this->destination,
-            'statut' => $this->statut,
         ];
     }
 }
