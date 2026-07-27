@@ -1,0 +1,39 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Bonjour, {{ user?.name }}</h1>
+      <p class="sub">{{ user?.role === 'admin' ? "Vue d'ensemble de votre compte administrateur." : "Voici ta situation actuelle." }}</p>
+    </div>
+  </div>
+
+  @if (user?.role === 'admin') {
+    <div class="card accueil-summary">
+      <div>
+        <h3 class="summary-title">Tableau de bord complet</h3>
+        <p class="sub">État de la flotte, missions en cours et dernières affectations, en direct.</p>
+      </div>
+      <a routerLink="/dashboard" class="btn btn-primary">Ouvrir le tableau de bord</a>
+    </div>
+  } @else {
+    @if (missionEnCours) {
+      <div class="card mission-summary">
+        <span class="badge badge-dispo mission-badge">Mission en cours</span>
+        <h3 class="mission-title">{{ missionEnCours.mission?.destination }}</h3>
+        <p class="sub">Véhicule : <span class="mono">{{ missionEnCours.voiture?.immatriculation }} — {{ missionEnCours.voiture?.marque }}</span></p>
+        <p class="sub">Depuis le <span class="mono">{{ missionEnCours.date_debut }}</span></p>
+      </div>
+    } @else {
+      <div class="card mission-empty"><p class="sub">Aucune mission en cours actuellement.</p></div>
+    }
+  }
+
+  <h2 class="actions-title">Actions rapides</h2>
+  <div class="quick-actions">
+    <a routerLink="/assistant-ia" class="card" style="padding:16px;">🤖<br><strong style="font-size:13.5px;">Demander une recommandation IA</strong></a>
+    @if (user?.role === 'admin') {
+      <a routerLink="/affectations/nouveau" class="card" style="padding:16px;">🚗<br><strong style="font-size:13.5px;">Créer une affectation</strong></a>
+      <a routerLink="/missions/nouveau" class="card" style="padding:16px;">📋<br><strong style="font-size:13.5px;">Ajouter une mission</strong></a>
+    }
+    <a routerLink="/profil" class="card" style="padding:16px;">👤<br><strong style="font-size:13.5px;">Mon profil</strong></a>
+  </div>
+</div>

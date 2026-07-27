@@ -9,23 +9,17 @@ use App\Http\Controllers\AffectationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RecommandationController;
 
+use App\Http\Controllers\ChatController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('/Creer_un_compte', [AuthController::class, 'Creer_un_compte']);
-Route::post('/Se_connecter', [AuthController::class, 'Se_connecter']);
-Route::post('/Se_deconnecter', [AuthController::class, 'Se_deconnecter'])->middleware('auth:sanctum');
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('voitures', VoitureController::class);
+Route::post('/register', [AuthController::class, 'Creer_un_compte']);
+Route::post('/login', [AuthController::class, 'Se_connecter']);
+Route::post('/logout', [AuthController::class, 'Se_deconnecter'])->middleware('auth:sanctum');
 
-});
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('voitures', VoitureController::class);
-    Route::apiResource('employees', employeeController::class);
-});
-
-route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('voitures', VoitureController::class);
     Route::apiResource('missions', MissionController::class);
     Route::apiResource('employees', EmployeeController::class);
@@ -43,4 +37,7 @@ Route::get('/ping', function () {
     return response()->json(['message' => 'pong', 'heure' => now()]);
 });
 
+Route::middleware(['auth:sanctum', 'throttle:15,1'])->group(function () {
+    Route::post('/chat', [ChatController::class, 'repondre']);
+});
 

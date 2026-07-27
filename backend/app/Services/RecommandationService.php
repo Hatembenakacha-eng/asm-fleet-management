@@ -90,7 +90,7 @@ class RecommandationService
         return <<<PROMPT
 Tu choisis le vehicule le plus adapte pour une mission de transport.
 
-Mission : destination {$mission->destination}, capacite minimale requise {$mission->capacite_minimale}, type requis {$mission->type_vehicule_requis}.
+Mission : destination {$mission->destination}, capacite minimale requise {$mission->capacite_minimale}, type requis {$mission->type_vehicule}.
 
 Vehicules disponibles (choisis UNIQUEMENT parmi ceux-ci) :
 {$vehiculesJson}

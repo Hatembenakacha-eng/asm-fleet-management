@@ -50,6 +50,8 @@ class EmployeeController extends Controller
             'disponible' => 'required|boolean',
         ]);
 
+        $validatedData = $this->normalizeValidated($validatedData, ['nom', 'specialite', 'contact']);
+
         $employee = Employee::create($validatedData);
 
         return (new EmployeeResource($employee))->response()->setStatusCode(201);
@@ -85,6 +87,8 @@ class EmployeeController extends Controller
             'disponible' => 'sometimes|required|boolean',
         ]);
 
+        $validatedData = $this->normalizeValidated($validatedData, ['nom', 'specialite', 'contact']);
+
         $employee->update($validatedData);
 
         return (new EmployeeResource($employee));
@@ -95,7 +99,7 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        $employee->delete();
+        $employee->forceDelete();
 
         return response()->json(['message' => 'Employee supprime avec succès']);
     }

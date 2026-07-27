@@ -1,0 +1,108 @@
+<div class="page">
+
+  <div class="page-head">
+    <div>
+      <h1>
+        @if (id) {
+          Modifier un véhicule
+        } @else {
+          Ajouter un véhicule
+        }
+      </h1>
+    </div>
+  </div>
+
+  <div class="card form-page" style="padding:22px;">
+
+    @if (!id) {
+
+      <!-- ================= AJOUT ================= -->
+
+      <form (ngSubmit)="onSubmit()">
+
+        <label>Immatriculation</label>
+        <input [(ngModel)]="immatriculation" name="immatriculation" required>
+        <label>Marque</label>
+        <input [(ngModel)]="marque" name="marque" required>
+
+        <label>Modèle</label>
+        <input [(ngModel)]="modele" name="modele" required>
+
+        <label>Kilométrage</label>
+        <input type="number" [(ngModel)]="kilometrage" name="kilometrage">
+
+        <label>Statut</label>
+        <select [(ngModel)]="statut" name="statut">
+          <option value="disponible">Disponible</option>
+          <option value="en_mission">En mission</option>
+          <option value="en_maintenance">En maintenance</option>
+          <option value="hors_service">Hors service</option>
+        </select>
+
+        <label>Capacité</label>
+        <input type="number" [(ngModel)]="capacite" name="capacite">
+
+        <label>Catégorie</label>
+        <input [(ngModel)]="categorie" name="categorie">
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">
+            Ajouter
+          </button>
+
+          <button type="button" class="btn btn-outline" (click)="annuler()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+
+    } @else {
+
+      <!-- ================= MODIFICATION ================= -->
+
+      <form (ngSubmit)="onSubmit()">
+
+        <label>Immatriculation</label>
+        <input [(ngModel)]="immatriculation" name="immatriculation" required>
+
+        <label>Marque</label>
+        <input [(ngModel)]="marque" name="marque" required>
+
+        <label>Modèle</label>
+        <input [(ngModel)]="modele" name="modele" required>
+
+        <label>Kilométrage</label>
+        <input type="number" [(ngModel)]="kilometrage" name="kilometrage">
+
+        <label>Statut</label>
+        <select [(ngModel)]="statut" name="statut">
+          <option value="disponible">Disponible</option>
+          <option value="en_mission">En mission</option>
+          <option value="en_maintenance">En maintenance</option>
+          <option value="hors_service">Hors service</option>
+        </select>
+
+        <label>Capacité</label>
+        <input type="number" [(ngModel)]="capacite" name="capacite">
+
+        <label>Catégorie</label>
+        <input [(ngModel)]="categorie" name="categorie">
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">
+            Modifier
+          </button>
+
+          <button type="button" class="btn btn-outline" (click)="annuler()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+
+    }
+
+  </div>
+
+</div>

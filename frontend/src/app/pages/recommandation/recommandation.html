@@ -1,0 +1,14 @@
+<div class="page">
+  <h1>Recommandation IA</h1>
+  @if (loading) { <p>Analyse en cours...</p> }
+  @if (erreur) { <p style="color:#e53935">{{ erreur }}</p> }
+  @if (resultat) {
+    <div class="form-page">
+      <span class="badge" [class.badge-dispo]="resultat.source === 'ia'" [class.badge-mission]="resultat.source === 'secours'">
+        {{ resultat.source === 'ia' ? 'Recommandé par l\'IA' : 'Recommandation de secours' }}
+      </span>
+      <h2 style="margin-top:16px">{{ resultat.vehicule_recommande?.marque }} {{ resultat.vehicule_recommande?.modele }}</h2>
+      <p>{{ resultat.justification }}</p>
+    </div>
+  }
+</div>

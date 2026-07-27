@@ -1,0 +1,24 @@
+<div class="page">
+  <div class="page-head"><div><h1>Assistant IA</h1><p class="sub">Pose une question, ou demande une recommandation précise pour une mission.</p></div></div>
+  <div class="chat-shell">
+    <div class="card chat-side">
+      <h3>Recommandation rapide</h3>
+      @if (erreurChargement) { <p style="color:var(--red); font-size:12.5px;">{{ erreurChargement }}</p> }
+      <select [(ngModel)]="missionChoisie">
+        <option [ngValue]="null">Choisir une mission...</option>
+        @for (m of missions; track m.id) { <option [ngValue]="m.id">{{ m.destination }}</option> }
+      </select>
+      <button class="btn btn-primary" style="width:100%; justify-content:center;" (click)="demanderRecommandation()" [disabled]="!missionChoisie || loading">Recommander un véhicule</button>
+    </div>
+    <div class="card chat-main">
+      <div class="chat-log">
+        @for (m of messages; track $index) { <div class="bulle" [class.moi]="m.auteur === 'moi'">{{ m.texte }}</div> }
+        @if (loading) { <div class="bulle typing"><span></span><span></span><span></span></div> }
+      </div>
+      <div class="chat-input-row">
+        <input type="text" [(ngModel)]="messageLibre" (keyup.enter)="envoyerLibre()" placeholder="Pose une question libre..." [disabled]="loading">
+        <button class="btn btn-primary" (click)="envoyerLibre()" [disabled]="loading">Envoyer</button>
+      </div>
+    </div>
+  </div>
+</div>

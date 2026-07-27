@@ -9,11 +9,12 @@ class Mission extends Model
 {
     protected $fillable = [
         'id',
-        'destination',
-        'date_depart',
-        'date_retour',
-        'type_vihicule',
+        'description',
+        'date_debut',
+        'date_fin',
         'capacite_minimale',
+        'type_vehicule',
+        'destination',
         'statut'
     ];
 

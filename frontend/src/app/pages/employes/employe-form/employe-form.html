@@ -1,0 +1,15 @@
+<div class="page">
+  <div class="page-head"><div><h1>{{ id ? 'Modifier' : 'Ajouter' }} un employé</h1></div></div>
+  <div class="card form-page" style="padding:22px;">
+    <form (ngSubmit)="onSubmit()">
+      <label>Nom</label><input [(ngModel)]="nom" name="nom" required>
+      <label>Spécialité</label><input [(ngModel)]="specialite" name="specialite" required>
+      <label>Contact</label><input [(ngModel)]="contact" name="contact" required>
+      <label><input type="checkbox" [(ngModel)]="disponible" name="disponible" style="width:auto;"> Disponible</label>
+      <div style="display:flex; gap:10px; margin-top:20px;">
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <a routerLink="/employes" class="btn btn-outline">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>

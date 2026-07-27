@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Voiture extends Model
 {
-    protected $primaryKey = 'id_voiture';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'immatriculation',
@@ -20,6 +20,6 @@ class Voiture extends Model
 
     public function affectations()
     {
-        return $this->hasMany(Affectation::class, 'voiture_id', 'id_voiture');
+        return $this->hasMany(Affectation::class, 'voiture_id', 'id');
     }
 }

@@ -1,0 +1,31 @@
+<div class="page">
+  <div class="page-head">
+    <div><h1>Affectations</h1><p class="sub">Historique des véhicules assignés.</p></div>
+    <a routerLink="/affectations/nouveau" class="btn btn-primary">+ Nouvelle affectation</a>
+  </div>
+  <div class="card table-wrap">
+    @if (chargement) {
+      <p style="padding:20px;">Chargement...</p>
+    } @else if (erreur) {
+      <p style="padding:20px; color:var(--red);">{{ erreur }}</p>
+    } @else if (affectations.length === 0) {
+      <p style="padding:20px;">Aucune affectation enregistrée.</p>
+    } @else {
+      <table>
+        <thead><tr><th>Véhicule</th><th>Mission</th><th>Technicien</th><th>Début</th><th>Statut</th><th></th></tr></thead>
+        <tbody>
+          @for (a of affectations; track a.id) {
+            <tr>
+              <td class="mono">{{ a.voiture?.immatriculation || '—' }}</td>
+              <td>{{ a.mission?.destination || '—' }}</td>
+              <td>{{ a.employee?.nom || '—' }}</td>
+              <td class="mono">{{ a.date_debut }}</td>
+              <td><span class="badge" [class.badge-mission]="a.statut === 'active'" [class.badge-dispo]="a.statut === 'terminee'" [class.badge-maint]="a.statut === 'annulee'">{{ a.statut }}</span></td>
+              <td>@if (a.statut === 'active') { <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" (click)="liberer(a.id)">Libérer</button> }</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

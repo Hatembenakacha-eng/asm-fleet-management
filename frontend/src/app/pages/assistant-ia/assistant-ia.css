@@ -1,0 +1,7 @@
+.chat-box { max-width: 650px; display: flex; flex-direction: column; height: 520px; }
+.chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.bulle { background: #f0f0f0; padding: 10px 14px; border-radius: 12px; max-width: 80%; align-self: flex-start; }
+.bulle.moi { background: var(--asm-orange); color: #fff; align-self: flex-end; }
+.chat-input { display: flex; gap: 10px; margin-top: 14px; }
+.chat-input select { flex: 1; padding: 9px; border-radius: 8px; border: 1px solid #ddd; }
+.full-width-btn { width: 100%; justify-content: center; }

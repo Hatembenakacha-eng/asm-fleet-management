@@ -1,0 +1,19 @@
+<div class="page form-page">
+  <h1>Nouvelle affectation</h1>
+  <form (ngSubmit)="onSubmit()">
+    <label for="voiture_id">Véhicule</label>
+    <select id="voiture_id" [(ngModel)]="voiture_id" name="voiture_id" required title="Véhicule">
+      @for (v of voitures; track v.id) { <option [value]="v.id">{{ v.immatriculation }} — {{ v.marque }}</option> }
+    </select>
+    <label for="mission_id">Mission</label>
+    <select id="mission_id" [(ngModel)]="mission_id" name="mission_id" required title="Mission">
+      @for (m of missions; track m.id) { <option [value]="m.id">{{ m.destination }}</option> }
+    </select>
+    <label for="date_debut">Date début</label>
+    <input id="date_debut" type="date" [(ngModel)]="date_debut" name="date_debut" required placeholder="Date début">
+    <label for="date_fin">Date fin</label>
+    <input id="date_fin" type="date" [(ngModel)]="date_fin" name="date_fin" required placeholder="Date fin">
+    @if (erreur) { <p class="error-message">{{ erreur }}</p> }
+    <button type="submit" class="btn btn-primary">Créer</button>
+  </form>
+</div>

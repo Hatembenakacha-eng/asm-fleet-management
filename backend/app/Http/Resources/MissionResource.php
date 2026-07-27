@@ -24,7 +24,7 @@ class MissionResource extends JsonResource
             'description' => $this->description,
             'date_debut' => $this->date_debut,
             'date_fin' => $this->date_fin,
-            'capacite_minimale' => $this->capacite,
+            'capacite_minimale' => $this->capacite_minimale,
             'type_vehicule' => $this->type_vehicule,
             'destination' => $this->destination,
             'statut' => $this->statut,

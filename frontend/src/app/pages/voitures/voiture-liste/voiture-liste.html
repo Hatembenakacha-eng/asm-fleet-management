@@ -1,0 +1,87 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Véhicules</h1>
+      <p class="sub">{{ voitures.length }} véhicules enregistrés.</p>
+    </div>
+
+    <a routerLink="/voitures/nouveau" class="btn btn-primary">
+      + Ajouter un véhicule
+    </a>
+  </div>
+
+  <div class="card table-wrap">
+
+    @if (chargement) {
+
+      <p style="padding:20px;">Chargement...</p>
+
+    } @else if (erreur !== '') {
+
+      <p style="padding:20px; color:var(--red);">
+        {{ erreur }}
+      </p>
+
+    } @else {
+
+      @if (voitures.length > 0) {
+
+        <table>
+          <thead>
+            <tr>
+              <th>Plaque</th>
+              <th>Marque / Modèle</th>
+              <th>Catégorie</th>
+              <th>Capacité</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (v of voitures; track v.id) {
+
+              <tr>
+                <td class="mono">{{ v.immatriculation }}</td>
+                <td>{{ v.marque }} {{ v.modele }}</td>
+                <td>{{ v.categorie || '—' }}</td>
+                <td>{{ v.capacite || '—' }}</td>
+
+                <td>
+                  <span
+                    class="badge"
+                    [class.badge-dispo]="v.statut === 'disponible'"
+                    [class.badge-mission]="v.statut === 'en_mission'"
+                    [class.badge-maint]="v.statut === 'en_maintenance' || v.statut === 'hors_service'">
+                    {{ v.statut }}
+                  </span>
+                </td>
+
+                <td style="display:flex; gap:12px;">
+                  <a
+                    [routerLink]="['/voitures', v.id, 'modifier']"
+                    class="link">
+                    Détails
+                  </a>
+
+                  <button
+                    type="button"
+                    class="btn-danger-txt"
+                    (click)="supprimer(v.id)">
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p style="padding:20px;">
+          Aucun véhicule enregistré.
+        </p>
+      }
+      
+    }
+  </div>
+</div>

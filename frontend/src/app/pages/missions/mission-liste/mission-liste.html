@@ -1,0 +1,29 @@
+<div class="page">
+  <div class="page-head">
+    <div><h1>Missions</h1><p class="sub">Suivi des ordres de mission.</p></div>
+    <a routerLink="/missions/nouveau" class="btn btn-primary">+ Nouvelle mission</a>
+  </div>
+  <div class="card" style="padding:18px;">
+    @if (chargement) {
+      <p>Chargement...</p>
+    } @else if (erreur) {
+      <p style="color:var(--red);">{{ erreur }}</p>
+    } @else if (missions.length === 0) {
+      <p>Aucune mission enregistrée.</p>
+    } @else {
+      @for (m of missions; track m.id) {
+        <div class="ticket">
+          <div class="stub"><span class="ref mono">M-{{ m.id }}</span><span class="date mono">{{ m.date_debut }}</span></div>
+          <div class="body">
+            <div><div class="dest">{{ m.destination }}</div><div class="veh">{{ m.type_vehicule || 'Tout type' }} — min. {{ m.capacite_minimale || 0 }}</div></div>
+            <div style="display:flex; align-items:center; gap:14px;">
+              <span class="badge" [class.badge-mission]="m.statut === 'en_cours'" [class.badge-dispo]="m.statut === 'terminee'" [class.badge-attente]="m.statut === 'planifiee'">{{ m.statut }}</span>
+              <a [routerLink]="['/missions', m.id, 'modifier']" class="link">Modifier</a>
+              <button class="btn-danger-txt" (click)="supprimer(m.id)">Supprimer</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

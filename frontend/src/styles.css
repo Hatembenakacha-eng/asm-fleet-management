@@ -1,1 +1,116 @@
-/* You can add global styles to this file, and also import other style files */
+:root{
+  --ink:#ffffff; --ink-soft:#f4f5f8; --ink-line:#e9ebf0; --ink-text:#4b505c; --ink-text-dim:#98a0ad;
+  --orange:#f5821f; --orange-deep:#d66c0f; --orange-bg:#fff2e2;
+  --canvas:#f1f2f6; --surface:#ffffff; --border:#e7e9ee;
+  --text:#181a1f; --text-mute:#767b87;
+  --green:#1a9c53; --green-bg:#e6f7ed;
+  --red:#dc3545; --red-bg:#fdecee;
+  --blue:#2f6fed; --blue-bg:#eaf1ff;
+  --radius:14px; --shadow:0 1px 2px rgba(20,22,28,.04), 0 10px 28px -14px rgba(20,22,28,.14);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;}
+body{background:var(--canvas); color:var(--text); font-family:'IBM Plex Sans',sans-serif; -webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:'Chakra Petch',sans-serif; letter-spacing:.2px; margin:0;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+button{font-family:inherit;}
+a{color:inherit;}
+
+.btn{padding:9px 16px; border-radius:9px; border:none; font-size:13.5px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; text-decoration:none;}
+.btn-primary{background:var(--orange); color:#1a1200;}
+.btn-primary:hover{background:var(--orange-deep); color:#fff;}
+.btn-outline{background:#fff; border:1px solid var(--border); color:var(--text);}
+.btn-outline:hover{border-color:var(--orange); color:var(--orange-deep);}
+.btn-danger-txt{background:none; border:none; color:var(--red); font-weight:600; cursor:pointer; font-size:13px; padding:0;}
+
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);}
+.page{padding:26px 32px 60px;}
+.page-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:10px;}
+.page-head h1{font-size:22px; margin:0 0 4px;}
+.page-head .sub{color:var(--text-mute); font-size:13.5px; margin:0;}
+
+.badge{font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; white-space:nowrap;}
+.badge-dispo{background:var(--green-bg); color:var(--green);}
+.badge-mission{background:var(--orange-bg); color:var(--orange-deep);}
+.badge-maint{background:var(--red-bg); color:var(--red);}
+.badge-attente{background:var(--blue-bg); color:var(--blue);}
+
+.table-wrap{overflow-x:auto;}
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap;}
+th{font-size:11px; text-transform:uppercase; letter-spacing:.4px; color:var(--text-mute); background:#fafbfc; font-weight:600;}
+tr:last-child td{border-bottom:none;}
+.avatar{width:32px; height:32px; border-radius:50%; background:var(--ink-soft); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600; flex-shrink:0;}
+
+.fleet-strip-wrap{margin-bottom:22px;}
+.fleet-strip-label{font-size:11.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--text-mute); margin:0 0 10px 2px;}
+.fleet-strip{display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;}
+.plate-chip{flex-shrink:0; background:var(--surface); border:1px solid var(--border); border-radius:11px; padding:10px 14px; min-width:168px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:6px;}
+.plate-chip .top{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.plate-chip .plate{font-size:13px; font-weight:500; background:var(--canvas); padding:2px 8px; border-radius:5px;}
+.dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+.dot.dispo{background:var(--green);} .dot.mission{background:var(--orange);} .dot.maint{background:var(--red);}
+.dot-wrap{position:relative; width:8px; height:8px;}
+.dot-wrap .dot{position:absolute; inset:0;}
+.dot-wrap .ring{position:absolute; inset:-4px; border-radius:50%; border:1.5px solid var(--green); opacity:.6; animation:ping 2.2s ease-out infinite;}
+@keyframes ping{0%{transform:scale(.6); opacity:.6;} 100%{transform:scale(1.9); opacity:0;}}
+.plate-chip .model{font-size:13px; font-weight:600;}
+.plate-chip .status-txt{font-size:11.5px; color:var(--text-mute);}
+
+.stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px;}
+.stat-card{padding:16px 18px; border-left:3px solid var(--border);}
+.stat-card.a{border-left-color:var(--green);} .stat-card.b{border-left-color:var(--orange);}
+.stat-card.c{border-left-color:var(--blue);} .stat-card.d{border-left-color:var(--ink-text);}
+.stat-label{font-size:12px; color:var(--text-mute); margin-bottom:6px;}
+.stat-value{font-size:24px; font-weight:600; font-family:'Chakra Petch',sans-serif;}
+.stat-value small{font-size:13px; font-weight:400; color:var(--text-mute); font-family:'IBM Plex Sans',sans-serif;}
+
+.grid-2{display:grid; grid-template-columns:1.15fr .85fr; gap:18px; align-items:start;}
+.card-head{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border);}
+.card-head h3{font-size:14.5px;}
+.card-head .link, .link{font-size:12.5px; color:var(--orange-deep); font-weight:600; cursor:pointer; text-decoration:none;}
+.card-body{padding:14px 18px 18px;}
+
+.ticket{display:flex; border:1px dashed var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden;}
+.ticket:last-child{margin-bottom:0;}
+.ticket .stub{width:92px; flex-shrink:0; background:var(--canvas); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-right:1px dashed var(--border); text-align:center;}
+.ticket .ref{font-size:12px; font-weight:600; color:var(--orange-deep);}
+.ticket .date{font-size:11px; color:var(--text-mute); margin-top:3px;}
+.ticket .body{flex:1; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.ticket .dest{font-size:13.5px; font-weight:600;}
+.ticket .veh{font-size:12px; color:var(--text-mute); margin-top:2px;}
+
+.emp-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px;}
+.emp-card{padding:16px; display:flex; gap:12px; align-items:flex-start;}
+.emp-card .avatar{width:40px; height:40px; font-size:14px; background:var(--text); color:#fff;}
+.emp-card strong{display:block; font-size:13.5px;}
+.emp-card .role{font-size:12px; color:var(--text-mute); margin:2px 0 8px;}
+
+.form-page{max-width:520px;}
+.form-page label, .field label{display:block; font-size:12.5px; font-weight:600; margin:14px 0 6px; color:var(--text-mute);}
+.form-page input, .form-page select, .field input{width:100%; padding:9px 11px; border:1px solid var(--border); border-radius:8px; font-size:13.5px; font-family:inherit; box-sizing:border-box; background:#fafbfc;}
+.field input:disabled{color:var(--text-mute);}
+.profile-card{max-width:520px; padding:22px;}
+.field{margin-bottom:14px;}
+
+.chat-shell{display:grid; grid-template-columns:260px 1fr; gap:16px; height:calc(100vh - 180px); min-height:460px;}
+.chat-side{padding:16px;}
+.chat-side h3{font-size:13px; margin:0 0 10px;}
+.chat-side select{width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--border); font-size:13px; margin-bottom:14px; font-family:inherit;}
+.chat-main{display:flex; flex-direction:column; overflow:hidden;}
+.chat-log{flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px;}
+.bulle{max-width:72%; padding:11px 15px; border-radius:14px; font-size:13.5px; line-height:1.5; background:#f0f1f4; align-self:flex-start; border-bottom-left-radius:4px;}
+.bulle.moi{background:var(--orange); color:#1a1200; align-self:flex-end; border-bottom-left-radius:14px; border-bottom-right-radius:4px; font-weight:500;}
+.bulle.typing{display:flex; gap:4px; align-items:center; padding:14px 16px;}
+.bulle.typing span{width:6px; height:6px; border-radius:50%; background:var(--text-mute); animation:blink 1.2s infinite ease-in-out;}
+.bulle.typing span:nth-child(2){animation-delay:.2s;} .bulle.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.25;} 40%{opacity:1;}}
+
+.quick-actions{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px;}
+.quick-actions a{text-decoration:none; color:inherit; cursor:pointer;}
+
+@media (max-width:980px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .grid-2{grid-template-columns:1fr;}
+  .chat-shell{grid-template-columns:1fr; height:auto;}
+}

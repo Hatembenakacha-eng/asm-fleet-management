@@ -40,10 +40,12 @@ class MissionController extends Controller
             'description' => 'required|string',
             'date_debut' => 'required|date',
             'date_fin' => 'required|date|after_or_equal:date_debut',
-            'capacite' => 'required|integer',
+            'capacite_minimale' => 'required|integer',
             'type_vehicule' => 'required|string',
             'destination' => 'required|string',
         ]);
+
+        $validatedData = $this->normalizeValidated($validatedData, ['description', 'type_vehicule', 'destination']);
 
         $mission = Mission::create($validatedData);
 
@@ -81,11 +83,13 @@ class MissionController extends Controller
             'description' => 'sometimes|required|string',
             'date_debut' => 'sometimes|required|date',
             'date_fin' => 'sometimes|required|date|after_or_equal:date_debut',
-            'capacite' => 'sometimes|required|integer',
+            'capacite_minimale' => 'sometimes|required|integer',
             'type_vehicule' => 'sometimes|required|string',
             'destination' => 'sometimes|required|string',
             'statut' => 'sometimes|required|in:en_attente,en_cours,terminee,annulee',
         ]);
+
+        $validatedData = $this->normalizeValidated($validatedData, ['description', 'type_vehicule', 'destination']);
 
         $mission->update($validatedData);
 

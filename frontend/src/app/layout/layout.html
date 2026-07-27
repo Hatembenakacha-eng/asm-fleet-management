@@ -1,0 +1,46 @@
+<div class="shell">
+  <aside class="sidebar" [class.open]="menuOuvert">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div><div class="brand-name">ASM Fleet</div><div class="brand-sub">Gestion de parc</div></div>
+    </div>
+
+    <nav class="side-nav">
+      <div class="nav-group-label">Général</div>
+      <a class="nav-link" routerLink="/accueil" routerLinkActive="active">Accueil</a>
+      @if (user?.role === 'admin') {
+        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Tableau de bord</a>
+      }
+      <a class="nav-link" routerLink="/assistant-ia" routerLinkActive="active">Assistant IA</a>
+
+      @if (user?.role === 'admin') {
+        <div class="nav-group-label">Exploitation</div>
+        <a class="nav-link" routerLink="/voitures" routerLinkActive="active">Véhicules</a>
+        <a class="nav-link" routerLink="/missions" routerLinkActive="active">Missions</a>
+        <a class="nav-link" routerLink="/affectations" routerLinkActive="active">Affectations</a>
+        <div class="nav-group-label">Équipe</div>
+        <a class="nav-link" routerLink="/employes" routerLinkActive="active">Employés</a>
+      }
+      <a class="nav-link" routerLink="/profil" routerLinkActive="active">Mon profil</a>
+    </nav>
+
+    <div class="side-footer">
+      <div class="side-user">
+        <div class="avatar">{{ initiales(user?.name) }}</div>
+        <div class="who"><strong>{{ user?.name }}</strong><span>{{ user?.role === 'admin' ? 'Administrateur' : 'Employé' }}</span></div>
+      </div>
+      <button class="btn-ghost-dark" (click)="logout()">Déconnexion</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button id="menu-toggle" (click)="menuOuvert = !menuOuvert">☰</button>
+      <div class="topbar-user">
+        <span class="role-pill">{{ user?.role === 'admin' ? 'Administrateur' : 'Employé' }}</span>
+        <div class="avatar">{{ initiales(user?.name) }}</div>
+      </div>
+    </header>
+    <main class="content"><router-outlet></router-outlet></main>
+  </div>
+</div>

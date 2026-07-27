@@ -15,16 +15,20 @@ class VoitureController extends Controller
     {
         $query = Voiture::query();
 
-        if (request()->has('status')) {
-            $query->where('status', request('status'));
+        if (request()->has('statut')) {
+            $query->where('statut', request('statut'));
         }
 
         if (request()->has('categorie')) {
             $query->where('categorie', request('categorie'));
         }
 
-        if (request()->has('capacite_minimale')) {
-            $query->where('capacite_minimale', '>=', request()->input('capacite_minimale'));
+        if (request()->has('capacite')) {
+            $query->where('capacite', '>=', request()->input('capacite'));
+        }
+
+        if (request()->has('kilometrage')) {
+            $query->where('kilometrage', request('kilometrage'));
         }
 
         $voitures = $query->get();
@@ -49,12 +53,13 @@ class VoitureController extends Controller
             'immatriculation' => 'required|string|unique:voitures,immatriculation',
             'marque' => 'required|string',
             'modele' => 'required|string',
-            'killometrage' => 'required|integer',
-            'status' => 'required|in:disponible,en_mission,en_maintenance,hors_service',
+            'kilometrage' => 'required|integer',
+            'statut' => 'required|in:disponible,en_mission,en_maintenance,hors_service',
             'capacite' => 'nullable|integer',
-            'type_carburant' => 'nullable|string',
             'categorie' => 'nullable|string',
         ]);
+
+        $validatedData = $this->normalizeValidated($validatedData, ['immatriculation', 'marque', 'modele','categorie']);
 
         $voiture = Voiture::create($validatedData);
 
@@ -87,12 +92,13 @@ class VoitureController extends Controller
             'immatriculation' => 'sometimes|required|string|unique:voitures,immatriculation,' . $voiture->id,
             'marque' => 'sometimes|required|string',
             'modele' => 'sometimes|required|string',
-            'killometrage' => 'sometimes|required|integer',
-            'status' => 'sometimes|required|in:disponible,en_mission,en_maintenance,hors_service',
+            'kilometrage' => 'sometimes|required|integer',
+            'statut' => 'sometimes|required|in:disponible,en_mission,en_maintenance,hors_service',
             'capacite' => 'nullable|integer',
-            'type_carburant' => 'nullable|string',
             'categorie' => 'nullable|string',
         ]);
+
+        $validatedData = $this->normalizeValidated($validatedData, ['immatriculation', 'marque', 'modele','categorie']);
 
         $voiture->update($validatedData);
 

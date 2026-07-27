@@ -1,0 +1,30 @@
+<div class="page">
+  <div class="page-head">
+    <div><h1>Employés</h1><p class="sub">{{ employes.length }} techniciens enregistrés.</p></div>
+    <a routerLink="/employes/nouveau" class="btn btn-primary">+ Ajouter</a>
+  </div>
+  @if (chargement) {
+    <p>Chargement...</p>
+  } @else if (erreur) {
+    <p style="color:var(--red);">{{ erreur }}</p>
+  } @else if (employes.length === 0) {
+    <p>Aucun employé enregistré.</p>
+  } @else {
+    <div class="emp-grid">
+      @for (e of employes; track e.id) {
+        <div class="card emp-card">
+          <div class="avatar">{{ e.nom.substring(0,2).toUpperCase() }}</div>
+          <div>
+            <strong>{{ e.nom }}</strong>
+            <div class="role">{{ e.specialite }}</div>
+            <span class="badge" [class.badge-dispo]="e.disponible" [class.badge-maint]="!e.disponible">{{ e.disponible ? 'Disponible' : 'Indisponible' }}</span>
+            <div style="margin-top:10px; display:flex; gap:12px;">
+              <a [routerLink]="['/employes', e.id, 'modifier']" class="link" style="font-size:12.5px;">Modifier</a>
+              <button class="btn-danger-txt" style="font-size:12.5px;" (click)="supprimer(e.id)">Supprimer</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

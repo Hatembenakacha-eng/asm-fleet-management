@@ -1,0 +1,9 @@
+<div class="page">
+  <div class="page-head"><div><h1>Mon profil</h1><p class="sub">Informations du compte connecté.</p></div></div>
+  <div class="card profile-card">
+    <div class="field"><label>Nom complet</label><input [value]="user?.name" disabled></div>
+    <div class="field"><label>Adresse e-mail</label><input [value]="user?.email" disabled></div>
+    <div class="field"><label>Rôle</label><input [value]="user?.role === 'admin' ? 'Administrateur' : 'Employé'" disabled></div>
+    <button class="btn btn-outline" disabled title="Fonctionnalité pas encore branchée">Changer le mot de passe</button>
+  </div>
+</div>

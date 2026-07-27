@@ -1,0 +1,25 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-mark">A</div>
+      <div><strong>ASM Fleet</strong><span>Gestion de parc automobile</span></div>
+    </div>
+    <h1>Connexion</h1>
+
+    @if (erreur) { <div class="alert-error">{{ erreur }}</div> }
+
+    <form (ngSubmit)="connecter()">
+      <label>Adresse e-mail</label>
+      <input type="email" [(ngModel)]="email" name="email" required placeholder="nom@asm.tn">
+
+      <label>Mot de passe</label>
+      <input type="password" [(ngModel)]="password" name="password" required placeholder="••••••••">
+
+      <button class="btn btn-primary" type="submit" [disabled]="chargement">
+        {{ chargement ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <p class="switch">Pas encore de compte ? <a routerLink="/register">Créer un compte employé</a></p>
+  </div>
+</div>

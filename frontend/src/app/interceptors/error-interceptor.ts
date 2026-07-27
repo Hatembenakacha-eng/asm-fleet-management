@@ -1,0 +1,14 @@
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { catchError, throwError } from 'rxjs';
+import { Auth } from '../services/auth';
+
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const auth = inject(Auth);
+  return next(req).pipe(
+    catchError(err => {
+      if (err.status === 401) auth.forceLogout(); // token invalide → déconnexion visible, jamais silencieuse
+      return throwError(() => err);
+    })
+  );
+};
