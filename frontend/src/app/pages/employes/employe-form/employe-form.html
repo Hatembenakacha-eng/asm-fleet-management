@@ -1,15 +1,143 @@
 <div class="page">
-  <div class="page-head"><div><h1>{{ id ? 'Modifier' : 'Ajouter' }} un employé</h1></div></div>
-  <div class="card form-page" style="padding:22px;">
-    <form (ngSubmit)="onSubmit()">
-      <label>Nom</label><input [(ngModel)]="nom" name="nom" required>
-      <label>Spécialité</label><input [(ngModel)]="specialite" name="specialite" required>
-      <label>Contact</label><input [(ngModel)]="contact" name="contact" required>
-      <label><input type="checkbox" [(ngModel)]="disponible" name="disponible" style="width:auto;"> Disponible</label>
-      <div style="display:flex; gap:10px; margin-top:20px;">
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a routerLink="/employes" class="btn btn-outline">Annuler</a>
-      </div>
-    </form>
+
+  <div class="page-head">
+    <div>
+      <h1>
+        @if (id) {
+          Modifier un employé
+        } @else {
+          Ajouter un employé
+        }
+      </h1>
+    </div>
   </div>
+
+  <div class="card form-page" style="padding:22px;">
+
+    @if (!id) {
+
+      <!-- ================= AJOUT ================= -->
+
+      <form (ngSubmit)="onSubmit()">
+
+        <label for="nom">Nom</label>
+        <input
+          id="nom"
+          type="text"
+          [(ngModel)]="nom"
+          name="nom"
+          required>
+
+        <label for="specialite">Spécialité</label>
+        <input
+          id="specialite"
+          type="text"
+          [(ngModel)]="specialite"
+          name="specialite"
+          required>
+
+        <label for="contact">Contact</label>
+        <input
+          id="contact"
+          type="text"
+          [(ngModel)]="contact"
+          name="contact"
+          required>
+
+        <label for="disponible">Disponible</label>
+        <input
+          id="disponible"
+          type="checkbox"
+          [(ngModel)]="disponible"
+          name="disponible"
+          style="width:auto;">
+
+        @if (erreurs.length > 0) {
+          <div class="erreurs">
+            @for (e of erreurs; track e) {
+              <p>{{ e }}</p>
+            }
+          </div>
+        }
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">
+            Ajouter
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="annuler()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+
+    } @else {
+
+      <!-- ================= MODIFICATION ================= -->
+
+      <form (ngSubmit)="onSubmit()">
+
+        <label for="nom">Nom</label>
+        <input
+          id="nom"
+          type="text"
+          [(ngModel)]="nom"
+          name="nom"
+          required>
+
+        <label for="specialite">Spécialité</label>
+        <input
+          id="specialite"
+          type="text"
+          [(ngModel)]="specialite"
+          name="specialite"
+          required>
+
+        <label for="contact">Contact</label>
+        <input
+          id="contact"
+          type="text"
+          [(ngModel)]="contact"
+          name="contact"
+          required>
+
+        <label for="disponible">Disponible</label>
+        <input
+          id="disponible"
+          type="checkbox"
+          [(ngModel)]="disponible"
+          name="disponible"
+          style="width:auto;">
+
+        @if (erreurs.length > 0) {
+          <div class="erreurs">
+            @for (e of erreurs; track e) {
+              <p>{{ e }}</p>
+            }
+          </div>
+        }
+
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">
+            Modifier
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="annuler()">
+            Annuler
+          </button>
+        </div>
+
+      </form>
+
+    }
+
+  </div>
+
 </div>

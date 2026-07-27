@@ -3,5 +3,6 @@ export interface Employee {
   nom: string;
   specialite: string;
   contact: string;
-  disponible: boolean; 
+  disponible: boolean;
+  
 }
