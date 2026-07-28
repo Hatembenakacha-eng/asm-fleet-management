@@ -9,9 +9,9 @@
   @if (user?.role === 'admin') {
     <div class="card accueil-summary">
       <div>
-        <h3 class="summary-title">Tableau de bord complet</h3>
-        <p class="sub">État de la flotte, missions en cours et dernières affectations, en direct.</p>
+        <h3 class="summary-title">Tableau de bord </h3>
       </div>
+      <br>
       <a routerLink="/dashboard" class="btn btn-primary">Ouvrir le tableau de bord</a>
     </div>
   } @else {
@@ -36,4 +36,5 @@
     }
     <a routerLink="/profil" class="card" style="padding:16px;">👤<br><strong style="font-size:13.5px;">Mon profil</strong></a>
   </div>
+           
 </div>

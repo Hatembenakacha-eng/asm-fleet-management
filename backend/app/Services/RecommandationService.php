@@ -44,18 +44,23 @@ class RecommandationService
 
         $prompt = $this->construirePrompt($mission, $listeVehicules);
 
+        $urlBase = rtrim(config('services.ollama.url'), '/');
+        $modele = config('services.ollama.model');
+
         try {
-            $response = Http::timeout(10)->post(
-                'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . env('GEMINI_API_KEY'),
-                ['contents' => [['parts' => [['text' => $prompt]]]]]
-            );
+            $response = Http::timeout(60)->post("{$urlBase}/api/generate", [
+                'model'  => $modele,
+                'prompt' => $prompt,
+                'stream' => false,
+                'format' => 'json',
+            ]);
 
             if (!$response->successful()) {
-                Log::error('Appel IA echoue', ['status' => $response->status()]);
+                Log::error('Appel IA echoue', ['status' => $response->status(), 'body' => $response->body()]);
                 return null;
             }
 
-            $texteBrut = $response->json('candidates.0.content.parts.0.text');
+            $texteBrut = $response->json('response');
             $donnees = json_decode($texteBrut, true);
 
             if (!$donnees || !isset($donnees['vehicule_id'])) {

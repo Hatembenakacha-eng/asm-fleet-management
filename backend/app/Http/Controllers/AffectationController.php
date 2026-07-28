@@ -108,7 +108,7 @@ public function update(Request $request, Affectation $affectation)
         if ($affectation->voiture_id != $validated['voiture_id']) {
 
 
-            // Ancienne voiture
+            
             $ancienneVoiture = Voiture::findOrFail(
                 $affectation->voiture_id
             );
