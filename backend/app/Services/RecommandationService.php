@@ -44,15 +44,25 @@ class RecommandationService
 
         $prompt = $this->construirePrompt($mission, $listeVehicules);
 
-        $urlBase = rtrim(config('services.ollama.url'), '/');
-        $modele = config('services.ollama.model');
+        $cle = config('services.groq.key');
+        $modele = config('services.groq.model');
 
         try {
-            $response = Http::timeout(60)->post("{$urlBase}/api/generate", [
-                'model'  => $modele,
-                'prompt' => $prompt,
-                'stream' => false,
-                'format' => 'json',
+            $response = Http::withToken($cle)->withOptions(['verify' => false])->timeout(60)->post('https://api.groq.com/openai/v1/chat/completions', [
+                'model' => $modele,
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'Tu réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, sans balises markdown.',
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt,
+                    ],
+                ],
+                'response_format' => ['type' => 'json_object'],
+                'temperature' => 0.2,
+                'max_tokens' => 500,
             ]);
 
             if (!$response->successful()) {
@@ -60,7 +70,7 @@ class RecommandationService
                 return null;
             }
 
-            $texteBrut = $response->json('response');
+            $texteBrut = $response->json('choices.0.message.content');
             $donnees = json_decode($texteBrut, true);
 
             if (!$donnees || !isset($donnees['vehicule_id'])) {

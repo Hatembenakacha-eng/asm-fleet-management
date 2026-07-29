@@ -11,11 +11,14 @@ class AffectationService
     public function verifierDisponibilite(
         Voiture $voiture,
         Mission $mission,
-        string $dateDebut,
-        string $dateFin
+        ?string $dateDebut=null,
+        ?string $dateFin=null
     ): ?string {
 
-        // Vérifier l'état du véhicule
+        $dateDebut = $dateDebut ?? ($mission->date_depart ? (string)$mission->date_depart : null) ?? now()->toDateString();
+        $dateFin   = $dateFin   ?? ($mission->date_retour ? (string)$mission->date_retour : null) ?? $dateDebut;
+
+
         $statutVoiture = isset($voiture->statut) ? $voiture->statut : null;
 
         if (in_array($statutVoiture, ['en_maintenance', 'hors_service'])) {

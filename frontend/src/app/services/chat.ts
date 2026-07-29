@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export class ChatService {
   private http = inject(HttpClient);
   private apiUrl = 'http://127.0.0.1:8000/api/chat';
-  envoyer(message: string): Observable<{ succes: boolean; reponse: string }> {
-    return this.http.post<{ succes: boolean; reponse: string }>(this.apiUrl, { message });
+  envoyer(message: string): Observable<any> {
+    return this.http.post(this.apiUrl, { message });
   }
 }
