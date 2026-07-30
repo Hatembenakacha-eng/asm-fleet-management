@@ -28,37 +28,21 @@ export const routes: Routes = [
       { path: 'accueil', component: Accueil },
       { path: 'assistant-ia', component: AssistantIa },
       { path: 'profil', component: Profil },
-      { path: 'dashboard', component: Dashboard, canActivate: [adminGuard] },
-      { path: 'voitures', component: VoitureListe, canActivate: [adminGuard] },
-      { path: 'voitures/nouveau', component: VoitureForm, canActivate: [adminGuard] },
-      { path: 'voitures/:id/modifier', component: VoitureForm, canActivate: [adminGuard] },
-      { path: 'employes', component: EmployeListe, canActivate: [adminGuard] },
-      { path: 'employes/nouveau', component: EmployeForm, canActivate: [adminGuard] },
-      { path: 'employes/:id/modifier', component: EmployeForm, canActivate: [adminGuard] },
-      { path: 'missions', component: MissionListe, canActivate: [adminGuard] },
-      { path: 'missions/nouveau', component: MissionForm, canActivate: [adminGuard] },
-      { path: 'missions/:id/modifier', component: MissionForm, canActivate: [adminGuard] },
-      { path: 'missions/:id/recommandation', component: Recommandation, canActivate: [adminGuard] },
-     
-      // ================= AFFECTATIONS =================
+      { path: 'dashboard', component: Dashboard     },
+      { path: 'voitures', component: VoitureListe     },
+      { path: 'voitures/nouveau', component: VoitureForm     },
+      { path: 'voitures/:id/modifier', component: VoitureForm     },
+      { path: 'employes', component: EmployeListe     },
+      { path: 'employes/nouveau', component: EmployeForm     },
+      { path: 'employes/:id/modifier', component: EmployeForm     },
+      { path: 'missions', component: MissionListe     },
+      { path: 'missions/nouveau', component: MissionForm     },
+      { path: 'missions/:id/modifier', component: MissionForm     },
+      { path: 'missions/:id/recommandation', component: Recommandation     },
+      {path: 'affectations',component: AffectationListe,canActivate: [adminGuard] },
+      {path: 'affectations/nouveau',component: AffectationForm,canActivate: [adminGuard]},
+      {path: 'affectations/:id/modifier',component: AffectationForm,canActivate: [adminGuard]},
 
-{
-  path: 'affectations',
-  component: AffectationListe,
-  canActivate: [adminGuard]
-},
-
-{
-  path: 'affectations/nouveau',
-  component: AffectationForm,
-  canActivate: [adminGuard]
-},
-
-{
-  path: 'affectations/:id/modifier',
-  component: AffectationForm,
-  canActivate: [adminGuard]
-},
     ]
   },
   { path: '**', redirectTo: 'login' }

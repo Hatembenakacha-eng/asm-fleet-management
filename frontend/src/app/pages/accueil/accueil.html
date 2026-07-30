@@ -1,42 +1,110 @@
-<div class="page">
+<div class="page-container">
+
+  <!-- En-tête de la page -->
   <div class="page-head">
     <div>
       <h1>Bonjour, {{ user?.name }}</h1>
-      <p class="sub">{{ user?.role === 'admin' ? "Vue d'ensemble de votre compte administrateur." : "Voici ta situation actuelle." }}</p>
+      <!--<p class="sub">
+        {{ user?.role === 'admin' ? "Vue d'ensemble de votre compte administrateur." : "Voici votre situation actuelle." }}
+      </p>-->
     </div>
   </div>
 
+
+  <!-- Section principale : Admin ou Employé -->
   @if (user?.role === 'admin') {
+
     <div class="card accueil-summary">
-      <div>
-        <h3 class="summary-title">Tableau de bord </h3>
+      <div class="summary-text">
+        <h3>Tableau de bord de gestion</h3>
+        <p class="sub">Accédez aux statistiques globales de la flotte et des affectations.</p>
       </div>
-      <br>
+
       <a routerLink="/dashboard" class="btn btn-primary">Ouvrir le tableau de bord</a>
     </div>
+
   } @else {
+
     @if (missionEnCours) {
+
       <div class="card mission-summary">
-        <span class="badge badge-dispo mission-badge">Mission en cours</span>
-        <h3 class="mission-title">{{ missionEnCours.mission?.destination }}</h3>
-        <p class="sub">Véhicule : <span class="mono">{{ missionEnCours.voiture?.immatriculation }} — {{ missionEnCours.voiture?.marque }}</span></p>
-        <p class="sub">Depuis le <span class="mono">{{ missionEnCours.date_debut }}</span></p>
+        <div class="mission-header">
+          <span class="badge badge-active">⚡ Mission en cours</span>
+          <span class="mission-date">Depuis le {{ missionEnCours.date_debut }}</span>
+        </div>
+
+        <h3 class="mission-title">
+          {{ missionEnCours.mission?.destination || 'Destination non spécifiée' }}
+        </h3>
+
+        <div class="mission-details">
+          <div class="detail-item">
+            <span class="icon">🚗</span>
+            <span>
+              Véhicule :
+              <strong>{{ missionEnCours.voiture?.marque }} {{ missionEnCours.voiture?.modele }}</strong>
+              ({{ missionEnCours.voiture?.immatriculation }})
+            </span>
+          </div>
+        </div>
       </div>
+
     } @else {
-      <div class="card mission-empty"><p class="sub">Aucune mission en cours actuellement.</p></div>
+
+      <div class="card mission-empty">
+        <div class="empty-icon">📂</div>
+        <div>
+          <h3>Aucune mission en cours</h3>
+          <p class="sub">Vous n'avez pas de véhicule ou de mission affectée pour le moment.</p>
+        </div>
+      </div>
+
     }
+
   }
 
-  <h2 class="actions-title">Actions rapides</h2>
-  <div class="quick-actions">
-    <a routerLink="/assistant-ia" class="card" style="padding:16px;">🤖<br><strong style="font-size:13.5px;">Demander une recommandation IA</strong></a>
-    @if (user?.role === 'admin') {
-      <a routerLink="/affectations/nouveau" class="card" style="padding:16px;">🚗<br><strong style="font-size:13.5px;">Créer une affectation</strong></a>
-      <a routerLink="/missions/nouveau" class="card" style="padding:16px;">📋<br><strong style="font-size:13.5px;">Ajouter une mission</strong></a>
-    }
-    <a routerLink="/profil" class="card" style="padding:16px;">👤<br><strong style="font-size:13.5px;">Mon profil</strong></a>
-  </div>
 
-  
+  <!-- Section Actions Rapides -->
+  <h2 class="actions-title">Actions rapides</h2>
+
+  <div class="quick-actions-grid">
+
+    <a routerLink="/assistant-ia" class="action-card">
+      <div class="action-icon">🤖</div>
+      <div class="action-info">
+        <strong>Assistant IA</strong>
+        <span>Demander une recommandation</span>
+      </div>
+    </a>
+
+    @if (user?.role === 'admin') {
+
+      <a routerLink="/affectations/nouveau" class="action-card">
+        <div class="action-icon">🚗</div>
+        <div class="action-info">
+          <strong>Affectation</strong>
+          <span>Créer une nouvelle affectation</span>
+        </div>
+      </a>
+
+      <a routerLink="/missions/nouveau" class="action-card">
+        <div class="action-icon">📋</div>
+        <div class="action-info">
+          <strong>Mission</strong>
+          <span>Ajouter une mission</span>
+        </div>
+      </a>
+
+    }
+
+    <a routerLink="/profil" class="action-card">
+      <div class="action-icon">👤</div>
+      <div class="action-info">
+        <strong>Mon profil</strong>
+        <span>Gérer vos informations</span>
+      </div>
+    </a>
+
+  </div>
 
 </div>

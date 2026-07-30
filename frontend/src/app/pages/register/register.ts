@@ -31,18 +31,21 @@ export class Register {
       name: this.name,
       email: this.email,
       password: this.password,
-      password_confirmation: this.password_confirmation,
-      role: this.role
-    }).subscribe({
+      password_confirmation: this.password_confirmation
+        }).subscribe({
       next: () => {
         this.chargement = false;
         this.succes = true;
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err: any) => {
-        this.chargement = false;
-        this.erreur = err.error?.message || "Impossible de créer le compte.";
-      }
+      this.chargement = false;
+
+      console.log(err);
+      console.log(err.error);
+
+      this.erreur = JSON.stringify(err.error);
+    }
     });
   }
 }

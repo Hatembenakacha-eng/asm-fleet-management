@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('employees', EmployeeController::class);
 
     Route::apiResource('affectations', AffectationController::class);
+
+    Route::put('/user/profile', [AuthController::class, 'updateProfile']);
+    Route::put('/user/password', [AuthController::class, 'updatePassword']);
 });
 
 Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
@@ -40,3 +43,6 @@ Route::middleware(['auth:sanctum', 'throttle:15,1'])->group(function () {
     Route::post('/chat', [ChatController::class, 'repondre']);
 });
 
+Route::get('/login', function () {
+    return response()->json(['message' => 'Non authentifié.'], 401);
+})->name('login');

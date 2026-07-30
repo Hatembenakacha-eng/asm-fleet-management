@@ -1,10 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { Auth } from '../services/auth';
+
+const CLE_TOKEN = 'asm_token';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(Auth);
-  const token = auth.getToken();
-  const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
+  const token = sessionStorage.getItem(CLE_TOKEN);
+
+  const authReq = req.clone({
+    setHeaders: {
+      Accept: 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    }
+  });
+
   return next(authReq);
 };
