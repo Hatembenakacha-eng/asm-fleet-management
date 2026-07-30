@@ -19,8 +19,10 @@ export class Accueil implements OnInit {
   missionEnCours: Affectation | null = null;
 
   ngOnInit() {
-    // N'exécuter la requête QUE SI un utilisateur est connecté ET n'est pas admin
-    //if (this.user && this.user.role !== 'admin') {
+    const token = localStorage.getItem('token');
+
+    // 🔒 N'exécute la requête QUE SI un token existe ET que l'utilisateur n'est pas admin
+    if (token && this.user && this.user.role !== 'admin') {
       this.affectationService.getAll().subscribe({
         next: (res) => {
           const affectations = res.data || res;
@@ -31,5 +33,5 @@ export class Accueil implements OnInit {
         error: (err) => console.error('Erreur chargement affectations:', err)
       });
     }
-  //}
+  }
 }

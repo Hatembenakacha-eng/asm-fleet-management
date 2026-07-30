@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('destination');
             $table->date('date_depart');
             $table->date('date_retour');
-            $table->string('type_vihicule')->nullable();
+            $table->string('type_vehicule')->nullable();
             $table->string('capacite_minimale')->nullable();
             $table->enum('statut',['planifiee','en_cours','terminee'])->default('planifiee');
             $table->timestamps();

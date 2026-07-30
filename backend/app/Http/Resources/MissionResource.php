@@ -21,9 +21,8 @@ class MissionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'description' => $this->description,
-            'date_debut' => $this->date_debut,
-            'date_fin' => $this->date_fin,
+            'date_depart' => $this->date_depart,
+            'date_retour' => $this->date_retour,
             'capacite_minimale' => $this->capacite_minimale,
             'type_vehicule' => $this->type_vehicule,
             'destination' => $this->destination,

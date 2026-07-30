@@ -2,18 +2,6 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Third Party Services
-    |--------------------------------------------------------------------------
-    |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
-    |
-    */
-
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
@@ -37,8 +25,7 @@ return [
 
     'groq' => [
         'key' => env('GROQ_API_KEY'),
-        'model' => env('GROQ_MODEL', 'openai/gpt-oss-20b'),
+        'model' => env('GROQ_MODEL', 'llama-3.3-70b-versatile'), // Model Groq officiel et valide
     ],
-
 
 ];

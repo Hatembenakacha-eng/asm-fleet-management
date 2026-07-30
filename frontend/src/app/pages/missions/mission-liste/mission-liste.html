@@ -13,16 +13,16 @@
     } @else {
       @for (m of missions; track m.id) {
         <div class="ticket">
-          <div class="stub"><span class="ref mono">M-{{ m.id }}</span><span class="date mono">{{ m.date_debut }}</span></div>
+          <div class="stub"><span class="ref mono">M-{{ m.id }}</span><span class="date mono">{{ m.date_depart }}</span></div>
           <div class="body">
             <div><div class="dest">{{ m.destination }}</div><div class="veh">{{ m.type_vehicule || 'Tout type' }} — min. {{ m.capacite_minimale || 0 }}</div></div>
             <div style="display:flex; align-items:center; gap:14px;">
               <a [routerLink]="['/missions', m.id, 'modifier']" class="link">Modifier</a>
               <button class="btn-danger-txt" (click)="supprimer(m.id)">Supprimer</button>
             </div>
-                
+
           </div>
-        </div>
+        </div>  
       }
     }
   </div>

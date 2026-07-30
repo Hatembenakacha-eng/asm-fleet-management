@@ -5,99 +5,60 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Mission;
 use App\Http\Resources\MissionResource;
+
 class MissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
-{
-    $missions = Mission::all();
-
-    return MissionResource::collection($missions);
-}
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
     {
-        //
+        return MissionResource::collection(Mission::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'description' => 'required|string',
-            'date_debut' => 'required|date',
-            'date_fin' => 'required|date|after_or_equal:date_debut',
-            'capacite_minimale' => 'required|integer',
-            'type_vehicule' => 'required|string',
-            'destination' => 'required|string',
+            'destination'       => 'required|string',
+            'date_depart'       => 'required|date',
+            'date_retour'       => 'required|date',
+            'type_vehicule'     => 'nullable|string',
+            'capacite_minimale' => 'nullable|integer',
         ]);
 
-        $validatedData = $this->normalizeValidated($validatedData, ['description', 'type_vehicule', 'destination']);
+        // On instancie uniquement les colonnes réelles de la table
+        $mission = new Mission();
+        $mission->destination       = $validatedData['destination'];
+        $mission->date_depart       = $validatedData['date_depart'];
+        $mission->date_retour       = $validatedData['date_retour'];
+        $mission->type_vehicule     = $validatedData['type_vehicule'] ?? null;
+        $mission->capacite_minimale = $validatedData['capacite_minimale'] ?? null;
 
-        $mission = Mission::create($validatedData);
+        $mission->save();
 
         return (new MissionResource($mission))->response()->setStatusCode(201);
-
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Request $request, Mission $mission)
     {
         return new MissionResource($mission->load('affectations.voiture'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Mission $mission)
     {
         $validatedData = $request->validate([
-            'description' => 'sometimes|required|string',
-            'date_debut' => 'sometimes|required|date',
-            'date_fin' => 'sometimes|required|date|after_or_equal:date_debut',
-            'capacite_minimale' => 'sometimes|required|integer',
-            'type_vehicule' => 'sometimes|required|string',
-            'destination' => 'sometimes|required|string',
+            'destination'       => 'sometimes|required|string',
+            'date_depart'       => 'sometimes|required|date',
+            'date_retour'       => 'sometimes|required|date',
+            'type_vehicule'     => 'nullable|string',
+            'capacite_minimale' => 'nullable|integer',
         ]);
-
-        $validatedData = $this->normalizeValidated($validatedData, ['description', 'type_vehicule', 'destination']);
 
         $mission->update($validatedData);
 
         return new MissionResource($mission);
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Mission $mission)
     {
         $mission->forceDelete();
-
-        return response()->json(['message' => 'Mission supprimee avec succès']);
+        return response()->json(['message' => 'Mission supprimée avec succès']);
     }
-
 }

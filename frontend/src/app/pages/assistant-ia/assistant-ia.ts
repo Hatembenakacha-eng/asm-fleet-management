@@ -36,13 +36,18 @@ export class AssistantIa implements OnInit {
   erreurChargement = '';
 
   ngOnInit() {
-    this.missionService.getAll().subscribe({
-      next: (res: any) => this.missions = res.data || res,
-      error: () => this.erreurChargement = "Impossible de charger les missions."
-    });
+    const token = localStorage.getItem('token');
+
+    // 🔒 Vérifier la présence d'un token avant de charger les missions
+    if (token) {
+      this.missionService.getAll().subscribe({
+        next: (res: any) => this.missions = res.data || res,
+        error: () => this.erreurChargement = "Impossible de charger les missions."
+      });
+    }
   }
 
-  // --- SOLUTION 1 : Envoi du message avec l'historique complet ---
+  // --- Solution : Envoi du message avec l'historique complet ---
   envoyerLibre() {
     const texte = this.messageLibre.trim();
     if (!texte || this.loading) return;
@@ -53,7 +58,7 @@ export class AssistantIa implements OnInit {
 
     // Transmet le message ET l'historique des échanges
     this.chatService.envoyer(texte, this.messages).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.loading = false;
         this.messages.push({ auteur: 'ia', texte: res.reponse });
       },
@@ -106,7 +111,7 @@ export class AssistantIa implements OnInit {
     });
   }
 
-  // --- SOLUTION 2 : Action explicite pour valider/réserver la mission ---
+  // --- Solution : Action explicite pour valider/réserver la mission ---
   faireDemande(msg: MessageChat) {
     if (!msg.vehiculeSuggere || !msg.missionId) return;
 
@@ -114,7 +119,7 @@ export class AssistantIa implements OnInit {
     const payload = {
       mission_id: msg.missionId,
       voiture_id: msg.vehiculeSuggere.id,
-      statut: 'en_attente' // ou 'active' selon votre logique
+      statut: 'en_attente'
     };
 
     this.affectationService.create(payload).subscribe({

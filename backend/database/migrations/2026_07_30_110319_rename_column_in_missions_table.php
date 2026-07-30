@@ -6,23 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('missions', function (Blueprint $table) {
-            $table->string('ption')->after('id');
+            // Remplace 'ancien_nom' par le nom actuel dans ta BDD (ex: type_vehicule_id ou autre)
+            $table->renameColumn('type_vihicule', 'type_vehicule');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-         Schema::table('missions', function (Blueprint $table) {
-            $table->dropColumn('description');
+        Schema::table('missions', function (Blueprint $table) {
+            $table->renameColumn('type_vehicule', 'type_vihicule');
         });
     }
 };

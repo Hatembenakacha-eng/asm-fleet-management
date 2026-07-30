@@ -8,15 +8,12 @@ use App\Models\Affectation;
 class Mission extends Model
 {
     protected $fillable = [
-        'id',
-        'description',
-        'date_debut',
-        'date_fin',
-        'capacite_minimale',
+        'destination',
+        'date_depart',
+        'date_retour',
         'type_vehicule',
-        'destination'
+        'capacite_minimale',
     ];
-
     public function affectations()
     {
         return $this->hasMany(Affectation::class);

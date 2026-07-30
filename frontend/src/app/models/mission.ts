@@ -4,6 +4,6 @@ export interface Mission {
   destination: string;
   capacite_minimale: number | null;
   type_vehicule: string;
-  date_debut: string;
-  date_fin: string;
+  date_depart: string;
+  date_retour: string;
 }

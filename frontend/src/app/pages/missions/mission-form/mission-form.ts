@@ -19,9 +19,8 @@ export class MissionForm implements OnInit {
   id: number | null = null;
 
   destination = '';
-  description = '';
-  date_debut = '';
-  date_fin = '';
+  date_depart = '';
+  date_retour = '';
   type_vehicule = '';
   capacite_minimale: number | null = null;
 
@@ -35,12 +34,11 @@ export class MissionForm implements OnInit {
 
       this.service.getOne(this.id).subscribe({
         next: (res) => {
-          const m = res.data;
+          const m = res.data || res;
 
           this.destination = m.destination;
-          this.description = m.description;
-          this.date_debut = m.date_debut;
-          this.date_fin = m.date_fin;
+          this.date_depart = m.date_depart;
+          this.date_retour = m.date_retour;
           this.type_vehicule = m.type_vehicule;
           this.capacite_minimale = m.capacite_minimale;
         },
@@ -50,16 +48,14 @@ export class MissionForm implements OnInit {
   }
 
   onSubmit(): void {
-
     this.erreurs = [];
 
     const payload = {
       destination: this.destination,
-      description: this.description,
-      date_debut: this.date_debut,
-      date_fin: this.date_fin,
+      date_depart: this.date_depart,
+      date_retour: this.date_retour,
       type_vehicule: this.type_vehicule,
-      capacite_minimale: this.capacite_minimale
+      capacite_minimale: this.capacite_minimale ? Number(this.capacite_minimale) : null
     };
 
     const request = this.id
@@ -69,10 +65,13 @@ export class MissionForm implements OnInit {
     request.subscribe({
       next: () => this.router.navigate(['/missions']),
       error: (err) => {
-        console.error(err);
+        console.error('Détails erreur backend :', err);
 
-        if (err.error?.errors) {
-          this.erreurs = Object.values(err.error.errors).flat() as string[];
+        // Récupération des messages de validation (recherche de 'erreurs' ou 'errors')
+        const errorData = err.error?.erreurs || err.error?.errors;
+
+        if (errorData) {
+          this.erreurs = Object.values(errorData).flat() as string[];
         } else {
           this.erreurs = [err.error?.message || 'Une erreur est survenue.'];
         }

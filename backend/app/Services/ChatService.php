@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Voiture;
@@ -11,13 +12,21 @@ class ChatService
     public function repondre(string $message): array
     {
         $voitures = Voiture::all(['immatriculation', 'marque', 'modele', 'statut', 'capacite', 'categorie']);
-
-        $missions = Mission::all(['destination', 'date_debut', 'date_fin', 'capacite_minimale', 'type_vehicule']);
+        $missions = Mission::all(['destination', 'date_depart', 'date_retour', 'capacite_minimale', 'type_vehicule']);
 
         $contexte = "Parc actuel : " . $voitures->toJson() . " Missions actives/planifiées : " . $missions->toJson();
 
-        $cle = config('services.groq.key');
-        $modele = config('services.groq.model');
+        $cle = config('services.groq.key') ?? env('GROQ_API_KEY');
+        $modele = config('services.groq.model') ?? env('GROQ_MODEL', 'llama-3.3-70b-versatile');
+
+        // Sécurité : éviter l'erreur 500 si la clé est manquante
+        if (!$cle) {
+            Log::error("Clé API Groq manquante dans le fichier .env");
+            return [
+                'succes' => false,
+                'reponse' => "La clé API Groq n'est pas configurée dans le fichier .env."
+            ];
+        }
 
         try {
             $response = Http::withToken($cle)
@@ -42,7 +51,10 @@ class ChatService
 
             if (!$response->successful()) {
                 Log::error('Groq indisponible', ['status' => $response->status(), 'body' => $response->body()]);
-                return ['succes' => false, 'reponse' => "Le service IA est momentanément indisponible."];
+                return [
+                    'succes' => false,
+                    'reponse' => "Le service IA est momentanément indisponible (Erreur " . $response->status() . ")."
+                ];
             }
 
             $texte = trim((string) $response->json('choices.0.message.content'));
@@ -53,7 +65,10 @@ class ChatService
             ];
         } catch (\Exception $e) {
             Log::error('Erreur chat IA (Groq)', ['erreur' => $e->getMessage()]);
-            return ['succes' => false, 'reponse' => "Le service IA est momentanément indisponible."];
+            return [
+                'succes' => false,
+                'reponse' => "Le service IA est momentanément indisponible."
+            ];
         }
     }
 }

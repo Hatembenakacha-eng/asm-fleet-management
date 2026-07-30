@@ -29,10 +29,10 @@ class AffectationService
         $chevauchement = Affectation::query()
             ->where('voiture_id', '=', $voiture->id)
             ->where('statut', '=', 'active')
-            ->where('date_debut', '<=', $dateFin)
+            ->where('date_depart', '<=', $dateFin)
             ->where(function ($query) use ($dateDebut) {
-                $query->whereNull('date_fin')
-                      ->orWhere('date_fin', '>=', $dateDebut);
+                $query->whereNull('date_retour')
+                      ->orWhere('date_retour', '>=', $dateDebut);
             })
             ->exists();
 
@@ -42,10 +42,10 @@ class AffectationService
 
         // Vérifier la catégorie
         if (
-            !empty($mission->type_vihicule) &&
-            $voiture->categorie !== $mission->type_vihicule
+            !empty($mission->type_vehicule) &&
+            $voiture->categorie !== $mission->type_vehicule
         ) {
-            return "Le type de véhicule ({$voiture->categorie}) ne correspond pas au besoin de la mission ({$mission->type_vihicule}).";
+            return "Le type de véhicule ({$voiture->categorie}) ne correspond pas au besoin de la mission ({$mission->type_vehicule}).";
         }
 
         // Vérifier la capacité
@@ -68,8 +68,8 @@ class AffectationService
             $query->where('capacite', '>=', $mission->capacite_minimale);
         }
 
-        if (!empty($mission->type_vihicule)) {
-            $query->where('categorie', '=', $mission->type_vihicule);
+        if (!empty($mission->type_vehicule)) {
+            $query->where('categorie', '=', $mission->type_vehicule);
         }
 
         return $query->get()
