@@ -1,0 +1,257 @@
+/* Container de la page */
+.profile-container {
+  padding: 2rem;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-head {
+  margin-bottom: 1.5rem;
+}
+
+.page-head h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
+
+.page-head .sub {
+  color: #718096;
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+/* Carte Globale */
+.profile-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #edf2f7;
+}
+
+/* En-tête Utilisateur (Avatar + Infos) */
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #fffaf0;
+  border: 2px solid #f2780c;
+  color: #f2780c;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-details h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.badge-role {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  background-color: #fffaf0;
+  color: #f2780c;
+  border: 1px solid #feebc8;
+}
+
+/* Séparateur */
+.divider {
+  height: 1px;
+  background-color: #edf2f7;
+  margin: 1.75rem 0;
+}
+
+/* Formulaire */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #2d3748;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #f2780c;
+  box-shadow: 0 0 0 3px rgba(242, 120, 12, 0.15);
+}
+
+.form-control:disabled {
+  background-color: #f8fafc;
+  color: #718096;
+  cursor: not-allowed;
+}
+
+/* Boutons */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.65rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #f2780c;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #d96605;
+}
+
+.btn-secondary {
+  background-color: #edf2f7;
+  color: #4a5568;
+}
+
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-outline-orange {
+  background: transparent;
+  border: 1px solid #f2780c;
+  color: #f2780c;
+}
+
+.btn-outline-orange:hover {
+  background-color: #fffaf0;
+}
+
+/* Section Sécurité */
+.security-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.security-text h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.security-text p {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.85rem;
+  color: #718096;
+}
+
+/* Notifications */
+.alert {
+  padding: 0.85rem 1.2rem;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alert-success {
+  background-color: #f0fff4;
+  color: #276749;
+  border: 1px solid #c6f6d5;
+}
+
+.alert-danger {
+  background-color: #fff5f5;
+  color: #9b2c2c;
+  border: 1px solid #fed7d7;
+}
+
+/* Pop-up Modale */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal-content h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1a202c;
+}
+
+.modal-sub {
+  font-size: 0.85rem;
+  color: #718096;
+  margin: 0.35rem 0 1.25rem 0;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}

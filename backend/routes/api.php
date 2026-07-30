@@ -8,6 +8,7 @@ use App\Http\Controllers\MissionController;
 use App\Http\Controllers\AffectationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RecommandationController;
+use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\ChatController;
 
@@ -46,3 +47,11 @@ Route::middleware(['auth:sanctum', 'throttle:15,1'])->group(function () {
 Route::get('/login', function () {
     return response()->json(['message' => 'Non authentifié.'], 401);
 })->name('login');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/profile', [ProfileController::class, 'updateProfile']);
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+});
+
+
+

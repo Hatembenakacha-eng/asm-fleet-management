@@ -48,8 +48,8 @@ class AffectationController extends Controller
             'voiture_id'  => 'required|exists:voitures,id',
             'mission_id'  => 'required|exists:missions,id',
             'employee_id' => 'required|exists:employees,id',
-            'date_depart'  => 'required|date',
-            'date_retour'    => 'required|date|after_or_equal:date_depart',
+            'date_debut'  => 'required|date',
+            'date_fin'   => 'required|date',
         ]);
 
         $voiture = Voiture::findOrFail($validated['voiture_id']);
@@ -58,8 +58,8 @@ class AffectationController extends Controller
         $erreur = $this->affectationService->verifierDisponibilite(
             $voiture,
             $mission,
-            $validated['date_depart'],
-            $validated['date_retour']
+            $validated['date_debut'],
+            $validated['date_fin']
         );
 
         if ($erreur) {
@@ -97,8 +97,8 @@ public function update(Request $request, Affectation $affectation)
         'voiture_id'  => 'required|exists:voitures,id',
         'mission_id'  => 'required|exists:missions,id',
         'employee_id' => 'required|exists:employees,id',
-        'date_depart'  => 'required|date',
-        'date_retour'    => 'required|date|after_or_equal:date_depart',
+        'date_debut'  => 'required|date',
+        'date_fin'    => 'required|date|after_or_equal:date_debut',
     ]);
 
 

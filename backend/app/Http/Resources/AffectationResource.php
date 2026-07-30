@@ -27,7 +27,7 @@ class AffectationResource extends JsonResource
         'employee_id' => $this->employee_id,
 
         'date_debut' => $this->date_debut,
-        'date_fin' => $this->date_fin,
+        'date_retour' => $this->date_retour,
 
         'voiture' => new VoitureResource($this->whenLoaded('voiture')),
         'mission' => new MissionResource($this->whenLoaded('mission')),

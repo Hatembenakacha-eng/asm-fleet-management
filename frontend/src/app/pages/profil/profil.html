@@ -1,9 +1,132 @@
-<div class="page">
-  <div class="page-head"><div><h1>Mon profil</h1><p class="sub">Informations du compte connecté.</p></div></div>
-  <div class="card profile-card">
-    <div class="field"><label>Nom complet</label><input [value]="user?.name" disabled></div>
-    <div class="field"><label>Adresse e-mail</label><input [value]="user?.email" disabled></div>
-    <div class="field"><label>Rôle</label><input [value]="user?.role === 'admin' ? 'Administrateur' : 'Employé'" disabled></div>
-    <button class="btn btn-outline" disabled title="Fonctionnalité pas encore branchée">Changer le mot de passe</button>
+<div class="profile-container">
+  <!-- En-tête -->
+  <div class="page-head">
+    <h1>Mon profil</h1>
+    <p class="sub">Gérez vos informations personnelles et les paramètres de votre compte.</p>
+  </div>
+
+  <!-- Messages de notification -->
+  <div *ngIf="messageSuccess" class="alert alert-success">
+    <span>✓</span> {{ messageSuccess }}
+  </div>
+  <div *ngIf="messageError" class="alert alert-danger">
+    <span>⚠️</span> {{ messageError }}
+  </div>
+
+  <!-- Carte Principale Unique -->
+  <div class="profile-card">
+    <!-- Section Identité -->
+    <div class="user-header">
+      <div class="avatar-circle">
+        {{ user?.name ? user.name.substring(0, 2).toUpperCase() : 'HA' }}
+      </div>
+      <div class="user-details">
+        <h2>{{ user?.name || 'Utilisateur' }}</h2>
+        <span class="badge-role">{{ user?.role === 'admin' ? 'Administrateur' : 'Employé' }}</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section Formulaire -->
+    <form (ngSubmit)="saveProfile()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nom complet</label>
+          <input
+            type="text"
+            [(ngModel)]="profileData.name"
+            name="name"
+            [disabled]="!isEditingProfile"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Adresse e-mail</label>
+          <input
+            type="email"
+            [(ngModel)]="profileData.email"
+            name="email"
+            [disabled]="!isEditingProfile"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Rôle attribué</label>
+          <input
+            type="text"
+            [value]="user?.role === 'admin' ? 'Administrateur' : 'Employé'"
+            disabled
+            class="form-control disabled-input"
+          />
+        </div>
+      </div>
+
+      <!-- Actions Profil -->
+      <div class="action-bar">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="toggleEditProfile()"
+        >
+          {{ isEditingProfile ? 'Annuler' : 'Modifier les informations' }}
+        </button>
+
+        <button
+          *ngIf="isEditingProfile"
+          type="submit"
+          class="btn btn-primary"
+        >
+          Enregistrer les modifications
+        </button>
+      </div>
+    </form>
+
+    <div class="divider"></div>
+
+    <!-- Section Sécurité -->
+    <div class="security-section">
+      <div class="security-text">
+        <h3>Sécurité & Connexion</h3>
+        <p>Modifiez votre mot de passe pour sécuriser votre compte.</p>
+      </div>
+      <div class="security-actions">
+        <button type="button" class="btn btn-outline-orange" (click)="togglePasswordModal()">
+          Changer le mot de passe
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Pop-up Modification Mot de Passe -->
+<div class="modal-backdrop" *ngIf="showPasswordModal">
+  <div class="modal-content">
+    <h3>Changer le mot de passe</h3>
+    <p class="modal-sub">Entrez votre ancien mot de passe puis le nouveau.</p>
+
+    <form (ngSubmit)="updatePassword()">
+      <div class="form-group">
+        <label>Mot de passe actuel</label>
+        <input type="password" [(ngModel)]="passwordData.current_password" name="current_password" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label>Nouveau mot de passe</label>
+        <input type="password" [(ngModel)]="passwordData.new_password" name="new_password" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label>Confirmer le nouveau mot de passe</label>
+        <input type="password" [(ngModel)]="passwordData.new_password_confirmation" name="new_password_confirmation" class="form-control" required />
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn btn-secondary" (click)="togglePasswordModal()">Annuler</button>
+        <button type="submit" class="btn btn-primary">Valider</button>   
+      </div>
+    </form>
   </div>
 </div>
