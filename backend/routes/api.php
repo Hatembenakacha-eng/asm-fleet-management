@@ -20,6 +20,13 @@ Route::post('/register', [AuthController::class, 'Creer_un_compte']);
 Route::post('/login', [AuthController::class, 'Se_connecter']);
 Route::post('/logout', [AuthController::class, 'Se_deconnecter'])->middleware('auth:sanctum');
 
+
+
+Route::get('/affectations', [AffectationController::class, 'index']);
+Route::post('/affectations', [AffectationController::class, 'store']);
+Route::put('/affectations/{id}', [AffectationController::class, 'update']);
+Route::delete('/affectations/{id}', [AffectationController::class, 'destroy']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('voitures', VoitureController::class);
     Route::apiResource('missions', MissionController::class);

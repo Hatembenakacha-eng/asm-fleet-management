@@ -1,30 +1,70 @@
 <div class="page-container">
 
-  <!-- En-tête de la page -->
+  <!-- En-tête -->
   <div class="page-head">
     <div>
       <h1>Bonjour, {{ user?.name }}</h1>
-      <!--<p class="sub">
-        {{ user?.role === 'admin' ? "Vue d'ensemble de votre compte administrateur." : "Voici votre situation actuelle." }}
-      </p>-->
     </div>
   </div>
 
-
-  <!-- Section principale : Admin ou Employé -->
+  <!-- SECTION ADMIN -->
   @if (user?.role === 'admin') {
 
-    <div class="card accueil-summary">
-      <div class="summary-text">
-        <h3>Tableau de bord de gestion</h3>
-        <p class="sub">Accédez aux statistiques globales de la flotte et des affectations.</p>
-      </div>
+    <div class="admin-section">
 
-      <a routerLink="/dashboard" class="btn btn-primary">Ouvrir le tableau de bord</a>
+
+      @if (demandesAValider.length > 0) {
+        <div class="demandes-list">
+          @for (item of demandesAValider; track item.id) {
+            <div class="card demande-card">
+              <div class="demande-info">
+                <span class="badge badge-pending">⌛ Demande à valider</span>
+
+                <h3>
+                  Demandé par : <strong>{{ item.employee?.nom || user?.name || 'Employé' }}</strong>
+                </h3>
+
+                <p class="detail-line">
+                  📍 <strong>Mission :</strong> {{ item.mission?.destination || 'Destination non spécifiée' }}
+                </p>
+                <p class="detail-line">
+                  🚗 <strong>Véhicule demandé :</strong>
+                  {{ item.voiture?.marque }} {{ item.voiture?.modele }}
+                  ({{ item.voiture?.immatriculation }})
+                </p>
+                @if (item.date_debut && item.date_fin) {
+                  <p class="detail-line">
+                    📅 <strong>Période :</strong> Du {{ item.date_debut }} au {{ item.date_fin }}
+                  </p>
+                }
+              </div>
+
+              <!-- Boutons de validation Admin -->
+              <div class="demande-actions">
+                <button class="btn btn-success" (click)="accepterDemande(item.id)">
+                  ✅ Accepter
+                </button>
+                <button class="btn btn-danger" (click)="refuserDemande(item.id)">
+                  ❌ Refuser
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="card mission-empty">
+          
+          <div>
+            <h3>Aucune demande en attente</h3>
+            <p class="sub">Toutes les demandes d'affectations ont été traitées.</p>
+          </div>
+        </div>
+      }
     </div>
 
   } @else {
 
+    <!-- SECTION EMPLOYÉ -->
     @if (missionEnCours) {
 
       <div class="card mission-summary">
@@ -49,6 +89,28 @@
         </div>
       </div>
 
+    } @else if (demandeEnAttente) {
+
+      <div class="card mission-pending">
+        <div class="mission-header">
+          <span class="badge badge-pending">⏳ Demande en cours de validation par l'administration</span>
+        </div>
+
+        <h3 class="mission-title">
+          {{ demandeEnAttente.mission?.destination || 'Demande de mission' }}
+        </h3>
+
+        <div class="mission-details">
+          <div class="detail-item">
+            <span class="icon">🚗</span>
+            <span>
+              Véhicule demandé :
+              <strong>{{ demandeEnAttente.voiture?.marque }} {{ demandeEnAttente.voiture?.modele }}</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
     } @else {
 
       <div class="card mission-empty">
@@ -63,12 +125,9 @@
 
   }
 
-
-  <!-- Section Actions Rapides -->
+  <!-- Actions rapides -->
   <h2 class="actions-title">Actions rapides</h2>
-
   <div class="quick-actions-grid">
-
     <a routerLink="/assistant-ia" class="action-card">
       <div class="action-icon">🤖</div>
       <div class="action-info">
@@ -76,27 +135,6 @@
         <span>Demander une recommandation</span>
       </div>
     </a>
-
-    @if (user?.role === 'admin') {
-
-      <a routerLink="/affectations/nouveau" class="action-card">
-        <div class="action-icon">🚗</div>
-        <div class="action-info">
-          <strong>Affectation</strong>
-          <span>Créer une nouvelle affectation</span>
-        </div>
-      </a>
-
-      <a routerLink="/missions/nouveau" class="action-card">
-        <div class="action-icon">📋</div>
-        <div class="action-info">
-          <strong>Mission</strong>
-          <span>Ajouter une mission</span>
-        </div>
-      </a>
-
-    }
-
     <a routerLink="/profil" class="action-card">
       <div class="action-icon">👤</div>
       <div class="action-info">
@@ -104,7 +142,6 @@
         <span>Gérer vos informations</span>
       </div>
     </a>
-
   </div>
 
 </div>

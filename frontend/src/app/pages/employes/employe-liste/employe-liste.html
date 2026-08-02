@@ -13,7 +13,7 @@
     <div class="emp-grid">
       @for (e of employes; track e.id) {
         <div class="card emp-card">
-          <div class="avatar">{{ e.nom.substring(0,2).toUpperCase() }}</div>
+          <div class="avatar">{{ e.nom.substring(0,2).toUpperCase() }}</div>  
           <div>
             <strong>{{ e.nom }}</strong>
             <div class="role">{{ e.specialite }}</div>
@@ -23,7 +23,7 @@
               <button class="btn-danger-txt" style="font-size:12.5px;" (click)="supprimer(e.id)">Supprimer</button>
             </div>
           </div>
-        </div>  
+        </div>
       }
     </div>
   }

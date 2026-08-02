@@ -26,14 +26,15 @@
         <div class="bulle" [class.moi]="msg.auteur === 'moi'">
           <p>{{ msg.texte }}</p>
 
-          <!-- SOLUTION 2 : Bouton "Faire la demande" si un véhicule est suggéré -->
+          <!-- Bouton de réservation généré dynamiquement -->
           @if (msg.vehiculeSuggere && msg.auteur === 'ia') {
-            <div class="action-demande-container">
+            <div class="action-demande-container" style="margin-top: 10px;">
               <button
                 class="btn btn-sm btn-success"
                 (click)="faireDemande(msg)"
                 [disabled]="loading">
-                ⚡ Faire une demande pour cette mission
+                ⚡ Confirmer et Réserver {{ msg.vehiculeSuggere.marque }}
+                ({{ msg.vehiculeSuggere.modele || msg.vehiculeSuggere.immatriculation }})
               </button>
             </div>
           }
@@ -47,7 +48,7 @@
       }
     </div>
 
-    <!-- Saisie libre avec touche Entrée -->
+    <!-- Zone de saisie avec touche Entrée -->
     <div class="chat-input-row">
       <input
         type="text"
@@ -58,10 +59,10 @@
       <button
         class="btn btn-primary"
         (click)="envoyerLibre()"
-        [disabled]="!messageLibre.trim() || loading">     
+        [disabled]="!messageLibre.trim() || loading">
         Envoyer
       </button>
     </div>
   </div>
 
-</div>
+</div>    

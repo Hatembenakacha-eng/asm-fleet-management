@@ -60,12 +60,12 @@
             <td>{{a.date_debut}}</td>
 
             <td>{{a.date_fin}}</td>
-  
+
             <td>
 
               <span class="badge"
               [class.badge-dispo]="a.voiture?.statut=='disponible'"
-              [class.badge-mission]="a.voiture?.statut=='en_mission'"
+              [class.badge-mission]="a.voiture?.statut=='en_mission'"    
               [class.badge-maint]="a.voiture?.statut=='en_maintenance'">
 
                 {{a.voiture?.statut}}

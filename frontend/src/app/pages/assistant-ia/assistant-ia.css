@@ -94,28 +94,10 @@
   align-self: flex-end;
 }
 
-/* Animation pendant le chargement (Typing Indicator) */
-.bulle.typing {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-  padding: 12px 16px;
-}
-
-.bulle.typing span {
-  width: 8px;
-  height: 8px;
-  background: #94a3b8;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
-}
-
-.bulle.typing span:nth-child(1) { animation-delay: -0.32s; }
-.bulle.typing span:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1.0); }
+/* Animation pendant le chargement */
+.loading-bulle {
+  font-style: italic;
+  color: #64748b;
 }
 
 /* Zone de saisie en bas */
@@ -144,7 +126,7 @@
   box-shadow: 0 0 0 3px rgba(245, 130, 32, 0.15);
 }
 
-/* Bouton principal */
+/* Boutons */
 .btn-primary {
   background-color: var(--asm-orange, #f58220) !important;
   color: #ffffff;
@@ -191,9 +173,4 @@
 
 .btn-success:hover {
   background-color: #e07010;
-}
-
-.loading-bulle {
-  font-style: italic;
-  color: #64748b;
 }
