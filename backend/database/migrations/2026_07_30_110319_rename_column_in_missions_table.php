@@ -8,16 +8,19 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('missions', function (Blueprint $table) {
-            // Remplace 'ancien_nom' par le nom actuel dans ta BDD (ex: type_vehicule_id ou autre)
-            $table->renameColumn('type_vihicule', 'type_vehicule');
-        });
+        if (Schema::hasColumn('missions', 'type_vihicule') && !Schema::hasColumn('missions', 'type_vehicule')) {
+            Schema::table('missions', function (Blueprint $table) {
+                $table->renameColumn('type_vihicule', 'type_vehicule');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('missions', function (Blueprint $table) {
-            $table->renameColumn('type_vehicule', 'type_vihicule');
-        });
+        if (Schema::hasColumn('missions', 'type_vehicule') && !Schema::hasColumn('missions', 'type_vihicule')) {
+            Schema::table('missions', function (Blueprint $table) {
+                $table->renameColumn('type_vehicule', 'type_vihicule');
+            });
+        }
     }
 };

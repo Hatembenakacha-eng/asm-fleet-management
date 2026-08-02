@@ -14,9 +14,6 @@ use Carbon\Carbon;
 
 class AffectationController extends Controller
 {
-    /**
-     * Récupérer la liste des affectations avec relations (utilisé par l'Accueil)
-     */
     public function index(Request $request): JsonResponse
     {
         try {
@@ -42,9 +39,6 @@ class AffectationController extends Controller
         }
     }
 
-    /**
-     * Helper pour valider et formater la date au format YYYY-MM-DD
-     */
     private function parseDateValid(?string $dateInput, string $fallback): string
     {
         if (empty($dateInput) || trim($dateInput) === '?' || trim($dateInput) === '') {
@@ -58,9 +52,6 @@ class AffectationController extends Controller
         }
     }
 
-    /**
-     * Enregistrer une nouvelle affectation (Création depuis l'IA ou formulaire)
-     */
     public function store(Request $request): JsonResponse
     {
         $request->validate([
@@ -74,10 +65,8 @@ class AffectationController extends Controller
 
         try {
             return DB::transaction(function () use ($request) {
-                // 1. Récupération de l'utilisateur connecté
                 $authUser = Auth::user() ?? $request->user();
 
-                // 2. Identification sécurisée de l'employé
                 $employeeId = null;
                 if ($authUser) {
                     if (!empty($authUser->employee_id)) {
@@ -98,7 +87,6 @@ class AffectationController extends Controller
                 $creatorId = $authUser ? $authUser->id : 1;
                 $missionId = $request->input('mission_id');
 
-                // 3. Dates et destination
                 $todayStr = now()->format('Y-m-d');
                 $nextDayStr = now()->addDays(2)->format('Y-m-d');
 
@@ -110,7 +98,6 @@ class AffectationController extends Controller
                     $destination = 'Mission IA (Générée)';
                 }
 
-                // 4. Création de la mission si absente
                 if (empty($missionId) || (int)$missionId === 0) {
                     $nouvelleMission = Mission::create([
                         'destination' => $destination,
@@ -122,7 +109,6 @@ class AffectationController extends Controller
                     $missionId = $nouvelleMission->id;
                 }
 
-                // 5. Création de l'affectation
                 $affectation = Affectation::create([
                     'voiture_id'  => $request->input('voiture_id'),
                     'mission_id'  => $missionId,
@@ -133,7 +119,6 @@ class AffectationController extends Controller
                     'date_fin'    => $dateFin,
                 ]);
 
-                // Recharger avec les relations pour le retour JSON
                 $affectation->load(['voiture', 'mission', 'employee']);
 
                 return response()->json([
@@ -153,9 +138,17 @@ class AffectationController extends Controller
         }
     }
 
-    /**
-     * Mettre à jour le statut d'une affectation (Accepter / Refuser par l'Admin)
-     */
+    public function show($id): JsonResponse
+    {
+        $affectation = Affectation::with(['voiture', 'mission', 'employee'])->find($id);
+
+        if (!$affectation) {
+            return response()->json(['succes' => false, 'message' => 'Affectation introuvable.'], 404);
+        }
+
+        return response()->json(['succes' => true, 'data' => $affectation], 200);
+    }
+
     public function update(Request $request, $id): JsonResponse
     {
         try {
@@ -175,7 +168,6 @@ class AffectationController extends Controller
             $affectation->statut = $request->input('statut');
             $affectation->save();
 
-            // Mettre à jour le statut de la voiture associée si besoin
             if ($affectation->voiture) {
                 if (in_array(strtolower($affectation->statut), ['active', 'validee', 'en_cours'])) {
                     $affectation->voiture->update(['statut' => 'en_mission']);
@@ -200,9 +192,6 @@ class AffectationController extends Controller
         }
     }
 
-    /**
-     * Supprimer une affectation
-     */
     public function destroy($id): JsonResponse
     {
         try {

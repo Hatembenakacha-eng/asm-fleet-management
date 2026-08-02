@@ -37,11 +37,15 @@ return new class extends Migration
             $table->integer('kilometrage_debut')->nullable();
             $table->integer('kilometrage_fin')->nullable();
 
+            // Statut mis à jour pour inclure toutes les étapes du cycle de vie
             $table->enum('statut', [
+                'en_attente',
                 'active',
+                'validee',
+                'refusee',
                 'terminee',
                 'annulee'
-            ])->default('active');
+            ])->default('en_attente');
 
             $table->timestamps();
         });

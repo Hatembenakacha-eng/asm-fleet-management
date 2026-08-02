@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { VoitureService } from '../../services/voiture';
 import { MissionService } from '../../services/mission';
@@ -12,19 +12,18 @@ export class Dashboard implements OnInit {
   private voitureService = inject(VoitureService);
   private missionService = inject(MissionService);
   private affectationService = inject(AffectationService);
+  private cdr = inject(ChangeDetectorRef);
 
   voitures: Voiture[] = []; missions: Mission[] = []; affectations: Affectation[] = [];
 
   ngOnInit() {
-    this.voitureService.getAll().subscribe(res => this.voitures = res.data);
-    this.missionService.getAll().subscribe(res => this.missions = res.data);
-    this.affectationService.getAll().subscribe(res => this.affectations = res.data);
+    this.voitureService.getAll().subscribe(res => { this.voitures = res.data; this.cdr.detectChanges(); });
+    this.missionService.getAll().subscribe(res => { this.missions = res.data; this.cdr.detectChanges(); });
+    this.affectationService.getAll().subscribe(res => { this.affectations = res.data; this.cdr.detectChanges(); });
   }
 
   get dispo() { return this.voitures.filter(v => v.statut === 'disponible').length; }
-
   get tauxDispo() { return this.voitures.length ? Math.round((this.dispo / this.voitures.length) * 100) : 0; }
-
   dotClasse(statut: string): string {
     return statut === 'disponible' ? 'dispo' : statut === 'en_mission' ? 'mission' : 'maint';
   }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
@@ -15,13 +15,13 @@ export class Register {
   email = '';
   password = '';
   password_confirmation = '';
-  role = 'admin'; // valeur par défaut
+  role = 'admin';
 
   erreur = '';
   succes = false;
   chargement = false;
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
   creerCompte(): void {
     this.erreur = '';
@@ -32,20 +32,18 @@ export class Register {
       email: this.email,
       password: this.password,
       password_confirmation: this.password_confirmation
-        }).subscribe({
+    }).subscribe({
       next: () => {
         this.chargement = false;
         this.succes = true;
+        this.cdr.detectChanges();
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err: any) => {
-      this.chargement = false;
-
-      console.log(err);
-      console.log(err.error);
-
-      this.erreur = JSON.stringify(err.error);
-    }
+        this.chargement = false;
+        this.erreur = JSON.stringify(err.error);
+        this.cdr.detectChanges();
+      }
     });
   }
 }

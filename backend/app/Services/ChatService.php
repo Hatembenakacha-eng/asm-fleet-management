@@ -33,10 +33,10 @@ class ChatService
 
             $formattedHistory = [];
             foreach ($historique as $msg) {
-                if (is_array($msg) && isset($msg['auteur'], $msg['texte'])) {
+                if (is_array($msg) && isset($msg['role'], $msg['content'])) {
                     $formattedHistory[] = [
-                        'role' => $msg['auteur'] === 'moi' ? 'user' : 'assistant',
-                        'content' => (string) $msg['texte']
+                        'role' => in_array($msg['role'], ['user', 'assistant'], true) ? $msg['role'] : 'user',
+                        'content' => (string) $msg['content']
                     ];
                 }
             }
@@ -65,7 +65,6 @@ class ChatService
             $dateDebut = null;
             $dateFin = null;
 
-            // Détection et extraction des balises [PROPOSER:...]
             if (preg_match('/\[PROPOSER:voiture_id=(\d+),mission_id=(\d+)(?:,dest=([^,\]]+))?(?:,debut=([^,\]]+))?(?:,fin=([^,\]]+))?\]/', $texte, $matches)) {
                 $voitureId = (int) $matches[1];
                 $missionIdFinal = (int) $matches[2];
@@ -73,7 +72,6 @@ class ChatService
                 $dateDebut = $matches[4] ?? now()->format('Y-m-d');
                 $dateFin = $matches[5] ?? now()->addDays(2)->format('Y-m-d');
 
-                // Retirer le tag de la réponse texte visible par l'utilisateur
                 $texte = trim((string) preg_replace('/\[PROPOSER:.*?\]/', '', $texte));
 
                 if ($voitureId > 0) {

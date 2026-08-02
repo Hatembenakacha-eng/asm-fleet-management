@@ -11,10 +11,10 @@
   @if (user?.role === 'admin') {
 
     <div class="admin-section">
-
+      <h2 class="section-title">📥 Demandes d'affectation en attente</h2>
 
       @if (demandesAValider.length > 0) {
-        <div class="demandes-list">
+        <div class="demandes-list">  
           @for (item of demandesAValider; track item.id) {
             <div class="card demande-card">
               <div class="demande-info">
@@ -53,7 +53,7 @@
         </div>
       } @else {
         <div class="card mission-empty">
-          
+          <div class="empty-icon">✅</div>
           <div>
             <h3>Aucune demande en attente</h3>
             <p class="sub">Toutes les demandes d'affectations ont été traitées.</p>

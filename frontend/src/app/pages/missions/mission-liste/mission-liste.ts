@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MissionService } from '../../../services/mission';
 import { Mission } from '../../../models/mission';
@@ -6,6 +6,7 @@ import { Mission } from '../../../models/mission';
 @Component({ selector: 'app-mission-liste', standalone: true, imports: [RouterLink], templateUrl: './mission-liste.html' })
 export class MissionListe implements OnInit {
   private service = inject(MissionService);
+  private cdr = inject(ChangeDetectorRef);
   missions: Mission[] = [];
   chargement = true;
   erreur = '';
@@ -14,8 +15,8 @@ export class MissionListe implements OnInit {
   charger() {
     this.chargement = true;
     this.service.getAll().subscribe({
-      next: res => { this.missions = res.data; this.chargement = false; },
-      error: () => { this.erreur = "Impossible de charger les missions."; this.chargement = false; }
+      next: res => { this.missions = res.data; this.chargement = false; this.cdr.detectChanges(); },
+      error: () => { this.erreur = "Impossible de charger les missions."; this.chargement = false; this.cdr.detectChanges(); }
     });
   }
   supprimer(id: number) {

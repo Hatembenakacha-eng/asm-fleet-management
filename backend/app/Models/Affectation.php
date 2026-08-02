@@ -11,6 +11,7 @@ class Affectation extends Model
         'mission_id',
         'employee_id',
         'cree_par',
+        'statut',     
         'date_debut',
         'date_fin'
     ];

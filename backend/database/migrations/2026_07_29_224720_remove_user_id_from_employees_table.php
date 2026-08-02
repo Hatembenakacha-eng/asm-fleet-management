@@ -8,17 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            // Supprime la contrainte de clé étrangère si elle existe, puis la colonne
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        if (Schema::hasColumn('employees', 'user_id')) {
+            Schema::table('employees', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+                $table->dropColumn('user_id');
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('employees', function (Blueprint $table) {
-            $table->foreignId('user_id')->nullable()->constrained('users');
-        });
+        if (!Schema::hasColumn('employees', 'user_id')) {
+            Schema::table('employees', function (Blueprint $table) {
+                $table->foreignId('user_id')->nullable()->constrained('users');
+            });
+        }
     }
 };

@@ -9,7 +9,6 @@ use App\Http\Controllers\AffectationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RecommandationController;
 use App\Http\Controllers\ProfileController;
-
 use App\Http\Controllers\ChatController;
 
 Route::get('/user', function (Request $request) {
@@ -19,13 +18,6 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'Creer_un_compte']);
 Route::post('/login', [AuthController::class, 'Se_connecter']);
 Route::post('/logout', [AuthController::class, 'Se_deconnecter'])->middleware('auth:sanctum');
-
-
-
-Route::get('/affectations', [AffectationController::class, 'index']);
-Route::post('/affectations', [AffectationController::class, 'store']);
-Route::put('/affectations/{id}', [AffectationController::class, 'update']);
-Route::delete('/affectations/{id}', [AffectationController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('voitures', VoitureController::class);
@@ -41,7 +33,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'throttle:10,1'])->group(function () {
     Route::get('/missions/{mission}/recommandation', [RecommandationController::class, 'recommander']);
 });
-
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong', 'heure' => now()]);
@@ -59,6 +50,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/profile', [ProfileController::class, 'updateProfile']);
     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
 });
-
-
 
