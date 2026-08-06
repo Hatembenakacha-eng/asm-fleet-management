@@ -5,12 +5,12 @@
     <p class="sub">Gérez vos informations personnelles et les paramètres de votre compte.</p>
   </div>
 
-  <!-- Messages de notification -->
+  
   <div *ngIf="messageSuccess" class="alert alert-success">
     <span>✓</span> {{ messageSuccess }}
   </div>
   <div *ngIf="messageError" class="alert alert-danger">
-    <span>⚠️</span> {{ messageError }}
+     {{ messageError }}
   </div>
 
   <!-- Carte Principale Unique -->
@@ -125,7 +125,7 @@
 
       <div class="modal-buttons">
         <button type="button" class="btn btn-secondary" (click)="togglePasswordModal()">Annuler</button>
-        <button type="submit" class="btn btn-primary">Valider</button>   
+        <button type="submit" class="btn btn-primary">Valider</button>
       </div>
     </form>
   </div>
