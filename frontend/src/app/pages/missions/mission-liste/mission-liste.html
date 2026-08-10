@@ -1,27 +1,55 @@
 <div class="page">
   <div class="page-head">
-    <div><h1>Missions</h1><p class="sub">Suivi des ordres de mission.</p></div>
-    <a routerLink="/missions/nouveau" class="btn btn-primary">+ Nouvelle mission</a>
+    <div><h1>Missions</h1><p class="sub">{{ missions.length }} {{ missions.length > 1 ? 'ordres de mission enregistrés' : 'ordre de mission enregistré' }}.</p></div>
+    <a routerLink="/missions/nouveau" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+      Nouvelle mission
+    </a>
   </div>
+
   <div class="card" style="padding:18px;">
     @if (chargement) {
-      <p>Chargement...</p>
+      <div class="state-loading"><div class="spinner"></div> Chargement des missions...</div>
     } @else if (erreur) {
-      <p style="color:var(--red);">{{ erreur }}</p>
+      <div class="empty-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <h3>{{ erreur }}</h3>
+      </div>
     } @else if (missions.length === 0) {
-      <p>Aucune mission enregistrée.</p>
+      <div class="empty-state">
+        <svg width="60" height="44" viewBox="0 0 96 68" fill="none">
+          <path d="M20 46c0-14 12-30 28-30s28 16 28 30" stroke="#454b57" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <circle cx="48" cy="20" r="6" fill="#fff" stroke="#454b57" stroke-width="2.5"/>
+          <rect x="8" y="46" width="80" height="6" rx="3" fill="var(--border)"/>
+        </svg>
+        <h3>Aucune mission enregistrée</h3>
+        <p>Créez votre premier ordre de mission.</p>
+      </div>
     } @else {
-      @for (m of missions; track m.id) {
+      <div class="list-toolbar" style="padding:0 0 14px;">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" [(ngModel)]="recherche" placeholder="Rechercher une destination, un type de véhicule...">
+        </div>
+      </div>
+
+      @if (missionsFiltrees.length === 0) {
+        <div class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-mute)" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <h3>Aucun résultat</h3>
+          <p>Aucune mission ne correspond à cette recherche.</p>
+        </div>
+      }
+      @for (m of missionsFiltrees; track m.id) {
         <div class="ticket">
           <div class="stub"><span class="ref mono">M-{{ m.id }}</span><span class="date mono">{{ m.date_depart }}</span></div>
           <div class="body">
-            <div><div class="dest">{{ m.destination }}</div><div class="veh">{{ m.type_vehicule || 'Tout type' }} — min. {{ m.capacite_minimale || 0 }}</div></div>
-            <div style="display:flex; align-items:center; gap:14px;">
+            <div><div class="dest">{{ m.destination }}</div><div class="veh">{{ m.type_vehicule || 'Tout type' }} — min. {{ m.capacite_minimale || 0 }} places</div></div>
+            <div class="actions-cell">
               <a [routerLink]="['/missions', m.id, 'modifier']" class="link">Modifier</a>
               <button class="btn-danger-txt" (click)="supprimer(m.id)">Supprimer</button>
             </div>
-
-          </div>  
+          </div>
         </div>
       }
     }

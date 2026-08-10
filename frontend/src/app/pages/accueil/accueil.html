@@ -4,6 +4,7 @@
   <div class="page-head">
     <div>
       <h1>Bonjour, {{ user?.name }}</h1>
+      <p class="sub">Voici l'état de vos demandes et missions aujourd'hui.</p>
     </div>
   </div>
 
@@ -11,64 +12,76 @@
   @if (user?.role === 'admin') {
 
     <div class="admin-section">
-      <h2 class="section-title"> Demandes d'affectation en attente</h2>
+      <div class="section-title-row">
+        <h2 class="section-title">Demandes d'affectation en attente</h2>
+        @if (demandesAValider.length > 0) {
+          <span class="count-pill">{{ demandesAValider.length }} en attente</span>
+        }
+      </div>
 
       @if (demandesAValider.length > 0) {
         <div class="demandes-list">
           @for (item of demandesAValider; track item.id) {
-            <div class="card demande-card">
-              <div class="demande-info">
-                <span class="badge badge-pending"> Demande à valider</span>
-
-                <h3>
-                  Demandé par : <strong>{{ item.employee?.nom || user?.name || 'Employé' }}</strong>
-                </h3>
-
-                <p class="detail-line">
-                   <strong>Mission :</strong> {{ item.mission?.destination || 'Destination non spécifiée' }}
-                </p>
-                <p class="detail-line">
-                   <strong>Véhicule demandé :</strong>
-                  {{ item.voiture?.marque }} {{ item.voiture?.modele }}
-                  ({{ item.voiture?.immatriculation }})
-                </p>
-                @if (item.date_debut && item.date_fin) {
-                  <p class="detail-line">
-                     <strong>Période :</strong> Du {{ item.date_debut }} au {{ item.date_fin }}
-                  </p>
-                }
+            <div class="ticket">
+              <div class="stub">
+                <span class="ref">DEM</span>
+                <span class="num">{{ item.id }}</span>
               </div>
-
-              <!-- Boutons de validation Admin -->
-              <div class="demande-actions">
-                <button class="btn btn-success" (click)="accepterDemande(item.id)">
-                   Accepter
-                </button>
-                <button class="btn btn-danger" (click)="refuserDemande(item.id)">
-                  ❌ Refuser
-                </button>
+              <div class="ticket-body">
+                <div class="ticket-info">
+                  <div class="dest">{{ item.mission?.destination || 'Destination non spécifiée' }}</div>
+                  <div class="meta">
+                    <span class="meta-item">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+                      {{ item.voiture?.marque }} {{ item.voiture?.modele }} · {{ item.voiture?.immatriculation }}
+                    </span>
+                    <span class="meta-item">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c1-3.6 3.6-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/></svg>
+                      {{ item.employee?.nom || user?.name || 'Employé' }}
+                    </span>
+                    @if (item.date_debut && item.date_fin) {
+                      <span class="meta-item">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+                        {{ item.date_debut }} → {{ item.date_fin }}
+                      </span>
+                    }
+                  </div>
+                </div>
+                <div class="ticket-actions">
+                  <button class="btn-round ok" title="Accepter" (click)="accepterDemande(item.id)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+                  </button>
+                  <button class="btn-round no" title="Refuser" (click)="refuserDemande(item.id)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
           }
         </div>
       } @else {
-        <div class="card mission-empty">
-          <div>
-            <h3>Aucune demande en attente</h3>
-            <p class="sub">Toutes les demandes d'affectations ont été traitées.</p>
-          </div>
+        <div class="empty-illustration">
+          <svg width="72" height="52" viewBox="0 0 96 68" fill="none">
+            <rect x="4" y="40" width="88" height="6" rx="3" fill="var(--border)"/>
+            <path d="M16 40l6-16a4 4 0 0 1 3.8-2.6h44.4A4 4 0 0 1 74 24l6 16" stroke="#c9c4b6" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="28" cy="44" r="6" fill="#fff" stroke="#c9c4b6" stroke-width="2.5"/>
+            <circle cx="68" cy="44" r="6" fill="#fff" stroke="#c9c4b6" stroke-width="2.5"/>
+            <path d="M24 26h48" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <h3>Aucune demande en attente</h3>
+          <p class="sub">Toutes les demandes d'affectations ont été traitées.</p>
         </div>
       }
     </div>
 
   } @else {
 
-
+    <!-- SECTION EMPLOYÉ -->
     @if (missionEnCours) {
 
       <div class="card mission-summary">
         <div class="mission-header">
-          <span class="badge badge-active"> Mission en cours</span>
+          <span class="badge badge-active">Mission en cours</span>
           <span class="mission-date">Depuis le {{ missionEnCours.date_debut }}</span>
         </div>
 
@@ -78,6 +91,7 @@
 
         <div class="mission-details">
           <div class="detail-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
             <span>
               Véhicule :
               <strong>{{ missionEnCours.voiture?.marque }} {{ missionEnCours.voiture?.modele }}</strong>
@@ -100,6 +114,7 @@
 
         <div class="mission-details">
           <div class="detail-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
             <span>
               Véhicule demandé :
               <strong>{{ demandeEnAttente.voiture?.marque }} {{ demandeEnAttente.voiture?.modele }}</strong>
@@ -110,11 +125,16 @@
 
     } @else {
 
-      <div class="card mission-empty">
-        <div>
-          <h3>Aucune mission en cours</h3>
-          <p class="sub">Vous n'avez pas de véhicule ou de mission affectée pour le moment.</p>
-        </div>
+      <div class="empty-illustration">
+        <svg width="72" height="52" viewBox="0 0 96 68" fill="none">
+          <rect x="4" y="40" width="88" height="6" rx="3" fill="var(--border)"/>
+          <path d="M16 40l6-16a4 4 0 0 1 3.8-2.6h44.4A4 4 0 0 1 74 24l6 16" stroke="#c9c4b6" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="28" cy="44" r="6" fill="#fff" stroke="#c9c4b6" stroke-width="2.5"/>
+          <circle cx="68" cy="44" r="6" fill="#fff" stroke="#c9c4b6" stroke-width="2.5"/>
+          <path d="M24 26h48" stroke="var(--border)" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Aucune mission en cours</h3>
+        <p class="sub">Vous n'avez pas de véhicule ou de mission affectée pour le moment.</p>
       </div>
 
     }
@@ -125,12 +145,18 @@
   <h2 class="actions-title">Actions rapides</h2>
   <div class="quick-actions-grid">
     <a routerLink="/assistant-ia" class="action-card">
+      <div class="action-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      </div>
       <div class="action-info">
         <strong>Assistant IA</strong>
         <span>Demander une recommandation</span>
       </div>
     </a>
     <a routerLink="/profil" class="action-card">
+      <div class="action-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.3-4.2 4.3-6.4 7.5-6.4s6.2 2.2 7.5 6.4"/></svg>
+      </div>
       <div class="action-info">
         <strong>Mon profil</strong>
         <span>Gérer vos informations</span>

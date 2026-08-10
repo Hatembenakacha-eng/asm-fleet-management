@@ -8,6 +8,7 @@ import { EmployeeService } from '../../../services/employee';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './employe-form.html' })
+
 export class EmployeForm implements OnInit {
   private service = inject(EmployeeService);
   private route = inject(ActivatedRoute);
@@ -23,7 +24,7 @@ export class EmployeForm implements OnInit {
       this.id = +idParam;
       this.service.getOne(this.id).subscribe(res => {
         Object.assign(this, res.data);
-        this.cdr.detectChanges();
+        this.cdr.detectChanges(); // Force le rafraîchissement du formulaire après la réponse HTTP
       });
     }
   }
@@ -33,6 +34,6 @@ export class EmployeForm implements OnInit {
     obs.subscribe(() => this.router.navigate(['/employes']));
   }
   annuler(): void {
-    this.router.navigate(['/employes']);
-  }
+  this.router.navigate(['/employes']);
+}
 }

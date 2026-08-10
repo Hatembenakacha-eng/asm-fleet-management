@@ -1,106 +1,63 @@
 <div class="page">
-
   <div class="page-head">
     <div>
       <h1>Nouvelle affectation</h1>
+      <p class="sub">Associez un véhicule, une mission et un employé.</p>
     </div>
   </div>
 
-  <div class="card form-page" style="padding:22px;">
-
+  <div class="card form-page" style="padding:24px 26px;">
     <form (ngSubmit)="onSubmit()">
 
-      <label for="voiture_id">Véhicule</label>
-      <select
-        id="voiture_id"
-        name="voiture_id"
-        [(ngModel)]="voiture_id"
-        required>
-
-        <option [ngValue]="null" disabled>Sélectionner un véhicule</option>
-
-        @for (v of voitures; track v.id) {
-          <option [ngValue]="v.id">
-            {{ v.immatriculation }} - {{ v.marque }} {{ v.modele }}
-          </option>
-        }
-
-      </select>
-
-      <label for="mission_id">Mission</label>
-      <select
-        id="mission_id"
-        name="mission_id"
-        [(ngModel)]="mission_id"
-        required>
-
-        <option [ngValue]="null" disabled>Sélectionner une mission</option>
-
-        @for (m of missions; track m.id) {
-          <option [ngValue]="m.id">
-            {{ m.destination }}
-          </option>
-        }
-
-      </select>
-
-      <label for="employee_id">Employé</label>
-      <select
-        id="employee_id"
-        name="employee_id"
-        [(ngModel)]="employee_id"
-        required>
-
-        <option [ngValue]="null" disabled>Sélectionner un employé</option>
-
-        @for (e of employees; track e.id) {
-          <option [ngValue]="e.id">
-            {{ e.nom }}
-          </option>
-        }
-
-
-      </select>
-
-      <label for="date_debut">Date début</label>
-      <input
-        id="date_debut"
-        type="date"
-        name="date_debut"
-        [(ngModel)]="date_debut"
-        required>
-
-      <label for="date_fin">Date fin</label>
-      <input
-        id="date_fin"
-        type="date"
-        name="date_fin"
-        [(ngModel)]="date_fin"  
-        required>
-
       @if (erreur) {
-        <div class="erreurs">
-          <p>{{ erreur }}</p>
-        </div>
+        <ul class="field-errors"><li>{{ erreur }}</li></ul>
       }
 
-      <div style="display:flex;gap:10px;margin-top:20px;">
+      <div class="form-grid">
+        <div class="full">
+          <label for="voiture_id">Véhicule</label>
+          <select id="voiture_id" name="voiture_id" [(ngModel)]="voiture_id" required>
+            <option [ngValue]="null" disabled>Sélectionner un véhicule</option>
+            @for (v of voitures; track v.id) {
+              <option [ngValue]="v.id">{{ v.immatriculation }} — {{ v.marque }} {{ v.modele }}</option>
+            }
+          </select>
+        </div>
 
-        <button type="submit" class="btn btn-primary">
-          Créer
-        </button>
+        <div class="full">
+          <label for="mission_id">Mission</label>
+          <select id="mission_id" name="mission_id" [(ngModel)]="mission_id" required>
+            <option [ngValue]="null" disabled>Sélectionner une mission</option>
+            @for (m of missions; track m.id) {
+              <option [ngValue]="m.id">{{ m.destination }}</option>
+            }
+          </select>
+        </div>
 
-        <button
-          type="button"
-          class="btn btn-outline"
-          (click)="annuler()">
-          Annuler
-        </button>
+        <div class="full">
+          <label for="employee_id">Employé</label>
+          <select id="employee_id" name="employee_id" [(ngModel)]="employee_id" required>
+            <option [ngValue]="null" disabled>Sélectionner un employé</option>
+            @for (e of employees; track e.id) {
+              <option [ngValue]="e.id">{{ e.nom }}</option>
+            }
+          </select>
+        </div>
 
+        <div>
+          <label for="date_debut">Date début</label>
+          <input id="date_debut" type="date" name="date_debut" [(ngModel)]="date_debut" required>
+        </div>
+        <div>
+          <label for="date_fin">Date fin</label>
+          <input id="date_fin" type="date" name="date_fin" [(ngModel)]="date_fin" required>
+        </div>
       </div>
 
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Créer l'affectation</button>
+        <button type="button" class="btn btn-outline" (click)="annuler()">Annuler</button>
+      </div>
     </form>
-
   </div>
-
 </div>

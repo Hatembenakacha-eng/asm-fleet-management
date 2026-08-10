@@ -1,167 +1,55 @@
 <div class="page">
-
   <div class="page-head">
     <div>
-      <h1>
-        @if (id) {
-          Modifier un véhicule
-        } @else {
-          Ajouter un véhicule
-        }
-      </h1>
+      <h1>{{ id ? 'Modifier un véhicule' : 'Ajouter un véhicule' }}</h1>
+      <p class="sub">{{ id ? 'Mettez à jour les informations du véhicule.' : 'Renseignez les informations du nouveau véhicule.' }}</p>
     </div>
   </div>
 
-  <div class="card form-page" style="padding:22px;">
-
-    @if (!id) {
-
-      <!-- ================= AJOUT ================= -->
-
-      <form (ngSubmit)="onSubmit()">
-
-      <label for="immatriculation">Immatriculation</label>
-      <input
-        id="immatriculation"
-        type="text"
-        [(ngModel)]="immatriculation"
-        name="immatriculation"
-        required>
-
-      <label for="marque">Marque</label>
-      <input
-        id="marque"
-        type="text"
-        [(ngModel)]="marque"
-        name="marque"
-        required>
-
-      <label for="modele">Modèle</label>
-      <input
-        id="modele"
-        type="text"
-        [(ngModel)]="modele"
-        name="modele"
-        required>
-
-      <label for="kilometrage">Kilométrage</label>
-      <input
-        id="kilometrage"
-        type="number"
-        [(ngModel)]="kilometrage"
-        name="kilometrage">
-
-      <label for="statut">Statut</label>
-      <select
-        id="statut"
-        [(ngModel)]="statut"
-        name="statut">
-        <option value="disponible">Disponible</option>
-        <option value="en_mission">En mission</option>
-        <option value="en_maintenance">En maintenance</option>
-        <option value="hors_service">Hors service</option>
-        </select>
-
-        <label for="capacite">Capacité</label>
-        <input
-          id="capacite"
-          type="number"
-          [(ngModel)]="capacite"
-          name="capacite">
-
-        <label for="categorie">Catégorie</label>
-        <input
-          id="categorie"
-          type="text"
-          [(ngModel)]="categorie"
-          name="categorie">
-          <div style="display:flex;gap:10px;margin-top:20px;">
-            <button type="submit" class="btn btn-primary">
-              Ajouter
-            </button>
-
-            <button type="button" class="btn btn-outline" (click)="annuler()">
-              Annuler
-            </button>
-          </div>
-
-        </form>
-
-      } @else {
-
-        <!-- ================= MODIFICATION ================= -->
-
-        <form (ngSubmit)="onSubmit()">
-
-        <label for="immatriculation">Immatriculation</label>
-        <input
-            id="immatriculation"
-            type="text"
-            [(ngModel)]="immatriculation"
-            name="immatriculation"
-            required>
-
+  <div class="card form-page" style="padding:24px 26px;">
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div>
+          <label for="immatriculation">Immatriculation</label>
+          <input id="immatriculation" type="text" [(ngModel)]="immatriculation" name="immatriculation" placeholder="137 TUN 4521" required>
+        </div>
+        <div>
+          <label for="categorie">Catégorie</label>
+          <input id="categorie" type="text" [(ngModel)]="categorie" name="categorie" placeholder="Berline, SUV, utilitaire...">
+        </div>
+        <div>
           <label for="marque">Marque</label>
-          <input
-            id="marque"
-            type="text"
-            [(ngModel)]="marque"
-            name="marque"
-            required>
-
+          <input id="marque" type="text" [(ngModel)]="marque" name="marque" placeholder="Peugeot" required>
+        </div>
+        <div>
           <label for="modele">Modèle</label>
-          <input
-            id="modele"
-            type="text"
-            [(ngModel)]="modele"
-            name="modele"
-            required>
-
+          <input id="modele" type="text" [(ngModel)]="modele" name="modele" placeholder="308" required>
+        </div>
+        <div>
           <label for="kilometrage">Kilométrage</label>
-          <input
-            id="kilometrage"
-            type="number"
-            [(ngModel)]="kilometrage"
-            name="kilometrage">
-
+          <input id="kilometrage" type="number" [(ngModel)]="kilometrage" name="kilometrage" placeholder="0">
+        </div>
+        <div>
+          <label for="capacite">Capacité (places)</label>
+          <input id="capacite" type="number" [(ngModel)]="capacite" name="capacite" placeholder="5">
+        </div>
+        <div class="full">
           <label for="statut">Statut</label>
-          <select
-            id="statut"
-            [(ngModel)]="statut"
-            name="statut">
+          <select id="statut" [(ngModel)]="statut" name="statut">
             <option value="disponible">Disponible</option>
             <option value="en_mission">En mission</option>
             <option value="en_maintenance">En maintenance</option>
             <option value="hors_service">Hors service</option>
           </select>
-
-          <label for="capacite">Capacité</label>
-          <input
-            id="capacite"
-            type="number"
-            [(ngModel)]="capacite"
-            name="capacite">
-
-          <label for="categorie">Catégorie</label>
-          <input
-            id="categorie"
-            type="text"
-            [(ngModel)]="categorie"
-            name="categorie">
-        <div style="display:flex;gap:10px;margin-top:20px;">
-          <button type="submit" class="btn btn-primary">
-            Modifier
-          </button>
-
-          <button type="button" class="btn btn-outline" (click)="annuler()">
-            Annuler
-          </button>
         </div>
+      </div>
 
-      </form>
-
-    }
-
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          {{ id ? 'Enregistrer les modifications' : 'Ajouter le véhicule' }}
+        </button>
+        <button type="button" class="btn btn-outline" (click)="annuler()">Annuler</button>
+      </div>
+    </form>
   </div>
-
 </div>

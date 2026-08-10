@@ -1,107 +1,101 @@
 <div class="page">
-
   <div class="page-head">
-
     <div>
       <h1>Affectations</h1>
-      <p class="sub">Historique des affectations.</p>
+      <p class="sub">{{ affectations.length }} {{ affectations.length > 1 ? 'affectations enregistrées' : 'affectation enregistrée' }}.</p>
     </div>
-
     <a routerLink="/affectations/nouveau" class="btn btn-primary">
-      + Nouvelle affectation
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+      Nouvelle affectation
     </a>
-
   </div>
 
   <div class="card table-wrap">
+    @if (chargement) {
+      <div class="state-loading"><div class="spinner"></div> Chargement des affectations...</div>
+    } @else if (erreur) {
+      <div class="empty-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+        <h3>{{ erreur }}</h3>
+      </div>
+    } @else if (affectations.length === 0) {
+      <div class="empty-state">
+        <svg width="60" height="44" viewBox="0 0 96 68" fill="none">
+          <rect x="20" y="10" width="56" height="48" rx="4" fill="#fff" stroke="#454b57" stroke-width="2.5"/>
+          <path d="M30 24h36M30 34h36M30 44h20" stroke="var(--border)" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <h3>Aucune affectation enregistrée</h3>
+        <p>Créez votre première affectation véhicule / mission / employé.</p>
+      </div>
+    } @else {
+      <div class="list-toolbar">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" [(ngModel)]="recherche" placeholder="Rechercher un véhicule, une mission, un employé...">
+        </div>
+        <select [(ngModel)]="filtreStatut" class="toolbar-select">
+          <option value="">Tous les statuts</option>
+          <option value="en_attente">En attente</option>
+          <option value="validee">Validée</option>
+          <option value="refusee">Refusée</option>
+        </select>
+      </div>
 
-    @if(chargement){
-
-      <p style="padding:20px;">Chargement...</p>
-
-    }@else if(erreur){
-
-      <p style="padding:20px;color:red">
-        {{erreur}}
+      @if (affectationsFiltrees.length === 0) {
+        <div class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-mute)" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <h3>Aucun résultat</h3>
+          <p>Aucune affectation ne correspond à cette recherche.</p>
+        </div>
+      } @else {
+      <p class="scroll-hint">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6 3 12l6 6M15 6l6 6-6 6"/></svg>
+        Faites glisser pour voir plus de colonnes
       </p>
-
-    }@else{
-
       <table>
-
         <thead>
-
-        <tr>
-
-          <th>Véhicule</th>
-          <th>Mission</th>
-          <th>Employé</th>
-          <th>Date début</th>
-          <th>Date fin</th>
-          <th>Statut</th>
-          <th>Actions</th>
-
-        </tr>
-
-        </thead>
-
-        <tbody>
-
-        @for(a of affectations;track a.id){
-
           <tr>
-
-            <td>{{a.voiture?.immatriculation}}</td>
-
-            <td>{{a.mission?.destination}}</td>
-
-            <td>{{a.employee?.nom}}</td>
-
-            <td>{{a.date_debut}}</td>
-
-            <td>{{a.date_fin}}</td>
-
-            <td>
-
-              <span class="badge"
-              [class.badge-dispo]="a.voiture?.statut=='disponible'"
-              [class.badge-mission]="a.voiture?.statut=='en_mission'"    
-              [class.badge-maint]="a.voiture?.statut=='en_maintenance'">
-
-                {{a.voiture?.statut}}
-
-              </span>
-
-            </td>
-
-<td>
-
-  <a
-    class="btn btn-outline"
-    [routerLink]="['/affectations', a.id, 'modifier']">
-    Modifier
-  </a>
-
-  <button
-    class="btn btn-danger"
-    (click)="supprimer(a.id)">
-    Supprimer
-  </button>
-
-
-
-</td>
-
+            <th>Véhicule</th>
+            <th>Mission</th>
+            <th>Employé</th>
+            <th>Période</th>
+            <th>Statut</th>
+            <th>Actions</th>
           </tr>
-
-        }
-
+        </thead>
+        <tbody>
+          @for (a of affectationsFiltrees; track a.id) {
+            <tr>
+              <td>
+                <div class="cell-with-icon">
+                  <div class="row-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+                  </div>
+                  <div><strong>{{ a.voiture?.marque }} {{ a.voiture?.modele }}</strong><span class="mono">{{ a.voiture?.immatriculation }}</span></div>
+                </div>
+              </td>
+              <td>{{ a.mission?.destination || '—' }}</td>
+              <td>{{ a.employee?.nom || '—' }}</td>
+              <td class="mono">{{ a.date_debut }} → {{ a.date_fin }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-attente]="a.statut.toLowerCase().includes('attente')"
+                  [class.badge-dispo]="a.statut === 'validee' || a.statut === 'active'"
+                  [class.badge-maint]="a.statut === 'refusee'">
+                  {{ a.statut.toLowerCase().includes('attente') ? 'En attente' : a.statut === 'validee' || a.statut === 'active' ? 'Validée' : a.statut === 'refusee' ? 'Refusée' : a.statut }}
+                </span>
+              </td>
+              <td>
+                <div class="actions-cell">
+                  <a class="link" [routerLink]="['/affectations', a.id, 'modifier']">Modifier</a>
+                  <button class="btn-danger-txt" (click)="supprimer(a.id)">Supprimer</button>
+                </div>
+              </td>
+            </tr>
+          }
         </tbody>
-
       </table>
-
+      }
     }
-
   </div>
-
 </div>

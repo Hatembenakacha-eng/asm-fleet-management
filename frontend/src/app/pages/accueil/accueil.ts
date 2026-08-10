@@ -16,6 +16,7 @@ export class Accueil implements OnInit {
   private authService = inject(Auth);
   private cdr = inject(ChangeDetectorRef);
 
+  // Propriétés binding Angular
   user: any = null;
   demandesAValider: any[] = [];
   missionEnCours: any = null;
@@ -26,6 +27,9 @@ export class Accueil implements OnInit {
     this.chargerDonnees();
   }
 
+  /**
+   * Récupère l'utilisateur connecté via le service ou le localStorage
+   */
   chargerUtilisateurConnecte(): void {
     const auth = this.authService as any;
 
@@ -48,6 +52,9 @@ export class Accueil implements OnInit {
     console.log('👤 Utilisateur connecté :', this.user);
   }
 
+  /**
+   * Récupère la liste globale des affectations et applique les filtres
+   */
   chargerDonnees(): void {
     this.affectationService.getAll().subscribe({
       next: (res: any) => {
@@ -55,6 +62,7 @@ export class Accueil implements OnInit {
         console.log('📦 Affectations récupérées de la BDD :', liste);
 
         if (Array.isArray(liste)) {
+          // 1. Pour l'Admin : Filtrer les demandes en attente de validation
           this.demandesAValider = liste.filter((a: any) => {
             if (!a.statut) return false;
             const st = String(a.statut).toLowerCase().trim();
@@ -63,6 +71,7 @@ export class Accueil implements OnInit {
 
           console.log('✅ Demandes à valider filtrées (Admin) :', this.demandesAValider);
 
+          // 2. Pour l'Employé connecté
           if (this.user) {
             const userId = String(this.user.id);
 
@@ -72,12 +81,14 @@ export class Accueil implements OnInit {
               String(a.cree_par) === userId
             );
 
+            // Mission active / validée
             this.missionEnCours = mesAffectations.find((a: any) => {
               if (!a.statut) return false;
               const st = String(a.statut).toLowerCase().trim();
               return st === 'active' || st === 'en_cours' || st === 'validee' || st === 'valide';
             }) || null;
 
+            // Demande personnelle en attente
             this.demandeEnAttente = mesAffectations.find((a: any) => {
               if (!a.statut) return false;
               const st = String(a.statut).toLowerCase().trim();
@@ -86,7 +97,7 @@ export class Accueil implements OnInit {
           }
         }
 
-        this.cdr.detectChanges();
+        this.cdr.detectChanges(); // Force le rafraîchissement de la vue après la réponse HTTP
       },
       error: (err) => {
         console.error('❌ Erreur de chargement API :', err);
@@ -94,14 +105,23 @@ export class Accueil implements OnInit {
     });
   }
 
+  /**
+   * Accepter une demande (Admin)
+   */
   accepterDemande(id: number): void {
     this.changerStatutDemande(id, 'validee');
   }
 
+  /**
+   * Refuser une demande (Admin)
+   */
   refuserDemande(id: number): void {
     this.changerStatutDemande(id, 'refusee');
   }
 
+  /**
+   * Envoie la mise à jour du statut au backend Laravel
+   */
   private changerStatutDemande(id: number, nouveauStatut: string): void {
     const service = this.affectationService as any;
 
@@ -117,6 +137,7 @@ export class Accueil implements OnInit {
         error: (err: any) => console.error('Erreur lors de la mise à jour:', err)
       });
     } else {
+      // Retrait optimiste de la liste en fallback local
       this.demandesAValider = this.demandesAValider.filter(d => d.id !== id);
       this.cdr.detectChanges();
     }

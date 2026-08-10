@@ -1,15 +1,17 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { EmployeeService } from '../../../services/employee';
 import { Employee } from '../../../models/employee';
 
-@Component({ selector: 'app-employe-liste', standalone: true, imports: [RouterLink], templateUrl: './employe-liste.html' })
+@Component({ selector: 'app-employe-liste', standalone: true, imports: [RouterLink, FormsModule], templateUrl: './employe-liste.html' })
 export class EmployeListe implements OnInit {
   private service = inject(EmployeeService);
   private cdr = inject(ChangeDetectorRef);
   employes: Employee[] = [];
   chargement = true;
   erreur = '';
+  recherche = '';
 
   ngOnInit() { this.charger(); }
   charger() {
@@ -19,6 +21,16 @@ export class EmployeListe implements OnInit {
       error: () => { this.erreur = "Impossible de charger les employés."; this.chargement = false; this.cdr.detectChanges(); }
     });
   }
+
+  get employesFiltres(): Employee[] {
+    const q = this.recherche.trim().toLowerCase();
+    if (!q) return this.employes;
+    return this.employes.filter(e =>
+      e.nom?.toLowerCase().includes(q) ||
+      (e.specialite || '').toLowerCase().includes(q)
+    );
+  }
+
   supprimer(id: number) {
     if (confirm('Supprimer ?')) this.service.delete(id).subscribe(() => this.charger());
   }

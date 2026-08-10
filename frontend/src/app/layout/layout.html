@@ -6,21 +6,46 @@
 
     <nav class="side-nav">
       <div class="nav-group-label">Général</div>
-      <a class="nav-link" routerLink="/accueil" routerLinkActive="active">Accueil</a>
+      <a class="nav-link" routerLink="/accueil" routerLinkActive="active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        Accueil
+      </a>
       @if (user?.role === 'admin') {
-        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Tableau de bord</a>
+        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Tableau de bord
+        </a>
       }
-      <a class="nav-link" routerLink="/assistant-ia" routerLinkActive="active">Assistant IA</a>
+      <a class="nav-link" routerLink="/assistant-ia" routerLinkActive="active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Assistant IA
+      </a>
 
       @if (user?.role === 'admin') {
         <div class="nav-group-label">Exploitation</div>
-        <a class="nav-link" routerLink="/voitures" routerLinkActive="active">Véhicules</a>
-        <a class="nav-link" routerLink="/missions" routerLinkActive="active">Missions</a>
-        <a class="nav-link" routerLink="/affectations" routerLinkActive="active">Affectations</a>
+        <a class="nav-link" routerLink="/voitures" routerLinkActive="active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+          Véhicules
+        </a>
+        <a class="nav-link" routerLink="/missions" routerLinkActive="active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg>
+          Missions
+        </a>
+        <a class="nav-link" routerLink="/affectations" routerLinkActive="active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17V7l8-4 8 4v10l-8 4-8-4Z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
+          Affectations
+          @if (demandesEnAttente > 0) { <span class="nav-pill">{{ demandesEnAttente }}</span> }
+        </a>
         <div class="nav-group-label">Équipe</div>
-        <a class="nav-link" routerLink="/employes" routerLinkActive="active">Employés</a>
+        <a class="nav-link" routerLink="/employes" routerLinkActive="active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c1-3.6 3.6-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/><circle cx="18" cy="8.5" r="2.4"/><path d="M16 14.4c2.3.4 4 1.9 4.7 4.6"/></svg>
+          Employés
+        </a>
       }
-      <a class="nav-link" routerLink="/profil" routerLinkActive="active">Mon profil</a>
+      <a class="nav-link" routerLink="/profil" routerLinkActive="active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.3-4.2 4.3-6.4 7.5-6.4s6.2 2.2 7.5 6.4"/></svg>
+        Mon profil
+      </a>
     </nav>
 
     <div class="side-footer">
@@ -33,7 +58,10 @@
           <span>{{ user?.role === 'admin' ? 'Administrateur' : 'Employé' }}</span>
         </div>
       </div>
-      <button class="btn-ghost-dark" (click)="logout()">Déconnexion</button>
+      <button class="btn-ghost-dark" (click)="logout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        Déconnexion
+      </button>
     </div>
   </aside>
 

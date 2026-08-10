@@ -13,23 +13,23 @@
 .page-head h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--text);
   margin: 0;
 }
 
 .page-head .sub {
-  color: #718096;
+  color: var(--text-mute);
   font-size: 0.95rem;
   margin-top: 0.25rem;
 }
 
 /* Carte Globale */
 .profile-card {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  border: 1px solid #edf2f7;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
 
 /* En-tête Utilisateur (Avatar + Infos) */
@@ -43,9 +43,9 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #fffaf0;
-  border: 2px solid #f2780c;
-  color: #f2780c;
+  background-color: var(--orange-bg);
+  border: 2px solid var(--orange-deep);
+  color: var(--orange-deep);
   font-size: 1.3rem;
   font-weight: 700;
   display: flex;
@@ -57,7 +57,7 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text);
 }
 
 .badge-role {
@@ -67,15 +67,15 @@
   font-size: 0.75rem;
   font-weight: 600;
   border-radius: 20px;
-  background-color: #fffaf0;
-  color: #f2780c;
-  border: 1px solid #feebc8;
+  background-color: var(--orange-bg);
+  color: var(--orange-deep);
+  border: 1px solid var(--orange-bg);
 }
 
 /* Séparateur */
 .divider {
   height: 1px;
-  background-color: #edf2f7;
+  background-color: var(--border);
   margin: 1.75rem 0;
 }
 
@@ -95,16 +95,16 @@
 .form-group label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #4a5568;
+  color: var(--text-mute);
 }
 
 .form-control {
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background-color: #ffffff;
-  color: #2d3748;
+  border: 1px solid var(--border);
+  background-color: var(--canvas);
+  color: var(--text);
   font-size: 0.95rem;
   box-sizing: border-box;
   transition: all 0.2s ease;
@@ -112,13 +112,13 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #f2780c;
-  box-shadow: 0 0 0 3px rgba(242, 120, 12, 0.15);
+  border-color: var(--orange-deep);
+  box-shadow: 0 0 0 3px rgba(245,130,31,.15);
 }
 
 .form-control:disabled {
-  background-color: #f8fafc;
-  color: #718096;
+  background-color: var(--canvas);
+  color: var(--text-mute);
   cursor: not-allowed;
 }
 
@@ -141,31 +141,31 @@
 }
 
 .btn-primary {
-  background-color: #f2780c;
+  background-color: var(--orange-deep);
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background-color: #d96605;
+  background-color: var(--orange);
 }
 
 .btn-secondary {
-  background-color: #edf2f7;
-  color: #4a5568;
+  background-color: var(--border);
+  color: var(--text-mute);
 }
 
 .btn-secondary:hover {
-  background-color: #e2e8f0;
+  background-color: var(--border);
 }
 
 .btn-outline-orange {
   background: transparent;
-  border: 1px solid #f2780c;
-  color: #f2780c;
+  border: 1px solid var(--orange-deep);
+  color: var(--orange-deep);
 }
 
 .btn-outline-orange:hover {
-  background-color: #fffaf0;
+  background-color: var(--orange-bg);
 }
 
 /* Section Sécurité */
@@ -181,13 +181,13 @@
   margin: 0;
   font-size: 1.05rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text);
 }
 
 .security-text p {
   margin: 0.25rem 0 0 0;
   font-size: 0.85rem;
-  color: #718096;
+  color: var(--text-mute);
 }
 
 /* Notifications */
@@ -203,15 +203,15 @@
 }
 
 .alert-success {
-  background-color: #f0fff4;
-  color: #276749;
-  border: 1px solid #c6f6d5;
+  background-color: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-bg);
 }
 
 .alert-danger {
-  background-color: #fff5f5;
-  color: #9b2c2c;
-  border: 1px solid #fed7d7;
+  background-color: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red-bg);
 }
 
 /* Pop-up Modale */
@@ -229,9 +229,9 @@
 }
 
 .modal-content {
-  background: #ffffff;
+  background: var(--surface);
   padding: 2rem;
-  border-radius: 16px;
+  border-radius: var(--radius);
   width: 100%;
   max-width: 420px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -240,12 +240,12 @@
 .modal-content h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: #1a202c;
+  color: var(--text);
 }
 
 .modal-sub {
   font-size: 0.85rem;
-  color: #718096;
+  color: var(--text-mute);
   margin: 0.35rem 0 1.25rem 0;
 }
 

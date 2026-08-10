@@ -10,6 +10,7 @@ export interface Affectation {
   employee_id: number;
   cree_par: number;
 
+  statut: string;
   date_debut: string;
   date_fin: string;
 

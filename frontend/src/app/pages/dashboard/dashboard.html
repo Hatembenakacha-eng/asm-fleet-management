@@ -1,65 +1,126 @@
 <div class="page">
   <div class="page-head">
-    <div><h1>Tableau de bord</h1><p class="sub">État de la flotte en temps réel.</p></div>
+    <div><h1>Tableau de bord</h1><p class="sub">Vue d'ensemble du parc et de l'activité de la semaine.</p></div>
     <a routerLink="/affectations/nouveau" class="btn btn-primary">+ Nouvelle affectation</a>
   </div>
 
-  <div class="fleet-strip-wrap">
-    <p class="fleet-strip-label">État de la flotte — {{ voitures.length }} véhicules</p>
-    <div class="fleet-strip">
-      @for (v of voitures; track v.id) {
-        <div class="plate-chip">
-          <div class="top">
-            <span class="plate mono">{{ v.immatriculation }}</span>
-            @if (v.statut === 'disponible') {
-              <div class="dot-wrap"><span class="ring"></span><span class="dot dispo"></span></div>
-            } @else {
-              <span class="dot" [class]="dotClasse(v.statut)"></span>
-            }
-          </div>
-          <span class="model">{{ v.marque }} {{ v.modele }}</span>
-          <span class="status-txt">{{ v.statut }}</span>
-        </div>
-      }
-
+  <div class="instrument-cluster">
+    <div class="gauge-cell">
+      <span class="g-label">Disponibles</span>
+      <span class="g-value">{{ dispo }}<small>/{{ voitures.length }}</small></span>
+      <span class="g-tick dispo"></span>
+    </div>
+    <div class="cluster-sep"></div>
+    <div class="gauge-cell">
+      <span class="g-label">Missions actives</span>
+      <span class="g-value">{{ missionsActives }}</span>
+      <span class="g-tick mission"></span>
+    </div>
+    <div class="cluster-sep"></div>
+    <div class="gauge-cell" [class.alert]="demandesEnAttente > 0">
+      <span class="g-label">À valider</span>
+      <span class="g-value">{{ demandesEnAttente }}</span>
+      <span class="g-tick attente"></span>
+    </div>
+    <div class="cluster-sep"></div>
+    <div class="gauge-cell">
+      <span class="g-label">Employés</span>
+      <span class="g-value">{{ employees.length }}</span>
+      <span class="g-tick employes"></span>
     </div>
   </div>
 
-  <div class="stat-grid">
-    <div class="card stat-card a"><div class="stat-label">Véhicules disponibles</div><div class="stat-value">{{ dispo }} <small>/ {{ voitures.length }}</small></div></div>
-    <div class="card stat-card d"><div class="stat-label">Taux de disponibilité</div><div class="stat-value">{{ tauxDispo }}<small>%</small></div></div>
-  </div>
-
-  <div class="grid-2">
-<div class="card">
-  <div class="card-head">
-    <h3>Missions</h3>
-    <a routerLink="/missions" class="link">Voir tout</a>
-  </div>
-
-  <div class="card-body">
-    @for (m of missions.slice(0, 4); track m.id) {
-      <div class="ticket">
-        <div class="stub">
-          <span class="ref mono">M-{{ m.id }}</span>
-          <span class="date mono">{{ m.date_depart }}</span>
+  <div class="widget-row">
+    <div class="card widget">
+      <div class="widget-head"><h4>Sorties de véhicules — 7 derniers jours</h4><span class="legend">affectations</span></div>
+      @if (semaine.length) {
+        <div class="bar-chart">
+          @for (j of semaine; track j.label) {
+            <div class="col">
+              <div class="bar" [style.height.%]="j.pct" [title]="j.count + ' sortie(s)'"></div>
+              <span class="day">{{ j.label }}</span>
+            </div>
+          }
         </div>
+      } @else {
+        <p class="widget-empty">Pas encore de données sur la période.</p>
+      }
+    </div>
 
-        <div class="body">
-          <div class="dest">{{ m.destination }}</div>  
+    <div class="card widget">
+      <div class="widget-head"><h4>Taux de disponibilité</h4></div>
+      @if (voitures.length) {
+        <div class="speedo-wrap">
+          <svg width="150" height="92" viewBox="0 0 120 68">
+            <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--canvas)" stroke-width="10" stroke-linecap="round" [attr.stroke-dasharray]="gaugeTrackDashArray"/>
+            <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--orange)" stroke-width="10" stroke-linecap="round" [attr.stroke-dasharray]="gaugeDashArray"/>
+            @for (t of [0,1,2,3,4]; track t) {
+              <line x1="60" y1="14" x2="60" y2="20" stroke="var(--border)" stroke-width="2" [attr.transform]="'rotate(' + (t*45-90) + ' 60 60)'"/>
+            }
+            <line x1="60" y1="60" x2="14" y2="60" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" [attr.transform]="'rotate(' + gaugeRotation + ' 60 60)'"/>
+            <circle cx="60" cy="60" r="5" fill="var(--ink)"/>
+          </svg>
+          <div class="speedo-value">{{ tauxDispo }}<small>%</small></div>
+          <div class="speedo-sub">{{ dispo }} sur {{ voitures.length }} véhicules prêts</div>
         </div>
-      </div>
-    }
+      } @else {
+        <p class="widget-empty">Aucun véhicule enregistré.</p>
+      }
+    </div>
   </div>
-</div>
-    <div class="card">
-      <div class="card-head"><h3>Dernières affectations</h3><a routerLink="/affectations" class="link">Voir tout</a></div>
-      <div class="card-body table-wrap">
-        <table>
-          <thead><tr><th>Véhicule</th><th>Statut</th></tr></thead>
 
-        </table>
-      </div>
+  <div class="section-title"><h3>État de la flotte</h3></div>
+  <p class="scroll-hint">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6 3 12l6 6M15 6l6 6-6 6"/></svg>
+    Faites glisser pour voir plus de colonnes
+  </p>
+  <div class="table-wrap">
+    <table class="fleet-table">
+      <thead><tr><th>Véhicule</th><th>Plaque</th><th>Statut</th><th>Kilométrage</th><th>Dernière mission</th></tr></thead>
+      <tbody>
+        @for (v of voitures; track v.id) {
+          <tr>
+            <td>
+              <div class="veh-cell">
+                <div class="veh-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg></div>
+                <div><strong>{{ v.marque }} {{ v.modele }}</strong><span>{{ v.categorie || '—' }}</span></div>
+              </div>
+            </td>
+            <td class="mono">{{ v.immatriculation }}</td>
+            <td><span class="badge" [class]="badgeClasse(v.statut)">{{ statutLabel(v.statut) }}</span></td>
+            <td>
+              <div class="mini-bar-row">
+                <div class="mini-bar"><span [style.width.%]="kmPct(v)"></span></div>
+                <span class="mini-bar-val">{{ v.kilometrage | number }} km</span>
+              </div>
+            </td>
+            <td class="muted">{{ derniereMission(v.id) }}</td>
+          </tr>
+        }
+        @if (!voitures.length) {
+          <tr><td colspan="5" class="muted" style="text-align:center; padding:24px;">Aucun véhicule enregistré.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="card-head"><h3>Missions à venir</h3><a routerLink="/missions" class="link">Voir tout</a></div>
+    <div class="card-body">
+      @for (m of missions.slice(0, 4); track m.id) {
+        <div class="ticket">
+          <div class="stub">
+            <span class="ref mono">M-{{ m.id }}</span>
+            <span class="date mono">{{ m.date_depart }}</span>
+          </div>
+          <div class="body">
+            <div class="dest">{{ m.destination }}</div>
+          </div>
+        </div>
+      }
+      @if (!missions.length) {
+        <p class="widget-empty">Aucune mission enregistrée.</p>
+      }
     </div>
   </div>
 </div>

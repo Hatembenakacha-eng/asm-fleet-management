@@ -18,12 +18,15 @@ export class Profil implements OnInit {
 
   isEditingProfile = false;
   showPasswordModal = false;
+
   profileData = { name: '', email: '' };
   passwordData = { current_password: '', new_password: '', new_password_confirmation: '' };
+
   messageSuccess = '';
   messageError = '';
 
   ngOnInit() {
+    // Écoute en temps réel les changements sur l'utilisateur connecté
     this.auth.currentUser$.subscribe(u => {
       this.user = u;
       if (u && !this.isEditingProfile) {
@@ -43,6 +46,7 @@ export class Profil implements OnInit {
   saveProfile() {
     this.messageSuccess = '';
     this.messageError = '';
+
     this.auth.updateProfile(this.profileData).subscribe({
       next: () => {
         this.isEditingProfile = false;
@@ -64,10 +68,12 @@ export class Profil implements OnInit {
   updatePassword() {
     this.messageSuccess = '';
     this.messageError = '';
+
     if (this.passwordData.new_password !== this.passwordData.new_password_confirmation) {
       this.messageError = 'Les mots de passe ne correspondent pas.';
       return;
     }
+
     this.auth.updatePassword(this.passwordData).subscribe({
       next: () => {
         this.messageSuccess = 'Mot de passe modifié avec succès !';

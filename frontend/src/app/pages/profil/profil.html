@@ -1,16 +1,20 @@
 <div class="profile-container">
   <!-- En-tête -->
   <div class="page-head">
-    <h1>Mon profil</h1>
-    <p class="sub">Gérez vos informations personnelles et les paramètres de votre compte.</p>
+    <div>
+      <h1>Mon profil</h1>
+      <p class="sub">Gérez vos informations personnelles et les paramètres de votre compte.</p>
+    </div>
   </div>
 
-  
+  <!-- Messages de notification -->
   <div *ngIf="messageSuccess" class="alert alert-success">
-    <span>✓</span> {{ messageSuccess }}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+    {{ messageSuccess }}
   </div>
   <div *ngIf="messageError" class="alert alert-danger">
-     {{ messageError }}
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    {{ messageError }}
   </div>
 
   <!-- Carte Principale Unique -->

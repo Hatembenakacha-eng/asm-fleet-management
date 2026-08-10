@@ -26,11 +26,9 @@ export class Login {
       error: (err) => {
         this.chargement = false;
         this.erreur = err.error?.message || 'E-mail ou mot de passe incorrect.';
-        this.cdr.detectChanges();
+        this.cdr.detectChanges(); // Sans ça, le message d'erreur reste invisible jusqu'à une interaction
       }
     });
   }
 }
-
-
 

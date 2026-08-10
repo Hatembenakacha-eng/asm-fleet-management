@@ -15,7 +15,7 @@ export class Register {
   email = '';
   password = '';
   password_confirmation = '';
-  role = 'admin';
+  role = 'admin'; // valeur par défaut
 
   erreur = '';
   succes = false;
@@ -32,7 +32,7 @@ export class Register {
       email: this.email,
       password: this.password,
       password_confirmation: this.password_confirmation
-    }).subscribe({
+        }).subscribe({
       next: () => {
         this.chargement = false;
         this.succes = true;
@@ -40,10 +40,14 @@ export class Register {
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err: any) => {
-        this.chargement = false;
-        this.erreur = JSON.stringify(err.error);
-        this.cdr.detectChanges();
-      }
+      this.chargement = false;
+
+      console.log(err);
+      console.log(err.error);
+
+      this.erreur = JSON.stringify(err.error);
+      this.cdr.detectChanges(); // Sans ça, le message d'erreur reste invisible jusqu'à une interaction
+    }
     });
   }
 }

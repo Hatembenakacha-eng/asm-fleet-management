@@ -1,10 +1,16 @@
+<div class="page-head">
+  <div><h1>Assistant IA</h1><p class="sub">Posez une question ou demandez une recommandation de véhicule.</p></div>
+</div>
+
 <div class="chat-shell">
 
-
+  <!-- Panneau latéral : Choix de mission -->
   <div class="card chat-side">
     <h3>Recommandation rapide</h3>
+    <p class="side-hint">Choisissez une mission existante pour obtenir directement le véhicule le plus adapté.</p>
 
-    <select [(ngModel)]="missionChoisie" class="form-select">
+    <label for="mission-select">Mission</label>
+    <select id="mission-select" [(ngModel)]="missionChoisie">
       <option [ngValue]="null" disabled selected>Choisir une mission...</option>
       @for (m of missions; track m.id) {
         <option [value]="m.id">{{ m.destination }}</option>
@@ -13,42 +19,56 @@
 
     <button
       class="btn btn-primary"
+      style="width:100%; justify-content:center;"
       [disabled]="!missionChoisie || loading"
       (click)="demanderRecommandation()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       Recommander un véhicule
     </button>
+
+    @if (erreurChargement) {
+      <p class="side-error">{{ erreurChargement }}</p>
+    }
   </div>
 
-
+  <!-- Zone de Chat principal -->
   <div class="card chat-main">
     <div class="chat-log">
       @for (msg of messages; track $index) {
-        <div class="bulle" [class.moi]="msg.auteur === 'moi'">
-          <p>{{ msg.texte }}</p>
-
-
-          @if (msg.vehiculeSuggere && msg.auteur === 'ia') {
-            <div class="action-demande-container" style="margin-top: 10px;">
-              <button
-                class="btn btn-sm btn-success"
-                (click)="faireDemande(msg)"
-                [disabled]="loading">
-                 Confirmer et Réserver {{ msg.vehiculeSuggere.marque }}
-                ({{ msg.vehiculeSuggere.modele || msg.vehiculeSuggere.immatriculation }})
-              </button>
+        <div class="msg-row" [class.moi]="msg.auteur === 'moi'">
+          @if (msg.auteur === 'ia') {
+            <div class="bot-avatar">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4M9 4h6"/><circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none"/></svg>
             </div>
           }
+          <div class="bulle" [class.moi]="msg.auteur === 'moi'">
+            <p>{{ msg.texte }}</p>
+
+            @if (msg.vehiculeSuggere && msg.auteur === 'ia') {
+              <div class="action-demande-container">
+                <button class="btn btn-sm btn-success" (click)="faireDemande(msg)" [disabled]="loading">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M13 2 3 14h7l-1 8 11-13h-7l1-7Z"/></svg>
+                  Confirmer et réserver {{ msg.vehiculeSuggere.marque }} ({{ msg.vehiculeSuggere.modele || msg.vehiculeSuggere.immatriculation }})
+                </button>
+              </div>
+            }
+          </div>
         </div>
       }
 
       @if (loading) {
-        <div class="bulle ia loading-bulle">
-          <span>L'assistant réfléchit...</span>
+        <div class="msg-row">
+          <div class="bot-avatar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M12 8V4M9 4h6"/></svg>
+          </div>
+          <div class="bulle loading-bulle">
+            <span class="typing-dots"><i></i><i></i><i></i></span>
+          </div>
         </div>
       }
     </div>
 
-
+    <!-- Zone de saisie -->
     <div class="chat-input-row">
       <input
         type="text"
@@ -56,11 +76,9 @@
         (keyup.enter)="envoyerLibre()"
         placeholder="Pose une question libre..."
         [disabled]="loading" />
-      <button
-        class="btn btn-primary"
-        (click)="envoyerLibre()"
-        [disabled]="!messageLibre.trim() || loading">
+      <button class="btn btn-primary" (click)="envoyerLibre()" [disabled]="!messageLibre.trim() || loading">
         Envoyer
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
     </div>
   </div>

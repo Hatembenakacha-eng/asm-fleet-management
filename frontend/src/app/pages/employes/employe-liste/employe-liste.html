@@ -1,30 +1,59 @@
 <div class="page">
   <div class="page-head">
-    <div><h1>Employés</h1><p class="sub">{{ employes.length }} techniciens enregistrés.</p></div>
-    <a routerLink="/employes/nouveau" class="btn btn-primary">+ Ajouter</a>
+    <div><h1>Employés</h1><p class="sub">{{ employes.length }} employés enregistrés.</p></div>
+    <a routerLink="/employes/nouveau" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+      Ajouter
+    </a>
   </div>
+
   @if (chargement) {
-    <p>Chargement...</p>
+    <div class="card state-loading"><div class="spinner"></div> Chargement des employés...</div>
   } @else if (erreur) {
-    <p style="color:var(--red);">{{ erreur }}</p>
+    <div class="card empty-state">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <h3>{{ erreur }}</h3>
+    </div>
   } @else if (employes.length === 0) {
-    <p>Aucun employé enregistré.</p>
+    <div class="card empty-state">
+      <svg width="56" height="44" viewBox="0 0 96 68" fill="none">
+        <circle cx="48" cy="24" r="12" fill="#fff" stroke="#454b57" stroke-width="2.5"/>
+        <path d="M22 58c3-14 13-22 26-22s23 8 26 22" stroke="#454b57" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h3>Aucun employé enregistré</h3>
+      <p>Ajoutez votre premier employé pour commencer.</p>
+    </div>
   } @else {
-    <div class="emp-grid">
-      @for (e of employes; track e.id) {
-        <div class="card emp-card">
-          <div class="avatar">{{ e.nom.substring(0,2).toUpperCase() }}</div>  
-          <div>
-            <strong>{{ e.nom }}</strong>
-            <div class="role">{{ e.specialite }}</div>
-            <span class="badge" [class.badge-dispo]="e.disponible" [class.badge-maint]="!e.disponible">{{ e.disponible ? 'Disponible' : 'Indisponible' }}</span>
-            <div style="margin-top:10px; display:flex; gap:12px;">
-              <a [routerLink]="['/employes', e.id, 'modifier']" class="link" style="font-size:12.5px;">Modifier</a>
-              <button class="btn-danger-txt" style="font-size:12.5px;" (click)="supprimer(e.id)">Supprimer</button>
+    <div class="list-toolbar" style="padding:0 0 14px; border:none;">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" [(ngModel)]="recherche" placeholder="Rechercher un nom, une spécialité...">
+      </div>
+    </div>
+
+    @if (employesFiltres.length === 0) {
+      <div class="card empty-state">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-mute)" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <h3>Aucun résultat</h3>
+        <p>Aucun employé ne correspond à cette recherche.</p>
+      </div>
+    } @else {
+      <div class="emp-grid">
+        @for (e of employesFiltres; track e.id) {
+          <div class="card emp-card">
+            <div class="avatar">{{ e.nom.substring(0,2).toUpperCase() }}</div>
+            <div>
+              <strong>{{ e.nom }}</strong>
+              <div class="role">{{ e.specialite }}</div>
+              <span class="badge" [class.badge-dispo]="e.disponible" [class.badge-maint]="!e.disponible">{{ e.disponible ? 'Disponible' : 'Indisponible' }}</span>
+              <div class="actions-cell" style="margin-top:10px;">
+                <a [routerLink]="['/employes', e.id, 'modifier']" class="link" style="font-size:12.5px;">Modifier</a>
+                <button class="btn-danger-txt" style="font-size:12.5px;" (click)="supprimer(e.id)">Supprimer</button>
+              </div>
             </div>
           </div>
-        </div>
-      }
-    </div>
+        }
+      </div>
+    }
   }
 </div>

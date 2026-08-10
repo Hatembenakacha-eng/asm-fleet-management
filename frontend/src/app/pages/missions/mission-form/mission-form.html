@@ -1,79 +1,47 @@
 <div class="page">
-
   <div class="page-head">
     <div>
-      <h1>
-        @if (id) {
-          Modifier une mission
-        } @else {
-          Ajouter une mission
-        }
-      </h1>
+      <h1>{{ id ? 'Modifier une mission' : 'Ajouter une mission' }}</h1>
+      <p class="sub">{{ id ? 'Mettez à jour les détails de la mission.' : 'Renseignez les détails du nouvel ordre de mission.' }}</p>
     </div>
   </div>
 
-  <div class="card form-page" style="padding:22px;">
-
+  <div class="card form-page" style="padding:24px 26px;">
     <form (ngSubmit)="onSubmit()">
 
-      <label for="destination">Destination</label>
-      <input
-        id="destination"
-        type="text"
-        [(ngModel)]="destination"
-        name="destination"
-        required>
-
-      <label for="date_depart">Date début</label>
-      <input
-        id="date_depart"
-        type="date"
-        [(ngModel)]="date_depart"  
-        name="date_depart"
-        required>
-
-      <label for="date_retour">Date fin</label>
-      <input
-        id="date_retour"
-        type="date"
-        [(ngModel)]="date_retour"
-        name="date_retour"
-        required>
-
-      <label for="type_vehicule">Type de véhicule</label>
-      <input
-        id="type_vehicule"
-        type="text"
-        [(ngModel)]="type_vehicule"
-        name="type_vehicule">
-
-      <label for="capacite_minimale">Capacité minimale</label>
-      <input
-        id="capacite_minimale"
-        type="number"
-        [(ngModel)]="capacite_minimale"
-        name="capacite_minimale">
-
       @if (erreurs.length > 0) {
-        <div class="erreurs">
-          @for (e of erreurs; track e) {
-            <p>{{ e }}</p>
-          }
-        </div>
+        <ul class="field-errors">
+          @for (e of erreurs; track e) { <li>{{ e }}</li> }
+        </ul>
       }
 
-      <div style="display:flex;gap:10px;margin-top:20px;">
-        <button type="submit" class="btn btn-primary">
-          @if (id) { Modifier } @else { Ajouter }
-        </button>
-
-        <button type="button" class="btn btn-outline" (click)="annuler()">
-          Annuler
-        </button>
+      <div class="form-grid">
+        <div class="full">
+          <label for="destination">Destination</label>
+          <input id="destination" type="text" [(ngModel)]="destination" name="destination" placeholder="Sfax" required>
+        </div>
+        <div>
+          <label for="date_depart">Date de départ</label>
+          <input id="date_depart" type="date" [(ngModel)]="date_depart" name="date_depart" required>
+        </div>
+        <div>
+          <label for="date_retour">Date de retour</label>
+          <input id="date_retour" type="date" [(ngModel)]="date_retour" name="date_retour" required>
+        </div>
+        <div>
+          <label for="type_vehicule">Type de véhicule</label>
+          <input id="type_vehicule" type="text" [(ngModel)]="type_vehicule" name="type_vehicule" placeholder="Berline, utilitaire...">
+        </div>
+        <div>
+          <label for="capacite_minimale">Capacité minimale</label>
+          <input id="capacite_minimale" type="number" [(ngModel)]="capacite_minimale" name="capacite_minimale" placeholder="0">
+        </div>
       </div>
 
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ id ? 'Enregistrer les modifications' : 'Créer la mission' }}</button>
+        <button type="button" class="btn btn-outline" (click)="annuler()">Annuler</button>
+      </div>
     </form>
-
   </div>
-
 </div>

@@ -1,143 +1,44 @@
 <div class="page">
-
   <div class="page-head">
     <div>
-      <h1>
-        @if (id) {
-          Modifier un employé
-        } @else {
-          Ajouter un employé
-        }
-      </h1>
+      <h1>{{ id ? 'Modifier un employé' : 'Ajouter un employé' }}</h1>
+      <p class="sub">{{ id ? 'Mettez à jour les informations de l’employé.' : 'Renseignez les informations du nouvel employé.' }}</p>
     </div>
   </div>
 
-  <div class="card form-page" style="padding:22px;">
+  <div class="card form-page" style="padding:24px 26px;">
+    <form (ngSubmit)="onSubmit()">
 
-    @if (!id) {
+      @if (erreurs.length > 0) {
+        <ul class="field-errors">
+          @for (e of erreurs; track e) { <li>{{ e }}</li> }
+        </ul>
+      }
 
-      
-
-      <form (ngSubmit)="onSubmit()">
-
-        <label for="nom">Nom</label>
-        <input
-          id="nom"
-          type="text"
-          [(ngModel)]="nom"
-          name="nom"
-          required>
-
-        <label for="specialite">Spécialité</label>
-        <input
-          id="specialite"
-          type="text"
-          [(ngModel)]="specialite"
-          name="specialite"
-          required>
-
-        <label for="contact">Contact</label>
-        <input
-          id="contact"
-          type="text"
-          [(ngModel)]="contact"
-          name="contact"
-          required>
-
-        <label for="disponible">Disponible</label>
-        <input
-          id="disponible"
-          type="checkbox"
-          [(ngModel)]="disponible"
-          name="disponible"
-          style="width:auto;">
-
-        @if (erreurs.length > 0) {
-          <div class="erreurs">
-            @for (e of erreurs; track e) {
-              <p>{{ e }}</p>
-            }
-          </div>
-        }
-
-        <div style="display:flex;gap:10px;margin-top:20px;">
-          <button type="submit" class="btn btn-primary">
-            Ajouter
-          </button>
-
-          <button
-            type="button"
-            class="btn btn-outline"
-            (click)="annuler()">
-            Annuler
-          </button>
+      <div class="form-grid">
+        <div>
+          <label for="nom">Nom complet</label>
+          <input id="nom" type="text" [(ngModel)]="nom" name="nom" placeholder="Ali Ben Salah" required>
         </div>
-
-      </form>
-
-    } @else {
-
-      <!-- ================= MODIFICATION ================= -->
-
-      <form (ngSubmit)="onSubmit()">
-
-        <label for="nom">Nom</label>
-        <input
-          id="nom"
-          type="text"
-          [(ngModel)]="nom"
-          name="nom"
-          required>
-
-        <label for="specialite">Spécialité</label>
-        <input
-          id="specialite"
-          type="text"
-          [(ngModel)]="specialite"
-          name="specialite"
-          required>
-
-        <label for="contact">Contact</label>
-        <input
-          id="contact"
-          type="text"
-          [(ngModel)]="contact"
-          name="contact"
-          required>
-
-        <label for="disponible">Disponible</label>
-        <input
-          id="disponible"
-          type="checkbox"
-          [(ngModel)]="disponible"
-          name="disponible"
-          style="width:auto;">
-
-        @if (erreurs.length > 0) {
-          <div class="erreurs">
-            @for (e of erreurs; track e) {
-              <p>{{ e }}</p>
-            }
-          </div>
-        }
-
-        <div style="display:flex;gap:10px;margin-top:20px;">
-          <button type="submit" class="btn btn-primary">
-            Modifier
-          </button>
-
-          <button
-            type="button"
-            class="btn btn-outline"
-            (click)="annuler()">
-            Annuler
-          </button>
+        <div>
+          <label for="specialite">Spécialité</label>
+          <input id="specialite" type="text" [(ngModel)]="specialite" name="specialite" placeholder="Chauffeur, technicien..." required>
         </div>
+        <div class="full">
+          <label for="contact">Contact</label>
+          <input id="contact" type="text" [(ngModel)]="contact" name="contact" placeholder="Téléphone ou e-mail" required>
+        </div>
+      </div>
 
-      </form>
+      <div class="checkbox-row">
+        <input id="disponible" type="checkbox" [(ngModel)]="disponible" name="disponible">
+        <label for="disponible">Disponible actuellement</label>
+      </div>
 
-    }
-
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ id ? 'Enregistrer les modifications' : 'Ajouter l’employé' }}</button>
+        <button type="button" class="btn btn-outline" (click)="annuler()">Annuler</button>
+      </div>
+    </form>
   </div>
-
 </div>
