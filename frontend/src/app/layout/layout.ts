@@ -21,10 +21,9 @@ export class Layout implements OnInit {
   demandesEnAttente = 0;
 
   ngOnInit(): void {
-    // S'abonne au flux utilisateur pour mettre à jour l'affichage en temps réel
     this.auth.currentUser$.subscribe(updatedUser => {
       this.user = updatedUser;
-      this.cdr.detectChanges(); // Force le rafraîchissement du HTML du Layout
+      this.cdr.detectChanges();
 
       if (updatedUser?.role === 'admin') {
         this.chargerCompteurDemandes();

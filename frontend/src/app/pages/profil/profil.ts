@@ -26,7 +26,6 @@ export class Profil implements OnInit {
   messageError = '';
 
   ngOnInit() {
-    // Écoute en temps réel les changements sur l'utilisateur connecté
     this.auth.currentUser$.subscribe(u => {
       this.user = u;
       if (u && !this.isEditingProfile) {

@@ -19,7 +19,6 @@ export class VoitureListe implements OnInit {
   recherche = '';
   filtreStatut = '';
 
-  // --- Etat de la modale Ajouter / Modifier ---
   showForm = false;
   id: number | null = null;
   immatriculation = '';

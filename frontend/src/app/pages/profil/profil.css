@@ -1,11 +1,9 @@
-/* Container de la page */
 .profile-container {
   padding: 2rem;
   max-width: 850px;
   margin: 0 auto;
 }
 
-/* Page Header */
 .page-head {
   margin-bottom: 1.5rem;
 }
@@ -22,8 +20,6 @@
   font-size: 0.95rem;
   margin-top: 0.25rem;
 }
-
-/* Carte Globale */
 .profile-card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -31,8 +27,6 @@
   box-shadow: var(--shadow);
   border: 1px solid var(--border);
 }
-
-/* En-tête Utilisateur (Avatar + Infos) */
 .user-header {
   display: flex;
   align-items: center;
@@ -71,15 +65,11 @@
   color: var(--orange-deep);
   border: 1px solid var(--orange-bg);
 }
-
-/* Séparateur */
 .divider {
   height: 1px;
   background-color: var(--border);
   margin: 1.75rem 0;
 }
-
-/* Formulaire */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -121,8 +111,6 @@
   color: var(--text-mute);
   cursor: not-allowed;
 }
-
-/* Boutons */
 .action-bar {
   display: flex;
   justify-content: flex-end;
@@ -167,8 +155,6 @@
 .btn-outline-orange:hover {
   background-color: var(--orange-bg);
 }
-
-/* Section Sécurité */
 .security-section {
   display: flex;
   align-items: center;
@@ -189,8 +175,6 @@
   font-size: 0.85rem;
   color: var(--text-mute);
 }
-
-/* Notifications */
 .alert {
   padding: 0.85rem 1.2rem;
   border-radius: 10px;
@@ -213,8 +197,6 @@
   color: var(--red);
   border: 1px solid var(--red-bg);
 }
-
-/* Pop-up Modale */
 .modal-backdrop {
   position: fixed;
   top: 0;

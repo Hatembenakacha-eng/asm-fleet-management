@@ -61,7 +61,7 @@ export class AssistantIa implements OnInit {
     this.messages.push({ auteur: 'moi', texte });
     this.messageLibre = '';
     this.loading = true;
-    this.cdr.detectChanges(); // Affiche immédiatement le message envoyé + l'indicateur de chargement
+    this.cdr.detectChanges();
 
     this.chatService.envoyer(texte, this.messages).subscribe({
       next: (res: any) => {
@@ -78,9 +78,8 @@ export class AssistantIa implements OnInit {
         };
 
         this.messages.push(nouveauMessage);
-        this.cdr.detectChanges(); // Affiche la réponse de l'IA sans attendre une interaction
+        this.cdr.detectChanges();
 
-        // Si l'IA signale une réservation automatique
         if (res.auto_reserver && nouveauMessage.vehiculeSuggere) {
           this.faireDemande(nouveauMessage);
         }
@@ -138,18 +137,15 @@ export class AssistantIa implements OnInit {
     });
   }
 
-  // Traitement et envoi sécurisé de la demande vers Laravel
   faireDemande(msg: MessageChat) {
     if (!msg.vehiculeSuggere || this.loading) return;
 
     const vehiculeSauvegarde = msg.vehiculeSuggere;
     this.loading = true;
 
-    // Dates par défaut sécurisées au format YYYY-MM-DD
     const today = new Date().toISOString().split('T')[0];
     const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
-    // Nettoyage pour remplacer les chaînes non valides comme "non_precisee"
     const validerValeur = (val: string | undefined, fallback: string) => {
       return (val && val.trim() !== '' && val !== 'non_precisee') ? val : fallback;
     };
@@ -168,15 +164,15 @@ export class AssistantIa implements OnInit {
     this.affectationService.create(payload).subscribe({
       next: (res: any) => {
         this.loading = false;
-        msg.vehiculeSuggere = null; // Supprime le bouton une fois la demande validée en BDD
+        msg.vehiculeSuggere = null;
 
-        this.chargerMissions(); // Actualiser la liste
+        this.chargerMissions();
 
         this.messages.push({
           auteur: 'ia',
           texte: `Demande d'affectation pour le véhicule ${vehiculeSauvegarde.marque} a été enregistrée avec succès dans la base de données !`
         });
-        this.cdr.detectChanges(); // Affiche immédiatement la confirmation, sans quoi la demande "semble" ne jamais partir
+        this.cdr.detectChanges();
       },
       error: (err: any) => {
         this.loading = false;

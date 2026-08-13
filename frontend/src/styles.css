@@ -1,5 +1,4 @@
 :root{
-  /* Plus de noir : sidebar et panneaux techniques passent en clair, orange = seul accent de marque */
   --ink:#f7f8fa; --ink-soft:#eef0f3; --ink-line:#e3e6eb; --ink-text:#4b5563; --ink-text-dim:#8b909b;
   --orange:#f5821f; --orange-deep:#d66c0f; --orange-bg:#fff2e2;
   --canvas:#f1f2f6; --surface:#ffffff; --border:#e7e9ee;
@@ -52,7 +51,7 @@ a{color:inherit;}
 table{width:100%; border-collapse:collapse; font-size:13px;}
 th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap;}
 th{font-size:11px; text-transform:uppercase; letter-spacing:.4px; color:var(--text-mute); background:var(--canvas); font-weight:600;}
-th:first-child{padding-left:58px;} /* aligne l'en-tête avec le texte qui suit l'icône dans la cellule */
+th:first-child{padding-left:58px;}
 tr:last-child td{border-bottom:none;}
 .avatar{width:32px; height:32px; border-radius:50%; background:var(--ink-text); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600; flex-shrink:0;}
 
@@ -84,8 +83,6 @@ tr:last-child td{border-bottom:none;}
 .card-head h3{font-size:14.5px;}
 .card-head .link, .link{font-size:12.5px; color:var(--orange-deep); font-weight:600; cursor:pointer; text-decoration:none;}
 .card-body{padding:14px 18px 18px;}
-
-/* Formulaires (véhicules, missions, employés, affectations...) */
 .form-page{max-width:640px;}
 .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:0 16px;}
 .form-grid .full{grid-column:1 / -1;}
@@ -108,8 +105,6 @@ form select{appearance:none; background-image:url("data:image/svg+xml;utf8,<svg 
 .form-actions{display:flex; gap:10px; margin-top:22px; padding-top:18px; border-top:1px solid var(--border);}
 .field-errors{background:var(--red-bg); color:var(--red); border-radius:9px; padding:10px 14px; font-size:12.5px; margin-bottom:16px; list-style:none;}
 .field-errors li{margin:2px 0;}
-
-/* Etat vide reutilisable (listes) */
 .empty-state{display:flex; flex-direction:column; align-items:center; justify-content:center; padding:46px 20px; text-align:center;}
 .empty-state h3{font-size:14.5px; margin:14px 0 4px;}
 .empty-state p{font-size:12.5px; color:var(--text-mute); margin:0;}
@@ -122,8 +117,6 @@ form select{appearance:none; background-image:url("data:image/svg+xml;utf8,<svg 
 .cell-with-icon strong{display:block; font-size:13px; font-weight:600;}
 .cell-with-icon span{font-size:11.5px; color:var(--text-mute);}
 .actions-cell{display:flex; gap:14px; align-items:center;}
-
-/* Modale globale (Ajouter/Modifier) avec fond flou */
 .modal-backdrop{position:fixed; inset:0; background:rgba(20,22,28,.45); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:999; padding:20px; animation:modalFade .15s ease;}
 .modal-panel{background:var(--surface); border-radius:var(--radius); width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px -20px rgba(20,22,28,.4); animation:modalIn .18s ease;}
 .modal-head{display:flex; align-items:flex-start; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--border);}
@@ -136,7 +129,6 @@ form select{appearance:none; background-image:url("data:image/svg+xml;utf8,<svg 
 @keyframes modalIn{from{opacity:0; transform:scale(.96) translateY(10px);}to{opacity:1; transform:scale(1) translateY(0);}}
 @media (max-width:600px){ .modal-panel{max-width:100%;} }
 
-/* Barre de recherche / filtre au-dessus des listes */
 .list-toolbar{display:flex; gap:10px; padding:14px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap;}
 .search-wrap{position:relative; flex:1; min-width:220px;}
 .search-wrap svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-mute); pointer-events:none;}

@@ -1,6 +1,5 @@
 <div class="page-container">
 
-  <!-- En-tête -->
   <div class="page-head">
     <div>
       <h1>Bonjour, {{ user?.name }}</h1>
@@ -8,7 +7,6 @@
     </div>
   </div>
 
-  <!-- SECTION ADMIN -->
   @if (user?.role === 'admin') {
 
     <div class="admin-section">
@@ -76,7 +74,6 @@
 
   } @else {
 
-    <!-- SECTION EMPLOYÉ -->
     @if (missionEnCours) {
 
       <div class="card mission-summary">
@@ -141,7 +138,6 @@
 
   }
 
-  <!-- Actions rapides -->
   <h2 class="actions-title">Actions rapides</h2>
   <div class="quick-actions-grid">
     <a routerLink="/assistant-ia" class="action-card">

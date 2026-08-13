@@ -11,8 +11,6 @@
 .page-head { margin-bottom: 0.25rem; }
 .page-head h1 { font-size: 1.5rem; margin: 0; }
 .page-head .sub { color: var(--text-mute); font-size: 0.87rem; margin-top: 0.35rem; }
-
-/* Cartes génériques (mission en cours / en attente côté employé) */
 .card {
   background: var(--surface);
   border-radius: var(--radius);
@@ -32,15 +30,12 @@
 
 .badge-active { background: var(--orange-bg); color: var(--orange-deep); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
 .badge-pending { background: var(--surface); color: var(--blue); padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
-
-/* Section admin */
 .section-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
 .section-title { font-size: 1.05rem; margin: 0; }
 .count-pill { font-size: 11px; font-weight: 700; background: var(--red-bg); color: var(--red); padding: 3px 10px; border-radius: 20px; }
 
 .demandes-list { display: flex; flex-direction: column; gap: 12px; }
 
-/* Ticket de dispatch : souche perforée + corps avec actions */
 .ticket {
   display: flex;
   background: var(--surface);
@@ -99,22 +94,6 @@
 .btn-round.no { color: var(--red); }
 .btn-round.no:hover { background: var(--red-bg); border-color: var(--red); }
 
-/* État vide illustré, réutilisé admin/employé */
-.empty-illustration {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-  text-align: center;
-}
-.empty-illustration h3 { font-size: 15px; margin: 14px 0 4px; }
-.empty-illustration .sub { font-size: 12.5px; color: var(--text-mute); margin: 0; }
-
-/* Actions rapides */
 .actions-title { font-size: 1rem; margin-top: 0.5rem; margin-bottom: 0; }
 .quick-actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 

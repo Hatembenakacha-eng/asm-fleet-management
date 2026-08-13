@@ -4,7 +4,7 @@ export interface Voiture {
   marque: string;
   modele: string;
   kilometrage: number;
-  statut: 'disponible' | 'en_mission' | 'en_maintenance' | 'hors_service'; // corrigé
+  statut: 'disponible' | 'en_mission' | 'en_maintenance' | 'hors_service';
   capacite: number | null;
   categorie: string | null;
 }

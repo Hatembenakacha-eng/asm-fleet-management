@@ -47,7 +47,6 @@ export class Dashboard implements OnInit {
     });
   }
 
-  // --- KPI ---
   get dispo() { return this.voitures.filter(v => v.statut === 'disponible').length; }
   get enMission() { return this.voitures.filter(v => v.statut === 'en_mission').length; }
   get enMaintenance() { return this.voitures.filter(v => v.statut !== 'disponible' && v.statut !== 'en_mission').length; }
@@ -62,8 +61,7 @@ export class Dashboard implements OnInit {
     return this.affectations.filter(a => String(a.statut).toLowerCase().includes('attente')).length;
   }
 
-  // --- Jauge de disponibilité façon compte-tours ---
-  private readonly GAUGE_ARC = Math.PI * 50; // demi-circonférence rayon 50
+  private readonly GAUGE_ARC = Math.PI * 50;
 
   get gaugeRotation(): number {
     return (this.tauxDispo / 100) * 180;
@@ -78,7 +76,6 @@ export class Dashboard implements OnInit {
     return `${this.GAUGE_ARC} ${this.GAUGE_ARC}`;
   }
 
-  // --- Répartition du parc (donut) ---
   get donutSegments() {
     const total = this.voitures.length || 1;
     const d = (this.dispo / total) * 100;
@@ -91,7 +88,6 @@ export class Dashboard implements OnInit {
     ];
   }
 
-  // --- Sorties de véhicules sur 7 jours (basé sur date_debut des affectations) ---
   private calculerSemaine() {
     const jours = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
     const aujourdHui = new Date();
@@ -112,7 +108,6 @@ export class Dashboard implements OnInit {
     this.semaine = derniers7;
   }
 
-  // --- Kilométrage relatif pour la mini-barre du tableau flotte ---
   kmPct(v: Voiture): number {
     const max = Math.max(...this.voitures.map(x => x.kilometrage || 0), 1);
     return Math.max(6, Math.round(((v.kilometrage || 0) / max) * 100));

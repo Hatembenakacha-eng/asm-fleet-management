@@ -7,7 +7,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(Auth);
   return next(req).pipe(
     catchError(err => {
-      if (err.status === 401) auth.forceLogout(); // token invalide → déconnexion visible, jamais silencieuse
+      if (err.status === 401) auth.forceLogout();
       return throwError(() => err);
     })
   );

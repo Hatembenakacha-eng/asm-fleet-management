@@ -6,7 +6,6 @@
   min-height: 480px;
 }
 
-/* Panneau lateral */
 .card.chat-side { padding: 1.25rem; display: flex; flex-direction: column; gap: 6px; height: fit-content; }
 .card.chat-side h3 { font-size: 15px; margin: 0 0 2px; }
 .side-hint { font-size: 12px; color: var(--text-mute); margin: 0 0 10px; line-height: 1.5; }
@@ -20,8 +19,6 @@
 }
 .card.chat-side select:focus { outline: none; border-color: var(--orange); }
 .side-error { font-size: 12px; color: var(--red); margin-top: 10px; }
-
-/* Carte principale */
 .card.chat-main { display: flex; flex-direction: column; overflow: hidden; padding: 0; }
 
 .chat-log {

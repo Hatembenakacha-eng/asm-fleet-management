@@ -4,7 +4,6 @@
 
 <div class="chat-shell">
 
-  <!-- Panneau latéral : Choix de mission -->
   <div class="card chat-side">
     <h3>Recommandation rapide</h3>
     <p class="side-hint">Choisissez une mission existante pour obtenir directement le véhicule le plus adapté.</p>
@@ -31,7 +30,6 @@
     }
   </div>
 
-  <!-- Zone de Chat principal -->
   <div class="card chat-main">
     <div class="chat-log">
       @for (msg of messages; track $index) {
@@ -68,7 +66,6 @@
       }
     </div>
 
-    <!-- Zone de saisie -->
     <div class="chat-input-row">
       <input
         type="text"

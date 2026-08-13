@@ -34,8 +34,6 @@ export class AffectationListe implements OnInit {
   erreur = '';
   recherche = '';
   filtreStatut = '';
-
-  // --- Etat de la modale Ajouter ---
   showForm = false;
   voiture_id!: number;
   mission_id!: number;

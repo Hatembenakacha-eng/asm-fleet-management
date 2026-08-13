@@ -12,7 +12,6 @@ export class MissionListe implements OnInit {
   erreur = '';
   recherche = '';
 
-  // --- Etat de la modale Ajouter / Modifier ---
   showForm = false;
   id: number | null = null;
   destination = '';

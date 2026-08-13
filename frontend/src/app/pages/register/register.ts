@@ -15,7 +15,7 @@ export class Register {
   email = '';
   password = '';
   password_confirmation = '';
-  role = 'admin'; // valeur par défaut
+  role = 'admin';
 
   erreur = '';
   succes = false;
@@ -46,7 +46,7 @@ export class Register {
       console.log(err.error);
 
       this.erreur = JSON.stringify(err.error);
-      this.cdr.detectChanges(); // Sans ça, le message d'erreur reste invisible jusqu'à une interaction
+      this.cdr.detectChanges();
     }
     });
   }
