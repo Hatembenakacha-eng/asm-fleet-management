@@ -1,9 +1,10 @@
 .actions-title { margin-bottom: 12px; }
 
-
+/* Cluster d'instruments (remplace les cartes KPI génériques) */
 .instrument-cluster {
   display: flex;
-  background: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px 8px 16px;
   margin-bottom: 20px;
@@ -14,14 +15,14 @@
 .instrument-cluster::before {
   content: '';
   position: absolute; inset: 0;
-  background: repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 34px);
+  background: repeating-linear-gradient(90deg, rgba(20,22,28,.025) 0 1px, transparent 1px 34px);
   pointer-events: none;
 }
 .gauge-cell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
 .gauge-cell.alert .g-value { color: var(--orange); }
-.g-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .6px; color: var(--ink-text-dim); }
-.g-value { font-family: 'Chakra Petch', sans-serif; font-size: 30px; font-weight: 700; color: #fff; line-height: 1.1; font-variant-numeric: tabular-nums; }
-.g-value small { font-size: 14px; font-weight: 400; color: var(--ink-text-dim); margin-left: 1px; }
+.g-label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-mute); }
+.g-value { font-family: 'Chakra Petch', sans-serif; font-size: 30px; font-weight: 700; color: var(--text); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.g-value small { font-size: 14px; font-weight: 400; color: var(--text-mute); margin-left: 1px; }
 .g-tick { width: 22px; height: 3px; border-radius: 2px; margin-top: 2px; }
 .g-tick.dispo { background: var(--green); }
 .g-tick.mission { background: var(--orange); }

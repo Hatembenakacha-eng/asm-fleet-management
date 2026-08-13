@@ -114,7 +114,7 @@ export class AssistantIa implements OnInit {
         if (res.succes && res.vehicule_recommande) {
           this.messages.push({
             auteur: 'ia',
-            texte: `🚗 Véhicule recommandé : ${res.vehicule_recommande.marque} ${res.vehicule_recommande.modele} (${res.vehicule_recommande.immatriculation})`,
+            texte: `Véhicule recommandé : ${res.vehicule_recommande.marque} ${res.vehicule_recommande.modele} (${res.vehicule_recommande.immatriculation})`,
             vehiculeSuggere: res.vehicule_recommande,
             missionId: mission.id,
             destination: mission.destination
@@ -163,7 +163,7 @@ export class AssistantIa implements OnInit {
       statut: 'en_attente'
     };
 
-    console.log('🚀 Envoi effectif de la réservation à Laravel :', payload);
+    console.log('Envoi de la réservation :', payload);
 
     this.affectationService.create(payload).subscribe({
       next: (res: any) => {
@@ -174,16 +174,16 @@ export class AssistantIa implements OnInit {
 
         this.messages.push({
           auteur: 'ia',
-          texte: `✅ [BDD Confirmée] La demande d'affectation pour le véhicule ${vehiculeSauvegarde.marque} a été enregistrée avec succès dans la base de données !`
+          texte: `Demande d'affectation pour le véhicule ${vehiculeSauvegarde.marque} a été enregistrée avec succès dans la base de données !`
         });
         this.cdr.detectChanges(); // Affiche immédiatement la confirmation, sans quoi la demande "semble" ne jamais partir
       },
       error: (err: any) => {
         this.loading = false;
-        console.error('❌ Échec Laravel :', err);
+        console.error('Échec Laravel :', err);
         this.messages.push({
           auteur: 'ia',
-          texte: `❌ Erreur BDD : ${err.error?.message || "Échec de l'enregistrement dans la base de données."}`
+          texte: `Erreur : ${err.error?.message || "Échec de l'enregistrement dans la base de données."}`
         });
         this.cdr.detectChanges();
       }

@@ -1,10 +1,9 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { EmployeeService } from '../../../services/employee';
 import { Employee } from '../../../models/employee';
 
-@Component({ selector: 'app-employe-liste', standalone: true, imports: [RouterLink, FormsModule], templateUrl: './employe-liste.html' })
+@Component({ selector: 'app-employe-liste', standalone: true, imports: [FormsModule], templateUrl: './employe-liste.html' })
 export class EmployeListe implements OnInit {
   private service = inject(EmployeeService);
   private cdr = inject(ChangeDetectorRef);
@@ -12,6 +11,12 @@ export class EmployeListe implements OnInit {
   chargement = true;
   erreur = '';
   recherche = '';
+
+  // --- Etat de la modale Ajouter / Modifier ---
+  showForm = false;
+  id: number | null = null;
+  nom = ''; specialite = ''; contact = ''; disponible = true;
+  erreurs: string[] = [];
 
   ngOnInit() { this.charger(); }
   charger() {
@@ -29,6 +34,36 @@ export class EmployeListe implements OnInit {
       e.nom?.toLowerCase().includes(q) ||
       (e.specialite || '').toLowerCase().includes(q)
     );
+  }
+
+  ouvrirAjout(): void {
+    this.id = null;
+    this.nom = ''; this.specialite = ''; this.contact = ''; this.disponible = true;
+    this.erreurs = [];
+    this.showForm = true;
+  }
+
+  ouvrirEdition(e: Employee): void {
+    this.id = e.id;
+    this.nom = e.nom;
+    this.specialite = e.specialite;
+    this.contact = e.contact;
+    this.disponible = e.disponible;
+    this.erreurs = [];
+    this.showForm = true;
+  }
+
+  fermerForm(): void {
+    this.showForm = false;
+  }
+
+  soumettreForm(): void {
+    const payload = { nom: this.nom, specialite: this.specialite, contact: this.contact, disponible: this.disponible };
+    const obs = this.id ? this.service.update(this.id, payload) : this.service.create(payload);
+    obs.subscribe({
+      next: () => { this.showForm = false; this.charger(); },
+      error: (err) => { console.error(err); this.cdr.detectChanges(); }
+    });
   }
 
   supprimer(id: number) {

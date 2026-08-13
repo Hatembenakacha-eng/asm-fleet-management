@@ -4,10 +4,10 @@
       <h1>Affectations</h1>
       <p class="sub">{{ affectations.length }} {{ affectations.length > 1 ? 'affectations enregistrées' : 'affectation enregistrée' }}.</p>
     </div>
-    <a routerLink="/affectations/nouveau" class="btn btn-primary">
+    <button type="button" (click)="ouvrirAjout()" class="btn btn-add">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
       Nouvelle affectation
-    </a>
+    </button>
   </div>
 
   <div class="card table-wrap">
@@ -21,7 +21,7 @@
     } @else if (affectations.length === 0) {
       <div class="empty-state">
         <svg width="60" height="44" viewBox="0 0 96 68" fill="none">
-          <rect x="20" y="10" width="56" height="48" rx="4" fill="#fff" stroke="#454b57" stroke-width="2.5"/>
+          <rect x="20" y="10" width="56" height="48" rx="4" fill="#fff" stroke="#c3c7ce" stroke-width="2.5"/>
           <path d="M30 24h36M30 34h36M30 44h20" stroke="var(--border)" stroke-width="3" stroke-linecap="round"/>
         </svg>
         <h3>Aucune affectation enregistrée</h3>
@@ -87,7 +87,6 @@
               </td>
               <td>
                 <div class="actions-cell">
-                  <a class="link" [routerLink]="['/affectations', a.id, 'modifier']">Modifier</a>
                   <button class="btn-danger-txt" (click)="supprimer(a.id)">Supprimer</button>
                 </div>
               </td>
@@ -98,4 +97,68 @@
       }
     }
   </div>
+
+  @if (showForm) {
+    <div class="modal-backdrop" (click)="fermerForm()">
+      <div class="modal-panel" (click)="$event.stopPropagation()">
+        <div class="modal-head">
+          <div>
+            <h2>Nouvelle affectation</h2>
+            <p>Associez un véhicule, une mission et un employé.</p>
+          </div>
+          <button type="button" class="modal-close" (click)="fermerForm()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="soumettreForm()">
+            @if (erreurForm) {
+              <ul class="field-errors"><li>{{ erreurForm }}</li></ul>
+            }
+            <div class="form-grid">
+              <div class="full">
+                <label for="voiture_id">Véhicule</label>
+                <select id="voiture_id" name="voiture_id" [(ngModel)]="voiture_id" required>
+                  <option [ngValue]="undefined" disabled>Sélectionner un véhicule</option>
+                  @for (v of voitures; track v.id) {
+                    <option [ngValue]="v.id">{{ v.immatriculation }} — {{ v.marque }} {{ v.modele }}</option>
+                  }
+                </select>
+              </div>
+              <div class="full">
+                <label for="mission_id">Mission</label>
+                <select id="mission_id" name="mission_id" [(ngModel)]="mission_id" required>
+                  <option [ngValue]="undefined" disabled>Sélectionner une mission</option>
+                  @for (m of missions; track m.id) {
+                    <option [ngValue]="m.id">{{ m.destination }}</option>
+                  }
+                </select>
+              </div>
+              <div class="full">
+                <label for="employee_id">Employé</label>
+                <select id="employee_id" name="employee_id" [(ngModel)]="employee_id" required>
+                  <option [ngValue]="undefined" disabled>Sélectionner un employé</option>
+                  @for (e of employees; track e.id) {
+                    <option [ngValue]="e.id">{{ e.nom }}</option>
+                  }
+                </select>
+              </div>
+              <div>
+                <label for="date_debut">Date début</label>
+                <input id="date_debut" type="date" name="date_debut" [(ngModel)]="date_debut" required>
+              </div>
+              <div>
+                <label for="date_fin">Date fin</label>
+                <input id="date_fin" type="date" name="date_fin" [(ngModel)]="date_fin" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-add">Créer l'affectation</button>
+              <button type="button" class="btn btn-outline" (click)="fermerForm()">Annuler</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
 </div>

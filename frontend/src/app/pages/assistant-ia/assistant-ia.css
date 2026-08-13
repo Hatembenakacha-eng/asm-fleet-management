@@ -6,6 +6,7 @@
   min-height: 480px;
 }
 
+/* Panneau lateral */
 .card.chat-side { padding: 1.25rem; display: flex; flex-direction: column; gap: 6px; height: fit-content; }
 .card.chat-side h3 { font-size: 15px; margin: 0 0 2px; }
 .side-hint { font-size: 12px; color: var(--text-mute); margin: 0 0 10px; line-height: 1.5; }
@@ -37,7 +38,7 @@
 .msg-row.moi { align-self: flex-end; flex-direction: row-reverse; }
 
 .bot-avatar {
-  width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--orange);
+  width: 28px; height: 28px; border-radius: 50%; background: var(--orange); color: #1a1200;
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
@@ -62,8 +63,8 @@
 
 .action-demande-container { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(26,18,0,.2); }
 .btn-sm { padding: 7px 13px; font-size: 12.5px; border-radius: 8px; }
-.btn-success { background: var(--ink); color: #fff; border: none; cursor: pointer; font-weight: 600; }
-.btn-success:hover:not(:disabled) { background: var(--ink-soft); }
+.btn-success { background: var(--green); color: #fff; border: none; cursor: pointer; font-weight: 600; }
+.btn-success:hover:not(:disabled) { background: var(--green-deep); }
 .btn-success:disabled { opacity: .5; cursor: not-allowed; }
 
 @media (max-width: 780px) {

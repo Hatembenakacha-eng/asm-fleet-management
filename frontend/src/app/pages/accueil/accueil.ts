@@ -49,7 +49,7 @@ export class Accueil implements OnInit {
         }
       }
     }
-    console.log('👤 Utilisateur connecté :', this.user);
+    console.log('Utilisateur connecté :', this.user);
   }
 
   /**
@@ -59,7 +59,7 @@ export class Accueil implements OnInit {
     this.affectationService.getAll().subscribe({
       next: (res: any) => {
         const liste = res.data || res;
-        console.log('📦 Affectations récupérées de la BDD :', liste);
+        console.log('Affectations récupérées de la BDD :', liste);
 
         if (Array.isArray(liste)) {
           // 1. Pour l'Admin : Filtrer les demandes en attente de validation
@@ -69,7 +69,7 @@ export class Accueil implements OnInit {
             return st.includes('attente') || st.includes('pending') || st === 'en_attente';
           });
 
-          console.log('✅ Demandes à valider filtrées (Admin) :', this.demandesAValider);
+          console.log('Demandes à valider filtrées (Admin) :', this.demandesAValider);
 
           // 2. Pour l'Employé connecté
           if (this.user) {
@@ -100,7 +100,7 @@ export class Accueil implements OnInit {
         this.cdr.detectChanges(); // Force le rafraîchissement de la vue après la réponse HTTP
       },
       error: (err) => {
-        console.error('❌ Erreur de chargement API :', err);
+        console.error('Erreur de chargement API :', err);
       }
     });
   }

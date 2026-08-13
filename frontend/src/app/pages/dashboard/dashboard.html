@@ -1,7 +1,7 @@
 <div class="page">
   <div class="page-head">
     <div><h1>Tableau de bord</h1><p class="sub">Vue d'ensemble du parc et de l'activité de la semaine.</p></div>
-    <a routerLink="/affectations/nouveau" class="btn btn-primary">+ Nouvelle affectation</a>
+    <a routerLink="/affectations" class="btn btn-add">+ Nouvelle affectation</a>
   </div>
 
   <div class="instrument-cluster">
@@ -57,8 +57,8 @@
             @for (t of [0,1,2,3,4]; track t) {
               <line x1="60" y1="14" x2="60" y2="20" stroke="var(--border)" stroke-width="2" [attr.transform]="'rotate(' + (t*45-90) + ' 60 60)'"/>
             }
-            <line x1="60" y1="60" x2="14" y2="60" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" [attr.transform]="'rotate(' + gaugeRotation + ' 60 60)'"/>
-            <circle cx="60" cy="60" r="5" fill="var(--ink)"/>
+            <line x1="60" y1="60" x2="14" y2="60" stroke="var(--text)" stroke-width="3" stroke-linecap="round" [attr.transform]="'rotate(' + gaugeRotation + ' 60 60)'"/>
+            <circle cx="60" cy="60" r="5" fill="var(--text)"/>
           </svg>
           <div class="speedo-value">{{ tauxDispo }}<small>%</small></div>
           <div class="speedo-sub">{{ dispo }} sur {{ voitures.length }} véhicules prêts</div>
