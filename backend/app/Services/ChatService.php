@@ -56,8 +56,27 @@ class ChatService
                     'temperature' => 0.1,
                     'max_tokens' => 300,
                 ]);
+                
+            if ($response->failed()) {
+                Log::error('Erreur ChatService: réponse Groq en échec', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+                return [
+                    'succes'  => false,
+                    'reponse' => "Le service IA est momentanément indisponible. Réessayez dans un instant.",
+                ];
+            }
 
             $texte = trim((string) $response->json('choices.0.message.content'));
+
+            if ($texte === '') {
+                Log::error('Erreur ChatService: réponse Groq vide/inattendue', ['body' => $response->body()]);
+                return [
+                    'succes'  => false,
+                    'reponse' => "Je n'ai pas pu générer de réponse cette fois-ci. Réessayez ou reformulez votre question.",
+                ];
+            }
 
             $vehiculeRecommande = null;
             $missionIdFinal = null;
@@ -65,6 +84,7 @@ class ChatService
             $dateDebut = null;
             $dateFin = null;
 
+            // Détection et extraction des balises [PROPOSER:...]
             if (preg_match('/\[PROPOSER:voiture_id=(\d+),mission_id=(\d+)(?:,dest=([^,\]]+))?(?:,debut=([^,\]]+))?(?:,fin=([^,\]]+))?\]/', $texte, $matches)) {
                 $voitureId = (int) $matches[1];
                 $missionIdFinal = (int) $matches[2];

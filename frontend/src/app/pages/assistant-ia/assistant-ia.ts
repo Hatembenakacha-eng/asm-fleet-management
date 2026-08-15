@@ -69,7 +69,7 @@ export class AssistantIa implements OnInit {
 
         const nouveauMessage: MessageChat = {
           auteur: 'ia',
-          texte: res.reponse || res.message,
+          texte: res.reponse || res.message || "Le service IA n'a pas renvoyé de réponse. Réessayez.",
           vehiculeSuggere: res.vehicule_recommande || res.vehicule || null,
           missionId: res.mission_id || null,
           destination: res.destination || '',
