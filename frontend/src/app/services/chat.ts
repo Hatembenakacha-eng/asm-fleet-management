@@ -10,7 +10,7 @@ export class ChatService {
   private apiUrl = 'http://127.0.0.1:8000/api';
 
   envoyer(message: string, historique: { auteur: string; texte: string }[]): Observable<any> {
-    const historiqueFormate = historique.map(msg => ({{
+    const historiqueFormate = historique.map(msg => ({
       role: msg.auteur === 'moi' ? 'user' : 'assistant',
       content: msg.texte
     }));

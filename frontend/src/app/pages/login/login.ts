@@ -22,7 +22,7 @@ export class Login {
     this.erreur = '';
     this.chargement = true;
     this.auth.login(this.email, this.password).subscribe({
-      next: () => { this.chargement = false; this.router.navigate(['/dashboard']); },
+      next: () => { this.chargement = false; this.router.navigate(['/accueil']); },
       error: (err) => {
         this.chargement = false;
         this.erreur = err.error?.message || 'E-mail ou mot de passe incorrect.';
