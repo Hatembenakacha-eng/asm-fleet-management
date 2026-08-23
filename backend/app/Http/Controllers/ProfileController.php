@@ -65,7 +65,7 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        // Supprime l'ancienne photo si elle existe, pour ne pas accumuler des fichiers orphelins.
+        
         if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
         }

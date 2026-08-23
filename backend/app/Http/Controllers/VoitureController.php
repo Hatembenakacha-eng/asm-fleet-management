@@ -8,9 +8,7 @@ use App\Http\Resources\VoitureResource;
 
 class VoitureController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $query = Voiture::query();
@@ -44,9 +42,6 @@ class VoitureController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -67,25 +62,16 @@ class VoitureController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Voiture $voiture)
     {
         return new VoitureResource($voiture);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Voiture $voiture)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Voiture $voiture)
     {
         $validatedData = $request->validate([
@@ -106,9 +92,7 @@ class VoitureController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Voiture $voiture)
     {
 
@@ -117,9 +101,7 @@ class VoitureController extends Controller
         return response()->json(['message' => 'Voiture supprimee avec succès']);
     }
 
-    /**
-     * Téléverser / remplacer la photo d'un véhicule. Route protégée par le middleware 'admin'.
-     */
+
     public function uploadImage(Request $request, Voiture $voiture)
     {
         $request->validate([

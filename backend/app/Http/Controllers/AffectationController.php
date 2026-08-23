@@ -25,9 +25,7 @@ class AffectationController extends Controller
             $authUser = $request->user();
             $query = Affectation::with(['voiture', 'mission', 'employee']);
 
-            // Un utilisateur non-admin ne voit que ses propres affectations (celles de SON employé lié) —
-            // l'admin, lui, voit tout. `?? 0` garantit qu'un compte sans fiche employé liée reçoit
-            // une liste vide plutôt que la liste complète.
+
             if ($authUser->role !== 'admin') {
                 $query->where('employee_id', $authUser->employee?->id ?? 0);
             }
@@ -82,12 +80,9 @@ class AffectationController extends Controller
                 $authUser = $request->user();
                 $estAdmin = $authUser && $authUser->role === 'admin';
 
-                // Un admin peut désigner explicitement l'employé concerné (formulaire de la page Affectations).
                 $employeeId = $estAdmin ? $request->input('employee_id') : null;
 
-                // Un utilisateur normal (ou un admin qui n'a rien précisé) est TOUJOURS rattaché à SA PROPRE
-                // fiche — jamais à une valeur arbitraire du payload, pour éviter qu'un employé usurpe
-                // l'identité d'un collègue en modifiant la requête envoyée au serveur.
+
                 if (!$employeeId) {
                     $employeeId = $authUser?->employee?->id;
                 }
@@ -178,8 +173,7 @@ class AffectationController extends Controller
         $estProprietaire = $affectation->employee_id !== null && $affectation->employee_id === $authUser->employee?->id;
 
         if ($authUser->role !== 'admin' && !$estProprietaire) {
-            // 404 plutôt que 403 : on ne révèle pas qu'une affectation avec cet ID existe
-            // si elle appartient à quelqu'un d'autre.
+            
             return response()->json(['succes' => false, 'message' => 'Affectation introuvable.'], 404);
         }
 
