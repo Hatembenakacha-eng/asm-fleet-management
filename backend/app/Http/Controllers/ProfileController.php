@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -50,6 +51,31 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => 'Mot de passe modifié avec succès.'
+        ]);
+    }
+
+    /**
+     * Téléverser / remplacer la photo de profil de l'utilisateur connecté.
+     */
+    public function uploadPhoto(Request $request)
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $user = $request->user();
+
+        // Supprime l'ancienne photo si elle existe, pour ne pas accumuler des fichiers orphelins.
+        if ($user->photo) {
+            Storage::disk('public')->delete($user->photo);
+        }
+
+        $chemin = $request->file('photo')->store('avatars', 'public');
+        $user->update(['photo' => $chemin]);
+
+        return response()->json([
+            'message' => 'Photo de profil mise à jour avec succès.',
+            'user'    => $user->fresh(),
         ]);
     }
 }

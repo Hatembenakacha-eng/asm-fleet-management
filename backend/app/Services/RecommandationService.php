@@ -48,7 +48,7 @@ class RecommandationService
         $modele = config('services.groq.model');
 
         try {
-            $response = Http::withToken($cle)->withOptions(['verify' => false])->timeout(60)->post('https://api.groq.com/openai/v1/chat/completions', [
+            $response = Http::withToken($cle)->timeout(60)->post('https://api.groq.com/openai/v1/chat/completions', [
                 'model' => $modele,
                 'messages' => [
                     [

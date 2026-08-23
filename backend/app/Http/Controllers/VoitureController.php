@@ -116,4 +116,23 @@ class VoitureController extends Controller
 
         return response()->json(['message' => 'Voiture supprimee avec succès']);
     }
+
+    /**
+     * Téléverser / remplacer la photo d'un véhicule. Route protégée par le middleware 'admin'.
+     */
+    public function uploadImage(Request $request, Voiture $voiture)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($voiture->image) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($voiture->image);
+        }
+
+        $chemin = $request->file('image')->store('voitures', 'public');
+        $voiture->update(['image' => $chemin]);
+
+        return new VoitureResource($voiture->fresh());
+    }
 }

@@ -28,6 +28,7 @@ class VoitureResource extends JsonResource
             'statut' => $this->statut,
             'capacite' => $this->capacite,
             'categorie' => $this->categorie,
+            'image_url' => $this->image_url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

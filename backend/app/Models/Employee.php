@@ -8,7 +8,7 @@ use App\Models\Affectation;
 class Employee extends Model
 {
     protected $fillable = [
-        'id',
+        'user_id',
         'nom',
         'specialite',
         'contact',
@@ -18,5 +18,10 @@ class Employee extends Model
     public function affectations()
     {
         return $this->hasMany(Affectation::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

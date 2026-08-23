@@ -45,7 +45,7 @@ class EmployeeController extends Controller
     {
         $validatedData = $request->validate([
             'nom' => 'required|string',
-            'specialite' => 'required|string',
+            'specialite' => 'nullable|string',
             'contact' => 'required|string',
             'disponible' => 'required|boolean',
         ]);
@@ -82,7 +82,7 @@ class EmployeeController extends Controller
 
         $validatedData = $request->validate([
             'nom' => 'sometimes|required|string',
-            'specialite' => 'sometimes|required|string',
+            'specialite' => 'sometimes|nullable|string',
             'contact' => 'sometimes|required|string',
             'disponible' => 'sometimes|required|boolean',
         ]);

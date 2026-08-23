@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Affectation;
 use App\Models\Mission;
 use App\Models\Employee;
+use App\Services\AffectationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +15,22 @@ use Carbon\Carbon;
 
 class AffectationController extends Controller
 {
+    public function __construct(private AffectationService $affectationService)
+    {
+    }
+
     public function index(Request $request): JsonResponse
     {
         try {
+            $authUser = $request->user();
             $query = Affectation::with(['voiture', 'mission', 'employee']);
+
+            // Un utilisateur non-admin ne voit que ses propres affectations (celles de SON employé lié) —
+            // l'admin, lui, voit tout. `?? 0` garantit qu'un compte sans fiche employé liée reçoit
+            // une liste vide plutôt que la liste complète.
+            if ($authUser->role !== 'admin') {
+                $query->where('employee_id', $authUser->employee?->id ?? 0);
+            }
 
             if ($request->has('statut') && !empty($request->statut)) {
                 $statut = strtolower(trim($request->statut));
@@ -55,8 +68,9 @@ class AffectationController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'voiture_id'  => 'required|integer',
-            'mission_id'  => 'nullable',
+            'voiture_id'  => 'required|integer|exists:voitures,id',
+            'mission_id'  => 'nullable|integer',
+            'employee_id' => 'nullable|integer|exists:employees,id',
             'destination' => 'nullable|string',
             'date_debut'  => 'nullable|string',
             'date_fin'    => 'nullable|string',
@@ -65,23 +79,24 @@ class AffectationController extends Controller
 
         try {
             return DB::transaction(function () use ($request) {
-                $authUser = Auth::user() ?? $request->user();
+                $authUser = $request->user();
+                $estAdmin = $authUser && $authUser->role === 'admin';
 
-                $employeeId = null;
-                if ($authUser) {
-                    if (!empty($authUser->employee_id)) {
-                        $employeeId = $authUser->employee_id;
-                    } elseif (method_exists($authUser, 'employee') && $authUser->employee) {
-                        $employeeId = $authUser->employee->id;
-                    } else {
-                        $employee = Employee::query()->find($authUser->id);
-                        $employeeId = $employee ? $employee->id : null;
-                    }
+                // Un admin peut désigner explicitement l'employé concerné (formulaire de la page Affectations).
+                $employeeId = $estAdmin ? $request->input('employee_id') : null;
+
+                // Un utilisateur normal (ou un admin qui n'a rien précisé) est TOUJOURS rattaché à SA PROPRE
+                // fiche — jamais à une valeur arbitraire du payload, pour éviter qu'un employé usurpe
+                // l'identité d'un collègue en modifiant la requête envoyée au serveur.
+                if (!$employeeId) {
+                    $employeeId = $authUser?->employee?->id;
                 }
 
                 if (!$employeeId) {
-                    $firstEmployee = Employee::query()->first();
-                    $employeeId = $firstEmployee ? $firstEmployee->id : 1;
+                    return response()->json([
+                        'succes'  => false,
+                        'message' => "Aucun employé n'est associé à ce compte. Contactez un administrateur pour lier votre compte à une fiche employé.",
+                    ], 422);
                 }
 
                 $creatorId = $authUser ? $authUser->id : 1;
@@ -103,14 +118,27 @@ class AffectationController extends Controller
                         'destination' => $destination,
                         'date_depart' => $dateDebut,
                         'date_retour' => $dateFin,
-                        'created_by'  => $creatorId,
                     ]);
 
                     $missionId = $nouvelleMission->id;
+                } elseif (!Mission::query()->whereKey($missionId)->exists()) {
+                    return response()->json([
+                        'succes'  => false,
+                        'message' => "Mission introuvable.",
+                    ], 422);
+                }
+
+                $voitureId = (int) $request->input('voiture_id');
+
+                if ($this->affectationService->chevauchementExistant($voitureId, $dateDebut, $dateFin)) {
+                    return response()->json([
+                        'succes'  => false,
+                        'message' => "Ce véhicule est déjà affecté à une autre mission validée sur cette période. Choisissez un autre véhicule ou d'autres dates.",
+                    ], 409);
                 }
 
                 $affectation = Affectation::create([
-                    'voiture_id'  => $request->input('voiture_id'),
+                    'voiture_id'  => $voitureId,
                     'mission_id'  => $missionId,
                     'employee_id' => $employeeId,
                     'cree_par'    => $creatorId,
@@ -138,11 +166,20 @@ class AffectationController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show(Request $request, $id): JsonResponse
     {
         $affectation = Affectation::with(['voiture', 'mission', 'employee'])->find($id);
 
         if (!$affectation) {
+            return response()->json(['succes' => false, 'message' => 'Affectation introuvable.'], 404);
+        }
+
+        $authUser = $request->user();
+        $estProprietaire = $affectation->employee_id !== null && $affectation->employee_id === $authUser->employee?->id;
+
+        if ($authUser->role !== 'admin' && !$estProprietaire) {
+            // 404 plutôt que 403 : on ne révèle pas qu'une affectation avec cet ID existe
+            // si elle appartient à quelqu'un d'autre.
             return response()->json(['succes' => false, 'message' => 'Affectation introuvable.'], 404);
         }
 
@@ -165,13 +202,31 @@ class AffectationController extends Controller
                 'statut' => 'required|string',
             ]);
 
+            $nouveauStatut = strtolower(trim($request->input('statut')));
+
+            if (in_array($nouveauStatut, ['active', 'validee'])) {
+                $conflit = $this->affectationService->chevauchementExistant(
+                    $affectation->voiture_id,
+                    $affectation->date_debut,
+                    $affectation->date_fin,
+                    $affectation->id
+                );
+
+                if ($conflit) {
+                    return response()->json([
+                        'succes'  => false,
+                        'message' => "Impossible de valider : ce véhicule est déjà affecté à une autre mission validée sur une période qui chevauche celle-ci.",
+                    ], 409);
+                }
+            }
+
             $affectation->statut = $request->input('statut');
             $affectation->save();
 
             if ($affectation->voiture) {
-                if (in_array(strtolower($affectation->statut), ['active', 'validee', 'en_cours'])) {
+                if (in_array($nouveauStatut, ['active', 'validee', 'en_cours'])) {
                     $affectation->voiture->update(['statut' => 'en_mission']);
-                } elseif (in_array(strtolower($affectation->statut), ['refusee', 'terminee'])) {
+                } elseif (in_array($nouveauStatut, ['refusee', 'terminee'])) {
                     $affectation->voiture->update(['statut' => 'disponible']);
                 }
             }

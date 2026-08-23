@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Employee;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -18,12 +20,29 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'role' => 'utilisateur',
-        ]);
+        // La création du compte ET de la fiche employé associée doit réussir ensemble,
+        // ou échouer ensemble (sinon on se retrouve avec un compte "orphelin" sans fiche employé).
+        $user = DB::transaction(function () use ($validatedData) {
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+                'role' => 'utilisateur',
+            ]);
+
+            // Toute personne qui s'inscrit devient automatiquement une fiche employé,
+            // visible immédiatement dans la page Employés de l'admin. La spécialité
+            // n'est pas connue à l'inscription : l'admin la complètera plus tard.
+            Employee::create([
+                'user_id'     => $user->id,
+                'nom'         => $user->name,
+                'specialite'  => null,
+                'contact'     => $user->email,
+                'disponible'  => true,
+            ]);
+
+            return $user;
+        });
 
         return response()->json([
             'message' => 'Compte crée avec succès',
@@ -59,56 +78,5 @@ class AuthController extends Controller
         }
 
         return response()->json(['message' => 'Déconnecté avec succès']);
-    }
-
-    // --- NOUVELLES MÉTHODES DE GESTION DU PROFIL ---
-
-    /**
-     * Mettre à jour le nom et l'adresse email de l'utilisateur connecté
-     */
-    public function updateProfile(Request $request)
-    {
-        $user = $request->user();
-
-        $validated = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        ]);
-
-        $user->update($validated);
-
-        return response()->json([
-            'message' => 'Profil mis à jour avec succès.',
-            'user'    => $user
-        ]);
-    }
-
-    /**
-     * Modifier le mot de passe de l'utilisateur connecté
-     */
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required|string',
-            'new_password'     => 'required|string|min:6',
-        ]);
-
-        $user = $request->user();
-
-        // Vérification du mot de passe actuel
-        if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json([
-                'message' => 'Le mot de passe actuel est incorrect.'
-            ], 422);
-        }
-
-        // Mise à jour du nouveau mot de passe
-        $user->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-
-        return response()->json([
-            'message' => 'Mot de passe modifié avec succès.'
-        ]);
     }
 }

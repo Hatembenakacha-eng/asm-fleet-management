@@ -8,6 +8,23 @@ use App\Models\Voiture;
 
 class AffectationService
 {
+    /**
+     * Existe-t-il déjà, pour ce véhicule, une affectation active/validée dont la période chevauche
+     * [$dateDebut, $dateFin] ? Seule source de vérité pour cette vérification — utilisée à la fois
+     * par verifierDisponibilite() (recommandation IA) et par AffectationController (création/validation
+     * manuelle), pour éviter que les deux endroits divergent sur la définition d'un "conflit".
+     */
+    public function chevauchementExistant(int $voitureId, string $dateDebut, string $dateFin, ?int $ignorerAffectationId = null): bool
+    {
+        return Affectation::query()
+            ->where('voiture_id', $voitureId)
+            ->when($ignorerAffectationId, fn ($q) => $q->where('id', '!=', $ignorerAffectationId))
+            ->whereIn(\Illuminate\Support\Facades\DB::raw('LOWER(statut)'), ['active', 'validee'])
+            ->where('date_debut', '<=', $dateFin)
+            ->where('date_fin', '>=', $dateDebut)
+            ->exists();
+    }
+
     public function verifierDisponibilite(
         Voiture $voiture,
         Mission $mission,
@@ -25,18 +42,11 @@ class AffectationService
             return "Le véhicule est actuellement {$statutVoiture} et ne peut pas être affecté.";
         }
 
-        // 2. Vérifier les chevauchements d'affectations
-        $chevauchement = Affectation::query()
-            ->where('voiture_id', '=', $voiture->id)
-            ->where('statut', '=', 'active')
-            ->where('date_debut', '<=', $dateFin)
-            ->where(function ($query) use ($dateDebut) {
-                $query->whereNull('date_fin')
-                      ->orWhere('date_fin', '>=', $dateDebut);
-            })
-            ->exists();
-
-        if ($chevauchement) {
+        // 2. Vérifier les chevauchements d'affectations déjà confirmées.
+        // NB : le workflow réel de l'application ne fait jamais passer une affectation par le statut
+        // 'active' (seul 'validee' est utilisé, voir Accueil::accepterDemande côté frontend) — vérifier
+        // uniquement 'active' ici revenait à ne jamais détecter aucun chevauchement en pratique.
+        if ($this->chevauchementExistant($voiture->id, $dateDebut, $dateFin)) {
             return "Le véhicule n'est pas disponible pendant la période choisie.";
         }
 
