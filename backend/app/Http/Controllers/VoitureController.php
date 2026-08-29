@@ -48,9 +48,9 @@ class VoitureController extends Controller
             'immatriculation' => 'required|string|unique:voitures,immatriculation',
             'marque' => 'required|string',
             'modele' => 'required|string',
-            'kilometrage' => 'required|integer',
+            'kilometrage' => 'required|integer|min:0',
             'statut' => 'required|in:disponible,en_mission,en_maintenance,hors_service',
-            'capacite' => 'nullable|integer',
+            'capacite' => 'nullable|integer|min:1',
             'categorie' => 'nullable|string',
         ]);
 
@@ -78,9 +78,9 @@ class VoitureController extends Controller
             'immatriculation' => 'sometimes|required|string|unique:voitures,immatriculation,' . $voiture->id,
             'marque' => 'sometimes|required|string',
             'modele' => 'sometimes|required|string',
-            'kilometrage' => 'sometimes|required|integer',
+            'kilometrage' => 'sometimes|required|integer|min:0',
             'statut' => 'sometimes|required|in:disponible,en_mission,en_maintenance,hors_service',
-            'capacite' => 'nullable|integer',
+            'capacite' => 'nullable|integer|min:1',
             'categorie' => 'nullable|string',
         ]);
 

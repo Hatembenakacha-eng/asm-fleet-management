@@ -17,6 +17,7 @@ export class VoitureListe implements OnInit {
   voitures: Voiture[] = [];
   chargement = true;
   erreur = '';
+  erreurs: string[] = [];
 
   recherche = '';
   filtreStatut = '';
@@ -48,8 +49,7 @@ export class VoitureListe implements OnInit {
         this.chargement = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.erreur = "Impossible de charger les véhicules.";
         this.chargement = false;
         this.cdr.detectChanges();
@@ -80,6 +80,7 @@ export class VoitureListe implements OnInit {
     this.capacite = null;
     this.categorie = '';
     this.fichierImage = null;
+    this.erreurs = [];
     this.showForm = true;
   }
 
@@ -93,6 +94,7 @@ export class VoitureListe implements OnInit {
     this.capacite = v.capacite;
     this.categorie = v.categorie ?? '';
     this.fichierImage = null;
+    this.erreurs = [];
     this.showForm = true;
   }
 
@@ -106,6 +108,7 @@ export class VoitureListe implements OnInit {
   }
 
   soumettreForm(): void {
+    this.erreurs = [];
     const payload = {
       immatriculation: this.immatriculation, marque: this.marque, modele: this.modele,
       kilometrage: this.kilometrage, statut: this.statut, capacite: this.capacite, categorie: this.categorie
@@ -121,7 +124,11 @@ export class VoitureListe implements OnInit {
           this.charger();
         }
       },
-      error: (err) => { console.error(err); this.cdr.detectChanges(); }
+      error: (err) => {
+        const errorData = err.error?.erreurs || err.error?.errors;
+        this.erreurs = errorData ? Object.values(errorData).flat() as string[] : [err.error?.message || 'Une erreur est survenue.'];
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -134,10 +141,8 @@ export class VoitureListe implements OnInit {
         this.fichierImage = null;
         this.charger();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.envoiImageEnCours = false;
-        // Le véhicule est déjà enregistré à ce stade ; seule l'image a échoué.
         this.erreur = "Véhicule enregistré, mais l'envoi de la photo a échoué.";
         this.showForm = false;
         this.charger();

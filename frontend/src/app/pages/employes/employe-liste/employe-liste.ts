@@ -57,11 +57,16 @@ export class EmployeListe implements OnInit {
   }
 
   soumettreForm(): void {
+    this.erreurs = [];
     const payload = { nom: this.nom, specialite: this.specialite, contact: this.contact, disponible: this.disponible };
     const obs = this.id ? this.service.update(this.id, payload) : this.service.create(payload);
     obs.subscribe({
       next: () => { this.showForm = false; this.charger(); },
-      error: (err) => { console.error(err); this.cdr.detectChanges(); }
+      error: (err) => {
+        const errorData = err.error?.erreurs || err.error?.errors;
+        this.erreurs = errorData ? Object.values(errorData).flat() as string[] : [err.error?.message || 'Une erreur est survenue.'];
+        this.cdr.detectChanges();
+      }
     });
   }
 

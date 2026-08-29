@@ -31,7 +31,6 @@ export class AssistantIa implements OnInit {
   loading = false;
   erreurChargement = '';
 
-  // Délègue au service : l'historique survit à la navigation entre pages (voir chat-state.ts).
   get messages(): MessageChat[] {
     return this.chatState.messages;
   }
@@ -100,9 +99,6 @@ export class AssistantIa implements OnInit {
     });
   }
 
-  // Remplace l'ancien demanderRecommandation() basé sur une mission existante : on amorce
-  // maintenant la conversation à partir d'un véhicule choisi, et c'est le chat qui complète
-  // ensuite la destination et les dates (mission) directement dans la discussion.
   demanderPourVehicule() {
     if (!this.voitureChoisie || this.loading) return;
     const voiture = this.voitures.find(v => v.id === Number(this.voitureChoisie));
@@ -114,8 +110,6 @@ export class AssistantIa implements OnInit {
   }
 
   faireDemande(msg: MessageChat) {
-    // Filet de sécurité : le bouton n'est visible dans le template que si informationsCompletes
-    // est vrai, donc ce cas ne devrait plus se produire en pratique.
     if (!msg.vehiculeSuggere || this.loading) return;
 
     const vehiculeSauvegarde = msg.vehiculeSuggere;
@@ -146,7 +140,7 @@ export class AssistantIa implements OnInit {
 
         this.chatState.ajouter({
           auteur: 'ia',
-          texte: `Demande d'affectation pour le véhicule ${vehiculeSauvegarde.marque} a été enregistrée avec succès dans la base de données !`
+          texte: `Votre demande d'affectation pour le véhicule ${vehiculeSauvegarde.marque} a bien été enregistrée !`
         });
         this.cdr.detectChanges();
       },
@@ -154,10 +148,15 @@ export class AssistantIa implements OnInit {
         this.loading = false;
         this.chatState.ajouter({
           auteur: 'ia',
-          texte: `Erreur : ${err.error?.message || "Échec de l'enregistrement dans la base de données."}`
+          texte: `Erreur : ${this.messageErreurLisible(err, "Échec de l'enregistrement de la demande.")}`
         });
         this.cdr.detectChanges();
       }
     });
+  }
+
+  private messageErreurLisible(err: any, repli: string): string {
+    const message = err?.error?.message;
+    return (typeof message === 'string' && message.length > 0 && message.length < 200) ? message : repli;
   }
 }

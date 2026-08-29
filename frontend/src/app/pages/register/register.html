@@ -6,7 +6,11 @@
     <h1>Créer un compte</h1>
     <p class="sub">Rejoignez le parc automobile ASM.</p>
 
-    @if (erreur) { <div class="alert-error">{{ erreur }}</div> }
+    @if (erreurs.length > 0) {
+      <ul class="field-errors">
+        @for (e of erreurs; track e) { <li>{{ e }}</li> }
+      </ul>
+    }
     @if (succes) { <div class="alert-success">Compte créé ! Redirection vers la connexion...</div> }
 
     <form (ngSubmit)="creerCompte()">

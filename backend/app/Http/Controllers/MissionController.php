@@ -18,7 +18,7 @@ class MissionController extends Controller
         $validatedData = $request->validate([
             'destination'       => 'required|string',
             'date_depart'       => 'required|date',
-            'date_retour'       => 'required|date',
+            'date_retour'       => 'required|date|after_or_equal:date_depart',
             'type_vehicule'     => 'nullable|string',
             'capacite_minimale' => 'nullable|integer',
         ]);
@@ -45,8 +45,18 @@ class MissionController extends Controller
     {
         $validatedData = $request->validate([
             'destination'       => 'sometimes|required|string',
-            'date_depart'       => 'sometimes|required|date',
-            'date_retour'       => 'sometimes|required|date',
+            'date_depart'       => ['sometimes', 'required', 'date', function ($attribute, $value, $fail) use ($request, $mission) {
+                $dateRetour = $request->input('date_retour', $mission->date_retour);
+                if ($value > $dateRetour) {
+                    $fail('La date de départ doit être égale ou antérieure à la date de retour.');
+                }
+            }],
+            'date_retour'       => ['sometimes', 'required', 'date', function ($attribute, $value, $fail) use ($request, $mission) {
+                $dateDepart = $request->input('date_depart', $mission->date_depart);
+                if ($value < $dateDepart) {
+                    $fail('La date de retour doit être égale ou postérieure à la date de départ.');
+                }
+            }],
             'type_vehicule'     => 'nullable|string',
             'capacite_minimale' => 'nullable|integer',
         ]);

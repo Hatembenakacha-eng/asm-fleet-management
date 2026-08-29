@@ -40,7 +40,7 @@ export class AffectationListe implements OnInit {
   employee_id!: number;
   date_debut = '';
   date_fin = '';
-  erreurForm = '';
+  erreurForm: string[] = [];
 
   ngOnInit(): void {
     this.charger();
@@ -56,8 +56,7 @@ export class AffectationListe implements OnInit {
         this.chargement = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.erreur = 'Impossible de charger les affectations.';
         this.chargement = false;
         this.cdr.detectChanges();
@@ -84,7 +83,7 @@ export class AffectationListe implements OnInit {
     this.employee_id = undefined as any;
     this.date_debut = '';
     this.date_fin = '';
-    this.erreurForm = '';
+    this.erreurForm = [];
     this.showForm = true;
 
     if (!this.voitures.length) this.voitureService.getAll('disponible').subscribe(res => { this.voitures = res.data; this.cdr.detectChanges(); });
@@ -97,7 +96,7 @@ export class AffectationListe implements OnInit {
   }
 
   soumettreForm(): void {
-    this.erreurForm = '';
+    this.erreurForm = [];
     const payload = {
       voiture_id: this.voiture_id,
       mission_id: this.mission_id,
@@ -108,7 +107,8 @@ export class AffectationListe implements OnInit {
     this.service.create(payload).subscribe({
       next: () => { this.showForm = false; this.charger(); },
       error: (err) => {
-        this.erreurForm = err.error?.message ?? 'Erreur lors de la création de l’affectation.';
+        const errorData = err.error?.erreurs || err.error?.errors;
+        this.erreurForm = errorData ? Object.values(errorData).flat() as string[] : [err.error?.message ?? 'Erreur lors de la création de l’affectation.'];
         this.cdr.detectChanges();
       }
     });

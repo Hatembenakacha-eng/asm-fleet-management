@@ -124,6 +124,11 @@
         </div>
         <div class="modal-body">
           <form (ngSubmit)="soumettreForm()">
+            @if (erreurs.length > 0) {
+              <ul class="field-errors">
+                @for (e of erreurs; track e) { <li>{{ e }}</li> }
+              </ul>
+            }
             <div class="form-grid">
               <div class="full photo-field">
                 <label for="image">Photo du véhicule</label>

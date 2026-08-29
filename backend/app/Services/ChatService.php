@@ -28,9 +28,13 @@ class ChatService
                     . "2. Sois clair, logique et très court (2 phrases max).\n"
                     . "3. N'ajoute le tag [PROPOSER:...] QUE lorsque tu connais à la fois : un véhicule adapté, LA DESTINATION et LES DATES DE DÉPART/RETOUR données par l'utilisateur. "
                     . "Si la destination ou les dates manquent encore, pose la question à l'utilisateur au lieu d'ajouter le tag.\n"
-                    . "4. Une fois toutes ces informations réunies, ajoute IMPÉRATIVEMENT ce tag exact à la toute fin du message :\n"
-                    . "[PROPOSER:voiture_id=ID,mission_id=ID,dest=DESTINATION,debut=YYYY-MM-DD,fin=YYYY-MM-DD]\n"
-                    . "5. Si la mission n'existe pas dans la liste des missions, mets mission_id=0 et extrais la destination et les dates dites par l'utilisateur."
+                    . "4. Une fois toutes ces informations réunies, ajoute IMPÉRATIVEMENT ce tag exact, seul sur sa propre ligne, à la toute fin du message :\n"
+                    . "[PROPOSER:immatriculation=PLAQUE,mission_id=ID,dest=DESTINATION,debut=YYYY-MM-DD,fin=YYYY-MM-DD]\n"
+                    . "PLAQUE doit être recopiée EXACTEMENT comme dans le champ immatriculation de la liste ci-dessus (jamais un id).\n"
+                    . "5. Si la mission n'existe pas dans la liste des missions, mets mission_id=0 et extrais la destination et les dates dites par l'utilisateur.\n"
+                    . "6. Ce tag est un mécanisme technique INTERNE, jamais montré tel quel à l'utilisateur : n'écris jamais le mot PROPOSER ni des crochets [...] dans ta phrase, "
+                    . "et ne mentionne pas la plaque d'immatriculation dans le texte visible. Désigne le véhicule par sa marque et son modèle : ce sont ces mots qui doivent "
+                    . "correspondre exactement au véhicule indiqué dans le tag."
             ];
 
             $formattedHistory = [];
@@ -55,7 +59,7 @@ class ChatService
                     'model' => $modele,
                     'messages' => $messagesPayload,
                     'temperature' => 0.1,
-                    'max_tokens' => 300,
+                    'max_tokens' => 450,
                 ]);
 
             if ($response->failed()) {
@@ -85,19 +89,56 @@ class ChatService
             $dateDebut = null;
             $dateFin = null;
 
-            // Détection et extraction des balises [PROPOSER:...]
-            if (preg_match('/\[PROPOSER:voiture_id=(\d+),mission_id=(\d+)(?:,dest=([^,\]]+))?(?:,debut=([^,\]]+))?(?:,fin=([^,\]]+))?\]/', $texte, $matches)) {
-                $voitureId = (int) $matches[1];
+            // Détection et extraction de la balise [PROPOSER:...] bien formée.
+            if (preg_match('/\[PROPOSER:immatriculation=([^,\]]+),mission_id=(\d+)(?:,dest=([^,\]]+))?(?:,debut=([^,\]]+))?(?:,fin=([^,\]]+))?\]/', $texte, $matches)) {
+                $plaqueBrute = trim($matches[1]);
                 $missionIdFinal = (int) $matches[2];
                 $destination = isset($matches[3]) ? trim($matches[3]) : null;
                 $dateDebut   = isset($matches[4]) ? trim($matches[4]) : null;
                 $dateFin     = isset($matches[5]) ? trim($matches[5]) : null;
 
-                $texte = trim((string) preg_replace('/\[PROPOSER:.*?\]/', '', $texte));
+                // On recherche dans la MÊME collection que celle envoyée au modèle (pas une
+                // nouvelle requête) : le rapprochement se fait forcément avec un véhicule que le
+                // modèle avait réellement sous les yeux. Comparaison normalisée (espaces/casse)
+                // pour tolérer une légère variation de recopie.
+                $normaliser = fn (string $s) => strtoupper(str_replace(' ', '', $s));
+                $plaqueNormalisee = $normaliser($plaqueBrute);
 
-                if ($voitureId > 0) {
-                    $vehiculeRecommande = Voiture::query()->find($voitureId);
+                $candidat = $voitures->first(
+                    fn (Voiture $v) => $normaliser((string) $v->immatriculation) === $plaqueNormalisee
+                );
+
+                // Filet de cohérence : le véhicule pointé par le tag doit être celui que le
+                // modèle vient de décrire en toutes lettres (marque ou modèle) dans sa phrase
+                // visible. Sans ce garde-fou, un tag qui pointerait — par erreur du modèle —
+                // vers un AUTRE véhicule existant que celui annoncé à l'utilisateur passerait
+                // totalement inaperçu et proposerait silencieusement le mauvais véhicule.
+                if ($candidat) {
+                    $texteMinuscule = mb_strtolower($texte);
+                    $mentionne = ($candidat->marque && str_contains($texteMinuscule, mb_strtolower($candidat->marque)))
+                        || ($candidat->modele && str_contains($texteMinuscule, mb_strtolower($candidat->modele)));
+
+                    if ($mentionne) {
+                        $vehiculeRecommande = $candidat;
+                    } else {
+                        Log::warning('ChatService: véhicule du tag non mentionné dans le texte visible, proposition ignorée.', [
+                            'immatriculation_tag' => $plaqueBrute,
+                        ]);
+                    }
                 }
+            }
+
+            // Filet de sécurité : on retire tout fragment de balise technique restant, y compris
+            // une balise tronquée (ex. réponse coupée par max_tokens avant le "]" final) ou mal
+            // formée que la regex stricte ci-dessus n'aurait pas reconnue. Sans ce filet, un
+            // fragment brut du type "[PROPOSER:voiture_id=3,mission_id=0,dest=Tunis" pourrait
+            // s'afficher tel quel dans le chat — ce que l'utilisateur ne doit jamais voir.
+            $texte = trim((string) preg_replace('/\[PROPOSER:[^\]]*\]?/i', '', $texte));
+
+            if ($texte === '') {
+                $texte = $vehiculeRecommande
+                    ? "Voici ce que je vous propose."
+                    : "Pouvez-vous préciser votre demande ?";
             }
 
             $informationsCompletes = (bool) ($vehiculeRecommande && $destination && $dateDebut && $dateFin);

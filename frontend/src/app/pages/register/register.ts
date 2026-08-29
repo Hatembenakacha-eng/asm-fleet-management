@@ -17,14 +17,14 @@ export class Register {
   password_confirmation = '';
   role = 'admin';
 
-  erreur = '';
+  erreurs: string[] = [];
   succes = false;
   chargement = false;
 
   constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
   creerCompte(): void {
-    this.erreur = '';
+    this.erreurs = [];
     this.chargement = true;
 
     this.auth.register({
@@ -40,14 +40,12 @@ export class Register {
         setTimeout(() => this.router.navigate(['/login']), 1500);
       },
       error: (err: any) => {
-      this.chargement = false;
+        this.chargement = false;
 
-      console.log(err);
-      console.log(err.error);
-
-      this.erreur = JSON.stringify(err.error);
-      this.cdr.detectChanges();
-    }
+        const errorData = err.error?.erreurs || err.error?.errors;
+        this.erreurs = errorData ? Object.values(errorData).flat() as string[] : [err.error?.message || 'Une erreur est survenue. Réessayez.'];
+        this.cdr.detectChanges();
+      }
     });
   }
 }

@@ -43,9 +43,11 @@ class AffectationController extends Controller
             ], 200);
 
         } catch (\Throwable $e) {
+            Log::error('Erreur AffectationController@index: ' . $e->getMessage());
+
             return response()->json([
                 'succes'  => false,
-                'message' => 'Erreur: ' . $e->getMessage()
+                'message' => "Impossible de charger les affectations pour le moment. Réessayez dans un instant.",
             ], 500);
         }
     }
@@ -72,7 +74,7 @@ class AffectationController extends Controller
             'destination' => 'nullable|string',
             'date_debut'  => 'nullable|string',
             'date_fin'    => 'nullable|string',
-            'statut'      => 'nullable|string',
+            'statut'      => 'nullable|string|in:en_attente,active,validee,refusee,terminee,annulee',
         ]);
 
         try {
@@ -156,7 +158,7 @@ class AffectationController extends Controller
 
             return response()->json([
                 'succes'  => false,
-                'message' => 'Erreur serveur : ' . $e->getMessage()
+                'message' => "Échec de l'enregistrement de la demande. Réessayez dans un instant.",
             ], 500);
         }
     }
@@ -182,6 +184,10 @@ class AffectationController extends Controller
 
     public function update(Request $request, $id): JsonResponse
     {
+        $request->validate([
+            'statut' => 'required|string|in:en_attente,active,validee,refusee,terminee,annulee',
+        ]);
+
         try {
             $affectation = Affectation::query()->find($id);
 
@@ -191,10 +197,6 @@ class AffectationController extends Controller
                     'message' => 'Affectation introuvable.'
                 ], 404);
             }
-
-            $request->validate([
-                'statut' => 'required|string',
-            ]);
 
             $nouveauStatut = strtolower(trim($request->input('statut')));
 
@@ -236,7 +238,7 @@ class AffectationController extends Controller
 
             return response()->json([
                 'succes' => false,
-                'message' => 'Erreur lors de la mise à jour : ' . $e->getMessage()
+                'message' => "Échec de la mise à jour du statut. Réessayez dans un instant.",
             ], 500);
         }
     }
@@ -254,7 +256,12 @@ class AffectationController extends Controller
 
             return response()->json(['succes' => true, 'message' => 'Affectation supprimée.'], 200);
         } catch (\Throwable $e) {
-            return response()->json(['succes' => false, 'message' => $e->getMessage()], 500);
+            Log::error('Erreur AffectationController@destroy: ' . $e->getMessage());
+
+            return response()->json([
+                'succes'  => false,
+                'message' => "Échec de la suppression. Réessayez dans un instant.",
+            ], 500);
         }
     }
 }

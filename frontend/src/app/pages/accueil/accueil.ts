@@ -33,9 +33,7 @@ export class Accueil implements OnInit {
   }
 
   chargerDonnees(): void {
-    // Depuis le correctif backend, /affectations est déjà filtré côté serveur : un admin reçoit
-    // tout, un utilisateur normal ne reçoit que SES propres affectations. Plus besoin de filtrer
-    // par employee_id/cree_par côté client.
+    
     this.affectationService.getAll().subscribe({
       next: (res: any) => {
         const liste = res.data || res;
@@ -63,7 +61,7 @@ export class Accueil implements OnInit {
 
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Erreur de chargement API :', err)
+      error: () => {  }
     });
   }
 
@@ -74,11 +72,10 @@ export class Accueil implements OnInit {
         this.voituresSuggerees = (Array.isArray(liste) ? liste : []).slice(0, 4);
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Erreur de chargement des véhicules :', err)
+      error: () => {  }
     });
   }
 
-  // Amorce une demande dans le chat pour ce véhicule précis (voir assistant-ia.ts, lecture du paramètre ?voiture=).
   demanderVehicule(v: Voiture): void {
     this.router.navigate(['/assistant-ia'], { queryParams: { voiture: v.id } });
   }
