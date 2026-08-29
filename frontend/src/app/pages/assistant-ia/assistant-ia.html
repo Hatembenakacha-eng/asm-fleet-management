@@ -5,24 +5,24 @@
 <div class="chat-shell">
 
   <div class="card chat-side">
-    <h3>Recommandation rapide</h3>
-    <p class="side-hint">Choisissez une mission existante pour obtenir directement le véhicule le plus adapté.</p>
+    <h3>Réservation rapide</h3>
+    <p class="side-hint">Choisissez un véhicule disponible : l'assistant vous aidera à compléter la destination et les dates directement dans la conversation.</p>
 
-    <label for="mission-select">Mission</label>
-    <select id="mission-select" [(ngModel)]="missionChoisie">
-      <option [ngValue]="null" disabled selected>Choisir une mission...</option>
-      @for (m of missions; track m.id) {
-        <option [value]="m.id">{{ m.destination }}</option>
+    <label for="voiture-select">Véhicule</label>
+    <select id="voiture-select" [(ngModel)]="voitureChoisie">
+      <option [ngValue]="null" disabled selected>Choisir un véhicule...</option>
+      @for (v of voitures; track v.id) {
+        <option [value]="v.id">{{ v.marque }} {{ v.modele }} — {{ v.immatriculation }}</option>
       }
     </select>
 
     <button
       class="btn btn-primary"
       style="width:100%; justify-content:center;"
-      [disabled]="!missionChoisie || loading"
-      (click)="demanderRecommandation()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      Recommander un véhicule
+      [disabled]="!voitureChoisie || loading"
+      (click)="demanderPourVehicule()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+      Demander ce véhicule
     </button>
 
     @if (erreurChargement) {
@@ -43,12 +43,20 @@
             <p>{{ msg.texte }}</p>
 
             @if (msg.vehiculeSuggere && msg.auteur === 'ia') {
-              <div class="action-demande-container">
-                <button class="btn btn-sm btn-success" (click)="faireDemande(msg)" [disabled]="loading">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M13 2 3 14h7l-1 8 11-13h-7l1-7Z"/></svg>
-                  Confirmer et réserver {{ msg.vehiculeSuggere.marque }} ({{ msg.vehiculeSuggere.modele || msg.vehiculeSuggere.immatriculation }})
-                </button>
-              </div>
+              @if (msg.vehiculeSuggere.image_url) {
+                <img class="vehicule-photo" [src]="msg.vehiculeSuggere.image_url" [alt]="msg.vehiculeSuggere.marque + ' ' + msg.vehiculeSuggere.modele" />
+              }
+
+              @if (msg.informationsCompletes) {
+                <div class="action-demande-container">
+                  <button class="btn btn-sm btn-success" (click)="faireDemande(msg)" [disabled]="loading">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M13 2 3 14h7l-1 8 11-13h-7l1-7Z"/></svg>
+                    Confirmer et réserver {{ msg.vehiculeSuggere.marque }} ({{ msg.vehiculeSuggere.modele || msg.vehiculeSuggere.immatriculation }})
+                  </button>
+                </div>
+              } @else {
+                <p class="hint-incomplete">Précise la destination et les dates de départ/retour pour valider cette réservation.</p>
+              }
             }
           </div>
         </div>

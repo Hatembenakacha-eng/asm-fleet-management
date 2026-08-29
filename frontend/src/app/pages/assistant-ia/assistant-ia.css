@@ -64,6 +64,9 @@
 .btn-success:hover:not(:disabled) { background: var(--green-deep); }
 .btn-success:disabled { opacity: .5; cursor: not-allowed; }
 
+.vehicule-photo { display: block; width: 100%; max-width: 260px; border-radius: 10px; margin-top: 10px; object-fit: cover; }
+.hint-incomplete { margin-top: 8px; font-size: 12.5px; color: var(--text-mute); font-style: italic; }
+
 @media (max-width: 780px) {
   .chat-shell { grid-template-columns: 1fr; height: auto; }
   .card.chat-main { height: 70vh; }

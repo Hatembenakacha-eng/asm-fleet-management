@@ -4,10 +4,12 @@
       <h1>Véhicules</h1>
       <p class="sub">{{ voitures.length }} véhicules enregistrés.</p>
     </div>
-    <button type="button" (click)="ouvrirAjout()" class="btn btn-add">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-      Ajouter un véhicule
-    </button>
+    @if (estAdmin) {
+      <button type="button" (click)="ouvrirAjout()" class="btn btn-add">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        Ajouter un véhicule
+      </button>
+    }
   </div>
 
   <div class="card table-wrap">
@@ -46,7 +48,7 @@
               <th>Catégorie</th>
               <th>Capacité</th>
               <th>Statut</th>
-              <th>Actions</th>
+              @if (estAdmin) { <th>Actions</th> }
             </tr>
           </thead>
           <tbody>
@@ -55,7 +57,11 @@
                 <td>
                   <div class="cell-with-icon">
                     <div class="row-icon">
-                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+                      @if (v.image_url) {
+                        <img [src]="v.image_url" [alt]="v.marque + ' ' + v.modele" class="row-photo" />
+                      } @else {
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+                      }
                     </div>
                     <div><strong>{{ v.marque }} {{ v.modele }}</strong><span>{{ v.kilometrage | number }} km</span></div>
                   </div>
@@ -71,12 +77,14 @@
                     {{ v.statut === 'disponible' ? 'Disponible' : v.statut === 'en_mission' ? 'En mission' : v.statut === 'hors_service' ? 'Hors service' : 'Maintenance' }}
                   </span>
                 </td>
-                <td>
-                  <div class="actions-cell">
-                    <button type="button" class="link" style="background:none;border:none;cursor:pointer;padding:0;" (click)="ouvrirEdition(v)">Détails</button>
-                    <button type="button" class="btn-danger-txt" (click)="supprimer(v.id)">Supprimer</button>
-                  </div>
-                </td>
+                @if (estAdmin) {
+                  <td>
+                    <div class="actions-cell">
+                      <button type="button" class="link" style="background:none;border:none;cursor:pointer;padding:0;" (click)="ouvrirEdition(v)">Détails</button>
+                      <button type="button" class="btn-danger-txt" (click)="supprimer(v.id)">Supprimer</button>
+                    </div>
+                  </td>
+                }
               </tr>
             }
           </tbody>
@@ -102,7 +110,7 @@
     }
   </div>
 
-  @if (showForm) {
+  @if (showForm && estAdmin) {
     <div class="modal-backdrop" (click)="fermerForm()">
       <div class="modal-panel" (click)="$event.stopPropagation()">
         <div class="modal-head">
@@ -117,6 +125,13 @@
         <div class="modal-body">
           <form (ngSubmit)="soumettreForm()">
             <div class="form-grid">
+              <div class="full photo-field">
+                <label for="image">Photo du véhicule</label>
+                <input id="image" type="file" accept="image/png,image/jpeg,image/webp" (change)="onFichierImageChange($event)">
+                @if (fichierImage) {
+                  <span class="photo-selected">{{ fichierImage.name }}</span>
+                }
+              </div>
               <div>
                 <label for="immatriculation">Immatriculation</label>
                 <input id="immatriculation" type="text" [(ngModel)]="immatriculation" name="immatriculation" placeholder="137 TUN 4521" required>
@@ -152,7 +167,9 @@
               </div>
             </div>
             <div class="form-actions">
-              <button type="submit" class="btn btn-add">{{ id ? 'Enregistrer les modifications' : 'Ajouter le véhicule' }}</button>
+              <button type="submit" class="btn btn-add" [disabled]="envoiImageEnCours">
+                {{ envoiImageEnCours ? 'Envoi de la photo...' : (id ? 'Enregistrer les modifications' : 'Ajouter le véhicule') }}
+              </button>
               <button type="button" class="btn btn-outline" (click)="fermerForm()">Annuler</button>
             </div>
           </form>

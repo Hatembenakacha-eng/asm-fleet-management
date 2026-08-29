@@ -14,7 +14,7 @@ export class EmployeListe implements OnInit {
 
   showForm = false;
   id: number | null = null;
-  nom = ''; specialite = ''; contact = ''; disponible = true;
+  nom = ''; specialite: string | null = ''; contact = ''; disponible = true;
   erreurs: string[] = [];
 
   ngOnInit() { this.charger(); }

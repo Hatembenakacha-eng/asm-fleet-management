@@ -50,7 +50,11 @@
 
     <div class="side-footer">
       <div class="side-user">
-        <div class="avatar">{{ initiales(user?.name) }}</div>
+        @if (user?.photo_url) {
+          <img class="avatar avatar-photo" [src]="user!.photo_url" [alt]="user!.name" />
+        } @else {
+          <div class="avatar">{{ initiales(user?.name) }}</div>
+        }
         <div class="who">
           <strong>{{ user?.name }}</strong>
           <span>{{ user?.role === 'admin' ? 'Administrateur' : 'Employé' }}</span>
@@ -70,7 +74,11 @@
       </button>
       <div class="topbar-user">
         <span class="role-pill">{{ user?.role === 'admin' ? 'Administrateur' : 'Employé' }}</span>
-        <div class="avatar">{{ initiales(user?.name) }}</div>
+        @if (user?.photo_url) {
+          <img class="avatar avatar-photo" [src]="user!.photo_url" [alt]="user!.name" />
+        } @else {
+          <div class="avatar">{{ initiales(user?.name) }}</div>
+        }
       </div>
     </header>
     <main class="content"><router-outlet></router-outlet></main>

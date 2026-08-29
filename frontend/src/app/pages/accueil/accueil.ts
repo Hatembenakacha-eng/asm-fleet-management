@@ -1,8 +1,10 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AffectationService } from '../../services/affectation';
+import { VoitureService } from '../../services/voiture';
 import { Auth } from '../../services/auth';
+import { Voiture } from '../../models/voiture';
 
 @Component({
   selector: 'app-accueil',
@@ -13,87 +15,75 @@ import { Auth } from '../../services/auth';
 })
 export class Accueil implements OnInit {
   private affectationService = inject(AffectationService);
+  private voitureService = inject(VoitureService);
   private authService = inject(Auth);
+  private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
   user: any = null;
   demandesAValider: any[] = [];
   missionEnCours: any = null;
   demandeEnAttente: any = null;
+  voituresSuggerees: Voiture[] = [];
 
   ngOnInit(): void {
-    this.chargerUtilisateurConnecte();
+    this.user = this.authService.getUser();
     this.chargerDonnees();
-  }
-
-  chargerUtilisateurConnecte(): void {
-    const auth = this.authService as any;
-
-    if (auth?.user) {
-      this.user = auth.user;
-    } else if (typeof auth?.getUser === 'function') {
-      this.user = auth.getUser();
-    }
-
-    if (!this.user) {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        try {
-          this.user = JSON.parse(userData);
-        } catch (e) {
-          console.error('Erreur parsing user localStorage', e);
-        }
-      }
-    }
-    console.log('Utilisateur connecté :', this.user);
+    this.chargerVoituresSuggerees();
   }
 
   chargerDonnees(): void {
+    // Depuis le correctif backend, /affectations est déjà filtré côté serveur : un admin reçoit
+    // tout, un utilisateur normal ne reçoit que SES propres affectations. Plus besoin de filtrer
+    // par employee_id/cree_par côté client.
     this.affectationService.getAll().subscribe({
       next: (res: any) => {
         const liste = res.data || res;
-        console.log('Affectations récupérées de la BDD :', liste);
+        if (!Array.isArray(liste)) return;
 
-        if (Array.isArray(liste)) {
+        if (this.user?.role === 'admin') {
           this.demandesAValider = liste.filter((a: any) => {
             if (!a.statut) return false;
             const st = String(a.statut).toLowerCase().trim();
-            return st.includes('attente') || st.includes('pending') || st === 'en_attente';
+            return st.includes('attente');
           });
+        } else {
+          this.missionEnCours = liste.find((a: any) => {
+            if (!a.statut) return false;
+            const st = String(a.statut).toLowerCase().trim();
+            return st === 'active' || st === 'en_cours' || st === 'validee' || st === 'valide';
+          }) || null;
 
-          console.log('Demandes à valider filtrées (Admin) :', this.demandesAValider);
-
-          if (this.user) {
-            const userId = String(this.user.id);
-
-            const mesAffectations = liste.filter((a: any) =>
-              String(a.employee_id) === userId ||
-              String(a.employee?.id) === userId ||
-              String(a.cree_par) === userId
-            );
-
-
-            this.missionEnCours = mesAffectations.find((a: any) => {
-              if (!a.statut) return false;
-              const st = String(a.statut).toLowerCase().trim();
-              return st === 'active' || st === 'en_cours' || st === 'validee' || st === 'valide';
-            }) || null;
-
-            this.demandeEnAttente = mesAffectations.find((a: any) => {
-              if (!a.statut) return false;
-              const st = String(a.statut).toLowerCase().trim();
-              return st.includes('attente') || st === 'en_attente';
-            }) || null;
-          }
+          this.demandeEnAttente = liste.find((a: any) => {
+            if (!a.statut) return false;
+            const st = String(a.statut).toLowerCase().trim();
+            return st.includes('attente');
+          }) || null;
         }
 
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error('Erreur de chargement API :', err);
-      }
+      error: (err) => console.error('Erreur de chargement API :', err)
     });
   }
+
+  chargerVoituresSuggerees(): void {
+    this.voitureService.getAll('disponible').subscribe({
+      next: (res: any) => {
+        const liste = res.data || res;
+        this.voituresSuggerees = (Array.isArray(liste) ? liste : []).slice(0, 4);
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Erreur de chargement des véhicules :', err)
+    });
+  }
+
+  // Amorce une demande dans le chat pour ce véhicule précis (voir assistant-ia.ts, lecture du paramètre ?voiture=).
+  demanderVehicule(v: Voiture): void {
+    this.router.navigate(['/assistant-ia'], { queryParams: { voiture: v.id } });
+  }
+
+  erreurDemande = '';
 
   accepterDemande(id: number): void {
     this.changerStatutDemande(id, 'validee');
@@ -104,22 +94,13 @@ export class Accueil implements OnInit {
   }
 
   private changerStatutDemande(id: number, nouveauStatut: string): void {
-    const service = this.affectationService as any;
-
-    const req$ = typeof service.update === 'function'
-      ? service.update(id, { statut: nouveauStatut })
-      : typeof service.changerStatut === 'function'
-        ? service.changerStatut(id, nouveauStatut)
-        : null;
-
-    if (req$) {
-      req$.subscribe({
-        next: () => this.chargerDonnees(),
-        error: (err: any) => console.error('Erreur lors de la mise à jour:', err)
-      });
-    } else {
-      this.demandesAValider = this.demandesAValider.filter(d => d.id !== id);
-      this.cdr.detectChanges();
-    }
+    this.erreurDemande = '';
+    this.affectationService.update(id, { statut: nouveauStatut }).subscribe({
+      next: () => this.chargerDonnees(),
+      error: (err: any) => {
+        this.erreurDemande = err.error?.message || "Impossible de mettre à jour cette demande.";
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { User } from '../models/user';
+import { environment } from '../../environments/environment';
+import { ChatStateService } from './chat-state';
 
 const CLE_TOKEN = 'asm_token';
 const CLE_USER = 'asm_user';
@@ -11,7 +13,8 @@ const CLE_USER = 'asm_user';
 export class Auth {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private chatState = inject(ChatStateService);
+  private apiUrl = environment.apiUrl;
 
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -45,6 +48,8 @@ export class Auth {
     sessionStorage.removeItem(CLE_TOKEN);
     sessionStorage.removeItem(CLE_USER);
     this.currentUserSubject.next(null);
+    // Évite qu'un prochain utilisateur, sur un poste partagé, voie la conversation de la personne précédente.
+    this.chatState.reinitialiser();
     this.router.navigate(['/login']);
   }
 
@@ -73,5 +78,18 @@ export class Auth {
 
   updatePassword(data: { current_password: string; new_password: string; new_password_confirmation: string }): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/profile/password`, data);
+  }
+
+  uploadPhoto(fichier: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('photo', fichier);
+    return this.http.post<any>(`${this.apiUrl}/profile/photo`, formData).pipe(
+      tap(res => {
+        if (res && res.user) {
+          sessionStorage.setItem(CLE_USER, JSON.stringify(res.user));
+          this.currentUserSubject.next(res.user);
+        }
+      })
+    );
   }
 }

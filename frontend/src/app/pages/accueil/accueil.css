@@ -33,6 +33,7 @@
 .section-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
 .section-title { font-size: 1.05rem; margin: 0; }
 .count-pill { font-size: 11px; font-weight: 700; background: var(--red-bg); color: var(--red); padding: 3px 10px; border-radius: 20px; }
+.erreur-demande { background: var(--red-bg); color: var(--red); padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; }
 
 .demandes-list { display: flex; flex-direction: column; gap: 12px; }
 
@@ -120,6 +121,31 @@
 }
 .action-info strong { display: block; font-size: 0.9rem; color: var(--text); }
 .action-info span { font-size: 0.78rem; color: var(--text-mute); }
+
+.voitures-suggerees-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.voiture-suggestion-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.voiture-suggestion-card:hover { transform: translateY(-2px); border-color: var(--orange); box-shadow: var(--shadow); }
+.voiture-suggestion-card img { width: 100%; height: 110px; object-fit: cover; display: block; }
+.voiture-suggestion-placeholder {
+  width: 100%; height: 110px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--orange-bg); color: var(--orange-deep);
+}
+.voiture-suggestion-info { padding: 0.65rem 0.8rem; }
+.voiture-suggestion-info strong { display: block; font-size: 0.85rem; color: var(--text); }
+.voiture-suggestion-info span { font-size: 0.75rem; color: var(--text-mute); }
 
 @media (max-width: 640px) {
   .page-container { padding: 1.25rem 1rem; }

@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { VoitureService } from '../../../services/voiture';
 import { Voiture } from '../../../models/voiture';
 import { CommonModule } from '@angular/common';
+import { Auth } from '../../../services/auth';
 
 @Component({
   selector: 'app-voiture-liste',
@@ -12,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class VoitureListe implements OnInit {
   private service = inject(VoitureService);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(Auth);
   voitures: Voiture[] = [];
   chargement = true;
   erreur = '';
@@ -28,6 +30,13 @@ export class VoitureListe implements OnInit {
   statut: Voiture['statut'] = 'disponible';
   capacite: number | null = null;
   categorie = '';
+
+  fichierImage: File | null = null;
+  envoiImageEnCours = false;
+
+  get estAdmin(): boolean {
+    return this.auth.getUser()?.role === 'admin';
+  }
 
   ngOnInit() { this.charger(); }
   charger() {
@@ -70,6 +79,7 @@ export class VoitureListe implements OnInit {
     this.statut = 'disponible';
     this.capacite = null;
     this.categorie = '';
+    this.fichierImage = null;
     this.showForm = true;
   }
 
@@ -82,11 +92,17 @@ export class VoitureListe implements OnInit {
     this.statut = v.statut;
     this.capacite = v.capacite;
     this.categorie = v.categorie ?? '';
+    this.fichierImage = null;
     this.showForm = true;
   }
 
   fermerForm(): void {
     this.showForm = false;
+  }
+
+  onFichierImageChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.fichierImage = input.files?.[0] ?? null;
   }
 
   soumettreForm(): void {
@@ -96,8 +112,36 @@ export class VoitureListe implements OnInit {
     };
     const obs = this.id ? this.service.update(this.id, payload) : this.service.create(payload);
     obs.subscribe({
-      next: () => { this.showForm = false; this.charger(); },
+      next: (res: any) => {
+        const idVoiture = this.id ?? res?.data?.id;
+        if (this.fichierImage && idVoiture) {
+          this.envoyerImage(idVoiture);
+        } else {
+          this.showForm = false;
+          this.charger();
+        }
+      },
       error: (err) => { console.error(err); this.cdr.detectChanges(); }
+    });
+  }
+
+  private envoyerImage(idVoiture: number): void {
+    this.envoiImageEnCours = true;
+    this.service.uploadImage(idVoiture, this.fichierImage!).subscribe({
+      next: () => {
+        this.envoiImageEnCours = false;
+        this.showForm = false;
+        this.fichierImage = null;
+        this.charger();
+      },
+      error: (err) => {
+        console.error(err);
+        this.envoiImageEnCours = false;
+        // Le véhicule est déjà enregistré à ce stade ; seule l'image a échoué.
+        this.erreur = "Véhicule enregistré, mais l'envoi de la photo a échoué.";
+        this.showForm = false;
+        this.charger();
+      }
     });
   }
 

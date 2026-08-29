@@ -18,6 +18,7 @@ export class Profil implements OnInit {
 
   isEditingProfile = false;
   showPasswordModal = false;
+  uploadingPhoto = false;
 
   profileData = { name: '', email: '' };
   passwordData = { current_password: '', new_password: '', new_password_confirmation: '' };
@@ -33,6 +34,31 @@ export class Profil implements OnInit {
       }
       this.cdr.detectChanges();
     });
+  }
+
+  onPhotoSelectionnee(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const fichier = input.files?.[0];
+    if (!fichier) return;
+
+    this.messageSuccess = '';
+    this.messageError = '';
+    this.uploadingPhoto = true;
+
+    this.auth.uploadPhoto(fichier).subscribe({
+      next: () => {
+        this.uploadingPhoto = false;
+        this.messageSuccess = 'Photo de profil mise à jour avec succès !';
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.uploadingPhoto = false;
+        this.messageError = err.error?.message || "Erreur lors de l'envoi de la photo.";
+        this.cdr.detectChanges();
+      }
+    });
+
+    input.value = '';
   }
 
   toggleEditProfile() {

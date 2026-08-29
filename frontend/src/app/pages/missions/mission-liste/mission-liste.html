@@ -1,10 +1,12 @@
 <div class="page">
   <div class="page-head">
     <div><h1>Missions</h1><p class="sub">{{ missions.length }} {{ missions.length > 1 ? 'ordres de mission enregistrés' : 'ordre de mission enregistré' }}.</p></div>
-    <button type="button" (click)="ouvrirAjout()" class="btn btn-add">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
-      Nouvelle mission
-    </button>
+    @if (estAdmin) {
+      <button type="button" (click)="ouvrirAjout()" class="btn btn-add">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+        Nouvelle mission
+      </button>
+    }
   </div>
 
   <div class="card" style="padding:18px;">
@@ -45,17 +47,19 @@
           <div class="stub"><span class="ref mono">M-{{ m.id }}</span><span class="date mono">{{ m.date_depart }}</span></div>
           <div class="body">
             <div><div class="dest">{{ m.destination }}</div><div class="veh">{{ m.type_vehicule || 'Tout type' }} — min. {{ m.capacite_minimale || 0 }} places</div></div>
-            <div class="actions-cell">
-              <button type="button" class="link" style="background:none;border:none;cursor:pointer;padding:0;" (click)="ouvrirEdition(m)">Modifier</button>
-              <button class="btn-danger-txt" (click)="supprimer(m.id)">Supprimer</button>
-            </div>
+            @if (estAdmin) {
+              <div class="actions-cell">
+                <button type="button" class="link" style="background:none;border:none;cursor:pointer;padding:0;" (click)="ouvrirEdition(m)">Modifier</button>
+                <button class="btn-danger-txt" (click)="supprimer(m.id)">Supprimer</button>
+              </div>
+            }
           </div>
         </div>
       }
     }
   </div>
 
-  @if (showForm) {
+  @if (showForm && estAdmin) {
     <div class="modal-backdrop" (click)="fermerForm()">
       <div class="modal-panel" (click)="$event.stopPropagation()">
         <div class="modal-head">

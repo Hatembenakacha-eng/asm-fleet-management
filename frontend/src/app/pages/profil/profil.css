@@ -47,6 +47,25 @@
   justify-content: center;
 }
 
+.avatar-upload-wrap { position: relative; width: 60px; height: 60px; flex-shrink: 0; }
+.avatar-photo { object-fit: cover; }
+.avatar-edit-btn {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--orange-deep);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid var(--surface);
+}
+.avatar-edit-btn.disabled { opacity: .6; pointer-events: none; }
+
 .user-details h2 {
   margin: 0;
   font-size: 1.3rem;

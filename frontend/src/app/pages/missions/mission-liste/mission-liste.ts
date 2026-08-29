@@ -2,11 +2,13 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MissionService } from '../../../services/mission';
 import { Mission } from '../../../models/mission';
+import { Auth } from '../../../services/auth';
 
 @Component({ selector: 'app-mission-liste', standalone: true, imports: [FormsModule], templateUrl: './mission-liste.html' })
 export class MissionListe implements OnInit {
   private service = inject(MissionService);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(Auth);
   missions: Mission[] = [];
   chargement = true;
   erreur = '';
@@ -20,6 +22,10 @@ export class MissionListe implements OnInit {
   type_vehicule = '';
   capacite_minimale: number | null = null;
   erreurs: string[] = [];
+
+  get estAdmin(): boolean {
+    return this.auth.getUser()?.role === 'admin';
+  }
 
   ngOnInit() { this.charger(); }
   charger() {

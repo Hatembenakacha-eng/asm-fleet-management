@@ -1,21 +1,12 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MissionService } from '../../services/mission';
+import { ActivatedRoute, Router } from '@angular/router';
+import { VoitureService } from '../../services/voiture';
 import { ChatService } from '../../services/chat';
 import { AffectationService } from '../../services/affectation';
 import { Auth } from '../../services/auth';
-import { Mission } from '../../models/mission';
-
-interface MessageChat {
-  auteur: 'moi' | 'ia';
-  texte: string;
-  vehiculeSuggere?: any;
-  missionId?: number | null;
-  destination?: string;
-  dateDebut?: string;
-  dateFin?: string;
-}
+import { ChatStateService, MessageChat } from '../../services/chat-state';
+import { Voiture } from '../../models/voiture';
 
 @Component({
   selector: 'app-assistant-ia',
@@ -25,32 +16,51 @@ interface MessageChat {
   styleUrl: './assistant-ia.css'
 })
 export class AssistantIa implements OnInit {
-  private missionService = inject(MissionService);
+  private voitureService = inject(VoitureService);
   private chatService = inject(ChatService);
   private affectationService = inject(AffectationService);
   private auth = inject(Auth);
+  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private chatState = inject(ChatStateService);
 
-  missions: Mission[] = [];
-  missionChoisie: number | null = null;
+  voitures: Voiture[] = [];
+  voitureChoisie: number | null = null;
   messageLibre = '';
-  messages: MessageChat[] = [
-    { auteur: 'ia', texte: "Bonjour ! Pose-moi une question sur la flotte, ou demande une réservation directement." }
-  ];
   loading = false;
   erreurChargement = '';
 
+  // Délègue au service : l'historique survit à la navigation entre pages (voir chat-state.ts).
+  get messages(): MessageChat[] {
+    return this.chatState.messages;
+  }
+
   ngOnInit() {
     if (this.auth.isLoggedIn()) {
-      this.chargerMissions();
+      const voitureDepuisAccueil = Number(this.route.snapshot.queryParamMap.get('voiture')) || null;
+
+      this.voitureService.getAll('disponible').subscribe({
+        next: (res: any) => {
+          this.voitures = res.data || res;
+          this.cdr.detectChanges();
+
+          // Arrivée depuis la carte "Véhicules disponibles" de l'accueil : on amorce directement la demande.
+          if (voitureDepuisAccueil && this.voitures.some(v => v.id === voitureDepuisAccueil)) {
+            this.voitureChoisie = voitureDepuisAccueil;
+            this.demanderPourVehicule();
+            this.router.navigate([], { relativeTo: this.route, queryParams: {} });
+          }
+        },
+        error: () => { this.erreurChargement = "Impossible de charger les véhicules."; this.cdr.detectChanges(); }
+      });
     }
   }
 
-  chargerMissions() {
-    this.missionService.getAll().subscribe({
-      next: (res: any) => { this.missions = res.data || res; this.cdr.detectChanges(); },
-      error: () => { this.erreurChargement = "Impossible de charger les missions."; this.cdr.detectChanges(); }
+  private chargerVoituresDisponibles() {
+    this.voitureService.getAll('disponible').subscribe({
+      next: (res: any) => { this.voitures = res.data || res; this.cdr.detectChanges(); },
+      error: () => { this.erreurChargement = "Impossible de charger les véhicules."; this.cdr.detectChanges(); }
     });
   }
 
@@ -58,7 +68,7 @@ export class AssistantIa implements OnInit {
     const texte = this.messageLibre.trim();
     if (!texte || this.loading) return;
 
-    this.messages.push({ auteur: 'moi', texte });
+    this.chatState.ajouter({ auteur: 'moi', texte });
     this.messageLibre = '';
     this.loading = true;
     this.cdr.detectChanges();
@@ -67,26 +77,21 @@ export class AssistantIa implements OnInit {
       next: (res: any) => {
         this.loading = false;
 
-        const nouveauMessage: MessageChat = {
+        this.chatState.ajouter({
           auteur: 'ia',
           texte: res.reponse || res.message || "Le service IA n'a pas renvoyé de réponse. Réessayez.",
           vehiculeSuggere: res.vehicule_recommande || res.vehicule || null,
           missionId: res.mission_id || null,
           destination: res.destination || '',
           dateDebut: res.date_debut || '',
-          dateFin: res.date_fin || ''
-        };
-
-        this.messages.push(nouveauMessage);
+          dateFin: res.date_fin || '',
+          informationsCompletes: !!res.informations_completes
+        });
         this.cdr.detectChanges();
-
-        if (res.auto_reserver && nouveauMessage.vehiculeSuggere) {
-          this.faireDemande(nouveauMessage);
-        }
       },
-      error: (err: any) => {
+      error: () => {
         this.loading = false;
-        this.messages.push({
+        this.chatState.ajouter({
           auteur: 'ia',
           texte: "Le service IA est momentanément indisponible."
         });
@@ -95,49 +100,22 @@ export class AssistantIa implements OnInit {
     });
   }
 
-  demanderRecommandation() {
-    if (!this.missionChoisie || this.loading) return;
-    const mission = this.missions.find(m => m.id === Number(this.missionChoisie))!;
+  // Remplace l'ancien demanderRecommandation() basé sur une mission existante : on amorce
+  // maintenant la conversation à partir d'un véhicule choisi, et c'est le chat qui complète
+  // ensuite la destination et les dates (mission) directement dans la discussion.
+  demanderPourVehicule() {
+    if (!this.voitureChoisie || this.loading) return;
+    const voiture = this.voitures.find(v => v.id === Number(this.voitureChoisie));
+    if (!voiture) return;
 
-    this.messages.push({
-      auteur: 'moi',
-      texte: `Quel véhicule pour la mission "${mission.destination}" ?`
-    });
-
-    this.loading = true;
-    this.cdr.detectChanges();
-
-    this.missionService.recommander(this.missionChoisie).subscribe({
-      next: (res: any) => {
-        this.loading = false;
-        if (res.succes && res.vehicule_recommande) {
-          this.messages.push({
-            auteur: 'ia',
-            texte: `Véhicule recommandé : ${res.vehicule_recommande.marque} ${res.vehicule_recommande.modele} (${res.vehicule_recommande.immatriculation})`,
-            vehiculeSuggere: res.vehicule_recommande,
-            missionId: mission.id,
-            destination: mission.destination
-          });
-        } else {
-          this.messages.push({
-            auteur: 'ia',
-            texte: res.message || "Aucun véhicule correspondant trouvé."
-          });
-        }
-        this.cdr.detectChanges();
-      },
-      error: (err: any) => {
-        this.loading = false;
-        this.messages.push({
-          auteur: 'ia',
-          texte: err.error?.message || "Erreur lors de la recommandation."
-        });
-        this.cdr.detectChanges();
-      }
-    });
+    this.messageLibre =
+      `Je voudrais réserver le véhicule ${voiture.marque} ${voiture.modele} (${voiture.immatriculation}).`;
+    this.envoyerLibre();
   }
 
   faireDemande(msg: MessageChat) {
+    // Filet de sécurité : le bouton n'est visible dans le template que si informationsCompletes
+    // est vrai, donc ce cas ne devrait plus se produire en pratique.
     if (!msg.vehiculeSuggere || this.loading) return;
 
     const vehiculeSauvegarde = msg.vehiculeSuggere;
@@ -159,16 +137,14 @@ export class AssistantIa implements OnInit {
       statut: 'en_attente'
     };
 
-    console.log('Envoi de la réservation :', payload);
-
     this.affectationService.create(payload).subscribe({
-      next: (res: any) => {
+      next: () => {
         this.loading = false;
         msg.vehiculeSuggere = null;
 
-        this.chargerMissions();
+        this.chargerVoituresDisponibles();
 
-        this.messages.push({
+        this.chatState.ajouter({
           auteur: 'ia',
           texte: `Demande d'affectation pour le véhicule ${vehiculeSauvegarde.marque} a été enregistrée avec succès dans la base de données !`
         });
@@ -176,8 +152,7 @@ export class AssistantIa implements OnInit {
       },
       error: (err: any) => {
         this.loading = false;
-        console.error('Échec Laravel :', err);
-        this.messages.push({
+        this.chatState.ajouter({
           auteur: 'ia',
           texte: `Erreur : ${err.error?.message || "Échec de l'enregistrement dans la base de données."}`
         });

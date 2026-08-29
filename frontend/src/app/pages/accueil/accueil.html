@@ -17,6 +17,10 @@
         }
       </div>
 
+      @if (erreurDemande) {
+        <p class="erreur-demande">{{ erreurDemande }}</p>
+      }
+
       @if (demandesAValider.length > 0) {
         <div class="demandes-list">
           @for (item of demandesAValider; track item.id) {
@@ -136,6 +140,27 @@
 
     }
 
+  }
+
+  @if (voituresSuggerees.length > 0) {
+    <h2 class="actions-title">Véhicules disponibles</h2>
+    <div class="voitures-suggerees-grid">
+      @for (v of voituresSuggerees; track v.id) {
+        <div class="voiture-suggestion-card" (click)="demanderVehicule(v)">
+          @if (v.image_url) {
+            <img [src]="v.image_url" [alt]="v.marque + ' ' + v.modele" />
+          } @else {
+            <div class="voiture-suggestion-placeholder">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 17h14M5 17a2 2 0 1 0 0-.01M19 17a2 2 0 1 0 0-.01M5 17V9l2-5h10l2 5v8"/></svg>
+            </div>
+          }
+          <div class="voiture-suggestion-info">
+            <strong>{{ v.marque }} {{ v.modele }}</strong>
+            <span>{{ v.immatriculation }} · {{ v.capacite }} places</span>
+          </div>
+        </div>
+      }
+    </div>
   }
 
   <h2 class="actions-title">Actions rapides</h2>
