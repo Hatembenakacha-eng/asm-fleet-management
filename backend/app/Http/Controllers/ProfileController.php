@@ -9,7 +9,6 @@ use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
-    // 1. Mettre à jour le Nom et l'Email
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -27,7 +26,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    // 2. Changer le mot de passe
     public function updatePassword(Request $request)
     {
         $validated = $request->validate([
@@ -44,7 +42,6 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        // Mettre à jour avec le nouveau mot de passe haché
         $user->update([
             'password' => Hash::make($validated['new_password'])
         ]);
@@ -54,9 +51,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Téléverser / remplacer la photo de profil de l'utilisateur connecté.
-     */
     public function uploadPhoto(Request $request)
     {
         $request->validate([
@@ -65,7 +59,7 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        
+
         if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
         }
